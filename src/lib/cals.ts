@@ -14,5 +14,9 @@ export const CAL_MAP: { id: string; name: string }[] = [
 	{ id: '5e6f3eef9f045c00181a09fe', name: 'AULE BELMELORO 6' },
 	{ id: '5e6f538e15108d00192bb374', name: ' AULE ex Ist. IGIENE S Giacomo 12 ' },
 	{ id: '5e6f53f04ad7a80017fd3c4c', name: ' AULE COMPLESSO UNIONE ' },
-	{ id: '5f06bc2126181c0017979fcd', name: ' AULE BOLOGNA - CAAB ' }
+	{ id: '5f06bc2126181c0017979fcd', name: ' AULE BOLOGNA - CAAB ' },
+	{ id: '64b8ef2fb9fb8b00217e07d5', name: '9262 - CTF II anno' },
+	{ id: '64b8eeef2279a5001c1a8158', name: '9262 - CTF III anno' },
+	{ id: '64b8eb93deaf19001c0d0996', name: '9262 - CTF IV anno' },
+	{ id: '64b8ef6f5ca37b001c67e0b6', name: '8412 - CTF V anno' }
 ];
