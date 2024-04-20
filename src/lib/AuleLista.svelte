@@ -22,7 +22,7 @@
 				</a>
 			</td>
 			<td>{aula.capienza}</td>
-			<td>{impegno ? impegno.nome : 'libera'}</td>
+			<td>{impegno ? impegno.nome : ''}</td>
 			<td>
 				{#if impegno}
 					{dayjs(impegno.dataInizio).format('HH:mm')} - {dayjs(impegno.dataFine).format('HH:mm')}
