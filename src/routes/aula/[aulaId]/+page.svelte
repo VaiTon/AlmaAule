@@ -1,12 +1,14 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import type { PageData } from './$types';
 
 	import moment from 'moment';
 
+	import markerIcon from 'leaflet/dist/images/marker-icon.png';
+	import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+	import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
+
 	export let data: PageData;
 	$: aula = data.aula;
-	$: impegni = data.impegni;
 
 	$: console.debug(aula);
 
@@ -15,16 +17,33 @@
 	import 'leaflet/dist/leaflet.css';
 	onMount(() => {
 		if (aula.relazioneEdificio.geo != null) {
-			const map = L.map('map').setView(
+			const map = L.map('map', { attributionControl: false }).setView(
 				[aula.relazioneEdificio.geo.lat, aula.relazioneEdificio.geo.lng],
 				13
 			);
-			L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-				attribution:
-					'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-			}).addTo(map);
+			L.control.attribution({ prefix: false }).addTo(map);
 
-			L.marker([aula.relazioneEdificio.geo.lat, aula.relazioneEdificio.geo.lng])
+			const osmCopyright =
+				'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
+			L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+				attribution: osmCopyright
+			}).addTo(map);
+			const iconDefault = L.icon({
+				iconRetinaUrl: markerIcon2x,
+				iconUrl: markerIcon,
+				shadowUrl,
+				iconSize: [25, 41],
+				iconAnchor: [12, 41],
+				popupAnchor: [1, -34],
+				tooltipAnchor: [16, -28],
+				shadowSize: [41, 41]
+			});
+
+
+			L.marker([aula.relazioneEdificio.geo.lat, aula.relazioneEdificio.geo.lng], {
+				icon: iconDefault
+			})
 				.addTo(map)
 				.bindPopup(aula.relazioneEdificio.descrizione)
 				.openPopup();
