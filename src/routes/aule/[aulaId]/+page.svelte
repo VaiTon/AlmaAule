@@ -40,7 +40,6 @@
 				shadowSize: [41, 41]
 			});
 
-
 			L.marker([aula.relazioneEdificio.geo.lat, aula.relazioneEdificio.geo.lng], {
 				icon: iconDefault
 			})
@@ -76,9 +75,10 @@
 </p>
 
 <div>
-	<h2 class="text-2xl font-bold mt-6 mb-2">Piano</h2>
-	<span>{aula?.piano.descrizione} (<code>{aula?.piano.codice}</code>)</span>
-
+	{#if aula.piano != null}
+		<h2 class="text-2xl font-bold mt-6 mb-2">Piano</h2>
+		<span>{aula?.piano.descrizione} (<code>{aula?.piano.codice}</code>)</span>
+	{/if}
 	<details>
 		<summary>Debug</summary>
 		<pre>{JSON.stringify(aula.piano, null, 2)}</pre>
@@ -127,8 +127,8 @@
 				<tr>
 					<th>Tipo Attività</th>
 					<th>Nome</th>
-					<th>Data Inizio</th>
-					<th>Data Fine</th>
+					<th>Corso</th>
+					<th>Periodo</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -136,6 +136,7 @@
 					<tr>
 						<td>{impegno.evento.tipoAttivita.descrizione}</td>
 						<td>{impegno.nome}</td>
+						<td>{impegno.evento.dettagliDidattici[0].corso?.descrizione ?? ''}</td>
 						<td>{moment(impegno.dataInizio).format('lll')}</td>
 						<td>{moment(impegno.dataFine).format('lll')}</td>
 					</tr>

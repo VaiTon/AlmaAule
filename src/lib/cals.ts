@@ -1,5 +1,6 @@
 export const CAL_MAP: { id: string; name: string }[] = [
 	{ id: '5e9996a228a649001237296d', name: 'Ingegneria Risorgimento' },
+	{ id: '619b9674a810d60017224b93', name: 'Ingegneria Risorgimento - Laboratori di Informatica' },
 	{ id: '5f0310d366e423001758ae01', name: 'Matematica' },
 	{ id: '5f5b3cb4dd64620012b0f502', name: 'Chimica Industriale' },
 	{ id: '5e99b3883252110012b67395', name: 'Ingegneria Terracini' },

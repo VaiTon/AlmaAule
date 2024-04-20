@@ -8,7 +8,7 @@ export type Aula = {
 	descrizione: string;
 	dataCreazione: string;
 	dataModifica: string;
-	piano: Piano;
+	piano: Piano | null;
 
 	edificio: Pick<
 		Edificio,

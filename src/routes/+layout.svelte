@@ -11,6 +11,8 @@
 		</a>
 
 		<div class="flex-1" />
+
+		<a href="/aule" class="btn">Aule</a>
 	</nav>
 
 	<main class="container">

@@ -17,7 +17,7 @@
 	{#each impegnoAule as { aula, impegno }}
 		<tr>
 			<td>
-				<a class="link" href="/aula/{aula.id}">
+				<a class="link" href="/aule/{aula.id}">
 					{aula.descrizione}
 				</a>
 			</td>
