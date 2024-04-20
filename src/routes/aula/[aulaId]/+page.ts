@@ -16,7 +16,7 @@ export const load: PageLoad = async ({ fetch, params, setHeaders }) => {
 	const aula = aule.find((a) => a.id === params.aulaId);
 
 	if (aula == null) {
-		throw error(404, 'Aula non trovata');
+		error(404, 'Aula non trovata');
 	}
 
 	let impegni = await getImpegni(fetch, aula.calId, {

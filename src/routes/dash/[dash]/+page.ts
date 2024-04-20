@@ -8,13 +8,13 @@ export const load: PageLoad = async ({ fetch, params, setHeaders }) => {
 	const { dash } = params;
 
 	const cal = CAL_MAP.find((c) => c.id === dash);
-	if (cal == null) throw error(400, 'Calendario non trovato');
+	if (cal == null) error(400, 'Calendario non trovato');
 
 	const { id } = cal;
 
 	const aule = await getAule(fetch, id);
 	if (aule == null) {
-		throw error(500, 'Aule non trovate');
+		error(500, 'Aule non trovate');
 	}
 
 	console.debug('Aule', aule);
