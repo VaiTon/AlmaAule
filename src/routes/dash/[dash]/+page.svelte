@@ -2,10 +2,11 @@
 	import type { Aula, Impegno } from '../../../lib/api';
 	import AuleLista from '../../../lib/AuleLista.svelte';
 	import { getActualImpegniAule } from '../../../lib/impegni';
-	import type { PageData } from '../../ingegneria/$types';
+	import type { PageData } from './$types';
 
 	export let data: PageData;
 	$: impegnoAule = getActualImpegniAule(data.aule, data.impegni);
 </script>
 
-<AuleLista {impegnoAule} calId={data.calId} />
+<h1 class="text-4xl font-bold my-4">{data.cal.name}</h1>
+<AuleLista {impegnoAule} />

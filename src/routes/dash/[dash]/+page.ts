@@ -1,31 +1,32 @@
 import { getAule, getImpegni } from '$lib/api';
 import dayjs from 'dayjs';
 import type { PageLoad } from './$types';
+import { CAL_MAP } from '$lib/cals';
+import { error } from '@sveltejs/kit';
 
-const CODICE_ING = '5e9996a228a649001237296d';
-const CODICE_MATE = '5f0310d366e423001758ae01';
-
-const MAP = {
-	ingegneria: CODICE_ING,
-	matematica: CODICE_MATE
-} as Record<string, string>;
-
-export const load: PageLoad = async ({ fetch, params }) => {
+export const load: PageLoad = async ({ fetch, params, setHeaders }) => {
 	const { dash } = params;
 
-	const calId = MAP[dash];
-	if (!calId) throw new Error('Calendario non trovato');
+	const cal = CAL_MAP.find((c) => c.id === dash);
+	if (cal == null) throw error(400, 'Calendario non trovato');
 
-	const aule = await getAule(fetch, CODICE_ING);
-	const impegni = await getImpegni(fetch, CODICE_ING, {
+	const { id } = cal;
+
+	const aule = await getAule(fetch, id);
+	if (aule == null) {
+		throw error(500, 'Aule non trovate');
+	}
+
+	console.debug('Aule', aule);
+
+	const impegni = await getImpegni(fetch, id, {
 		aule: aule.map((a) => a.id),
 		dataFine: dayjs().add(1, 'day'),
 		dataInizio: dayjs().subtract(1, 'day')
 	});
 
-	return {
-		calId: CODICE_ING,
-		impegni,
-		aule
-	};
+	// Cache for 1 day
+	setHeaders({ 'Cache-Control': 'max-age=86400' });
+
+	return { cal, impegni, aule };
 };

@@ -2,8 +2,6 @@
 	import dayjs from 'dayjs';
 	import type { Aula, Impegno } from './api';
 
-	export let calId: string;
-
 	export let impegnoAule: { aula: Aula; impegno: Impegno | undefined }[];
 </script>
 
@@ -19,7 +17,7 @@
 	{#each impegnoAule as { aula, impegno }}
 		<tr>
 			<td>
-				<a class="link" href="/cal/{calId}/aula/{aula.id}">
+				<a class="link" href="/aula/{aula.id}">
 					{aula.descrizione}
 				</a>
 			</td>
