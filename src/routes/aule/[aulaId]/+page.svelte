@@ -7,6 +7,10 @@
 	import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 	import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
+	import Calendar from '@event-calendar/core';
+	import TimeGrid from '@event-calendar/time-grid';
+	import '@event-calendar/core/index.css';
+
 	export let data: PageData;
 	$: aula = data.aula;
 
@@ -120,8 +124,32 @@
 	<h2 class="text-2xl font-bold mt-6 mb-2">Prossimi impegni</h2>
 
 	{#if data.impegni.length === 0}
-		<p class="text-gray-500">Nessun impegno</p>
+		<p class="alert mb-4">Nessun impegno</p>
 	{:else}
+		<Calendar
+			plugins={[TimeGrid]}
+			options={{
+				firstDay: 1,
+				nowIndicator: true,
+				flexibleSlotTimeLimits: true,
+				slotMinTime: '08:00',
+				slotMaxTime: '20:00',
+				view: 'timeGridWeek',
+				events: data.impegni.map((impegno) => {
+					let title = impegno.nome;
+					if (impegno.evento.dettagliDidattici[0].corso != null) {
+						title += ` (${impegno.evento.dettagliDidattici[0].corso.descrizione})`;
+					}
+
+					return {
+						id: impegno.id,
+						title: title,
+						start: moment(impegno.dataInizio).toDate(),
+						end: moment(impegno.dataFine).toDate()
+					};
+				})
+			}}
+		/>
 		<table class="table">
 			<thead>
 				<tr>

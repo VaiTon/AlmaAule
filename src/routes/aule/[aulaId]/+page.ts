@@ -22,7 +22,7 @@ export const load: PageLoad = async ({ fetch, params, setHeaders }) => {
 	}
 
 	let impegni = await getImpegni(fetch, aula.calId, {
-		dataInizio: dayjs().subtract(1, 'day'),
+		dataInizio: dayjs().subtract(2, 'day'),
 		dataFine: dayjs().add(1, 'week'),
 		idAule: [aula.id]
 	});
