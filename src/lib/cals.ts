@@ -19,5 +19,6 @@ export const CAL_MAP: { id: string; name: string }[] = [
 	{ id: '64b8ef2fb9fb8b00217e07d5', name: '9262 - CTF II anno' },
 	{ id: '64b8eeef2279a5001c1a8158', name: '9262 - CTF III anno' },
 	{ id: '64b8eb93deaf19001c0d0996', name: '9262 - CTF IV anno' },
-	{ id: '64b8ef6f5ca37b001c67e0b6', name: '8412 - CTF V anno' }
+	{ id: '64b8ef6f5ca37b001c67e0b6', name: '8412 - CTF V anno' },
+	{ id: '5f632ffc78b5fe001d1ea638', name: 'Ercolani' }
 ];
