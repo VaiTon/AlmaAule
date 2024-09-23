@@ -146,9 +146,6 @@
 	</div>
 </div>
 <div>
-	<div class="h-80 w-full mt-4" id="map" />
-</div>
-<div>
 	<h2 class="text-2xl font-bold mt-6 mb-2">Prossimi impegni</h2>
 
 	{#if data.impegni.length === 0}
@@ -185,8 +182,8 @@
 
 					if (didattica?.corso != null) {
 						const course = document.createElement('div');
-						course.innerHTML = "🎓 "+ didattica.corso?.descrizione;
-						course.classList.add('text-xs', "mb-1");
+						course.innerHTML = '🎓 ' + didattica.corso?.descrizione;
+						course.classList.add('text-xs', 'mb-1');
 						nodes.push(course);
 					}
 
@@ -206,6 +203,9 @@
 			}}
 		/>
 	{/if}
+</div>
+<div>
+	<div class="h-80 w-full mt-4" id="map" />
 </div>
 
 <dialog class="modal" bind:this={eventModal}>
