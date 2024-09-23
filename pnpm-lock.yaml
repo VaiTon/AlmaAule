@@ -11,6 +11,12 @@ devDependencies:
   '@event-calendar/list':
     specifier: ^3.5.0
     version: 3.5.0
+  '@event-calendar/resource-time-grid':
+    specifier: ^3.5.0
+    version: 3.5.0
+  '@event-calendar/resource-timeline':
+    specifier: ^3.5.0
+    version: 3.5.0
   '@event-calendar/time-grid':
     specifier: ^3.5.0
     version: 3.5.0
@@ -365,6 +371,21 @@ packages:
 
   /@event-calendar/list@3.5.0:
     resolution: {integrity: sha512-qSt3SoDBSN06jhoOhDOxJrYfpyCnKtyENPmczGMWmFqQFg50fMkjnK39Yyzptj4oO2uoO4GZ6KmROuOr5L8vlg==}
+    dependencies:
+      '@event-calendar/core': 3.5.0
+      svelte: 4.2.19
+    dev: true
+
+  /@event-calendar/resource-time-grid@3.5.0:
+    resolution: {integrity: sha512-K7+MPefpSeXYwV82GR3yV3qg0wqgEMPYgpHLAmvUQJq21r3FMgtTixiD9rcCrMTcBXFlmKyt/zcFPTLo4lT0rw==}
+    dependencies:
+      '@event-calendar/core': 3.5.0
+      '@event-calendar/time-grid': 3.5.0
+      svelte: 4.2.19
+    dev: true
+
+  /@event-calendar/resource-timeline@3.5.0:
+    resolution: {integrity: sha512-EppbvriTnWHRTx0vYRN1Iu3u7XJzA038Chk76GkBr0WxZr9JwJHdYdumGmJxCFMTs4bVd04AjWjKRv/BkOqbAQ==}
     dependencies:
       '@event-calendar/core': 3.5.0
       svelte: 4.2.19
