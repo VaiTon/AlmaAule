@@ -2,7 +2,6 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
-	$: console.debug(data);
 
 	$: auleOrd = data.aule
 		.map((aula) => ({

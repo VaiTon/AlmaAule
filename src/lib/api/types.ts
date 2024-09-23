@@ -88,6 +88,11 @@ export type Impegno = {
 		tipoAttivita: {
 			descrizione: string;
 		};
+		dettagliDidattici: {
+			corso?: {
+				descrizione?: string;
+			};
+		}[];
 	};
 	id: string;
 	annoCorso?: string;
@@ -100,6 +105,11 @@ export type Impegno = {
 	nome_EN: string;
 	stato: string;
 	aule: Aula[];
+
+	docenti: {
+		nome: string;
+		cognome: string;
+	}[];
 };
 
 export type UnitaOrganizzativa = {};

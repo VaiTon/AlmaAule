@@ -6,11 +6,14 @@ settings:
 
 devDependencies:
   '@event-calendar/core':
-    specifier: ^2.6.1
-    version: 2.6.1
+    specifier: ^3.5.0
+    version: 3.5.0
+  '@event-calendar/list':
+    specifier: ^3.5.0
+    version: 3.5.0
   '@event-calendar/time-grid':
-    specifier: ^2.6.1
-    version: 2.6.1
+    specifier: ^3.5.0
+    version: 3.5.0
   '@sveltejs/adapter-auto':
     specifier: ^3.2.0
     version: 3.2.0(@sveltejs/kit@2.5.7)
@@ -29,6 +32,9 @@ devDependencies:
   '@typescript-eslint/parser':
     specifier: ^7.7.0
     version: 7.7.0(eslint@8.57.0)(typescript@5.4.5)
+  '@zerodevx/svelte-json-view':
+    specifier: ^1.0.10
+    version: 1.0.10(svelte@4.2.19)
   autoprefixer:
     specifier: ^10.4.19
     version: 10.4.19(postcss@8.4.38)
@@ -351,16 +357,23 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@event-calendar/core@2.6.1:
-    resolution: {integrity: sha512-3dxMnmFfjEzeyNFhm0PS04/Js3LqqQC6HzqY6XtypxC2wLFhxrK4NqX4cq8ZKtIrTJu6EFFB3DZ8GamW28Pl7g==}
+  /@event-calendar/core@3.5.0:
+    resolution: {integrity: sha512-wKuaXi7YVhcNvm/jF288BPYlaPK497v3YHoi2UHmwNYjHYVPvm2NYEEUAvryvaiX5KZnd823XktZh5pXEWCFrA==}
     dependencies:
       svelte: 4.2.19
     dev: true
 
-  /@event-calendar/time-grid@2.6.1:
-    resolution: {integrity: sha512-YSy2sJlpu7ZR7l+/c4DO/LpyZ+1+i357mXwth/i3gBew+bNQvWdMpiaYX05gNR5DokbXx3ZNYcbnXFPLVVvBDw==}
+  /@event-calendar/list@3.5.0:
+    resolution: {integrity: sha512-qSt3SoDBSN06jhoOhDOxJrYfpyCnKtyENPmczGMWmFqQFg50fMkjnK39Yyzptj4oO2uoO4GZ6KmROuOr5L8vlg==}
     dependencies:
-      '@event-calendar/core': 2.6.1
+      '@event-calendar/core': 3.5.0
+      svelte: 4.2.19
+    dev: true
+
+  /@event-calendar/time-grid@3.5.0:
+    resolution: {integrity: sha512-PupNdecnberU4MvngVR8h/VH04ABzq9DmN6H9pwKs2tIoN8XkSKqjr2EEq4fLUJnzGXCZxxs8kBTwU2gyGqqcQ==}
+    dependencies:
+      '@event-calendar/core': 3.5.0
       svelte: 4.2.19
     dev: true
 
@@ -822,6 +835,14 @@ packages:
 
   /@ungap/structured-clone@1.2.0:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
+    dev: true
+
+  /@zerodevx/svelte-json-view@1.0.10(svelte@4.2.19):
+    resolution: {integrity: sha512-7RUUD0i+iKy7SeZ8UP2SfrPyVMXkCHyLhee9Y9Ni1U6HWjP9TXgaKqdfiAiB91ZQQQDaTAXzYkgTLiSNGrxXyg==}
+    peerDependencies:
+      svelte: ^3.57.0 || ^4.0.0 || ^5.0.0
+    dependencies:
+      svelte: 4.2.19
     dev: true
 
   /acorn-jsx@5.3.2(acorn@8.11.3):
