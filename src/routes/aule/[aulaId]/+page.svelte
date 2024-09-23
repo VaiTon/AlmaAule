@@ -24,8 +24,7 @@
 	import Debug from '$lib/Debug.svelte';
 	import type { Impegno } from '$lib/api';
 
-	let selectedEventId: string | null = null;
-	$: selectedEvent = data.impegni.find((i) => i.id === selectedEventId);
+	let selectedEvent: Impegno | undefined = null;
 
 	function setupMap() {
 		const map = L.map('map', {
@@ -148,61 +147,69 @@
 <div>
 	<h2 class="text-2xl font-bold mt-6 mb-2">Prossimi impegni</h2>
 
-	{#if data.impegni.length === 0}
-		<p class="alert mb-4">Nessun impegno</p>
-	{:else}
-		<Calendar
-			plugins={[TimeGrid, List]}
-			options={{
-				resources: [],
-				firstDay: 1,
-				nowIndicator: true,
-				flexibleSlotTimeLimits: true,
-				slotMinTime: '08:00',
-				slotMaxTime: '20:00',
+	{#await data.impegni}
+		<progress class="progress" />
+	{:then impegni}
+		{#if impegni.length === 0}
+			<p class="alert mb-4">Nessun impegno</p>
+		{:else}
+			<Calendar
+				plugins={[TimeGrid, List]}
+				options={{
+					resources: [],
+					firstDay: 1,
+					nowIndicator: true,
+					flexibleSlotTimeLimits: true,
+					slotMinTime: '08:00',
+					slotMaxTime: '20:00',
 
-				eventClick: (info) => {
-					selectedEventId = info.event.id;
-					eventModal.showModal();
-				},
+					eventClick: (info) => {
+						selectedEvent = impegni.find((i) => i.id === info.event.id);
+						eventModal.showModal();
+					},
 
-				headerToolbar: { start: 'title', center: '', end: 'timeGridWeek,listWeek today prev,next' },
-				view: 'timeGridWeek',
-				views: {
-					timeGridWeek: { pointer: true }
-				},
-				events: data.impegni.map((impegno) => {
-					const title = document.createElement('div');
-					title.innerHTML = impegno.nome;
-					title.classList.add('text-sm', 'font-bold', 'mb-1');
+					headerToolbar: {
+						start: 'title',
+						center: '',
+						end: 'timeGridWeek,listWeek today prev,next'
+					},
+					view: 'timeGridWeek',
+					views: {
+						timeGridWeek: { pointer: true }
+					},
+					events: impegni.map((impegno) => {
+						const title = document.createElement('div');
+						title.innerHTML = impegno.nome;
+						title.classList.add('text-sm', 'font-bold', 'mb-1');
 
-					const nodes = [title];
+						const nodes = [title];
 
-					const didattica = impegno?.evento?.dettagliDidattici?.[0];
+						const didattica = impegno?.evento?.dettagliDidattici?.[0];
 
-					if (didattica?.corso != null) {
-						const course = document.createElement('div');
-						course.innerHTML = '🎓 ' + didattica.corso?.descrizione;
-						course.classList.add('text-xs', 'mb-1');
-						nodes.push(course);
-					}
+						if (didattica?.corso != null) {
+							const course = document.createElement('div');
+							course.innerHTML = '🎓 ' + didattica.corso?.descrizione;
+							course.classList.add('text-xs', 'mb-1');
+							nodes.push(course);
+						}
 
-					const teacher = document.createElement('div');
-					teacher.innerHTML =
-						'🧑‍🏫 ' + impegno.docenti.map((d) => d.nome + ' ' + d.cognome).join(', ');
-					teacher.classList.add('text-xs');
-					nodes.push(teacher);
+						const teacher = document.createElement('div');
+						teacher.innerHTML =
+							'🧑‍🏫 ' + impegno.docenti.map((d) => d.nome + ' ' + d.cognome).join(', ');
+						teacher.classList.add('text-xs');
+						nodes.push(teacher);
 
-					return {
-						id: impegno.id,
-						title: { domNodes: nodes },
-						start: moment(impegno.dataInizio).toDate(),
-						end: moment(impegno.dataFine).toDate()
-					};
-				})
-			}}
-		/>
-	{/if}
+						return {
+							id: impegno.id,
+							title: { domNodes: nodes },
+							start: moment(impegno.dataInizio).toDate(),
+							end: moment(impegno.dataFine).toDate()
+						};
+					})
+				}}
+			/>
+		{/if}
+	{/await}
 </div>
 <div>
 	<div class="h-80 w-full mt-4" id="map" />
