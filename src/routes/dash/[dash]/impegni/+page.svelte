@@ -8,7 +8,6 @@
 	import ResourceTimeGrid from '@event-calendar/resource-time-grid';
 	import ResourceTimeline from '@event-calendar/resource-timeline';
 	import moment from 'moment';
-	import { resolveRoute } from '$app/paths';
 
 	export let data: PageData;
 

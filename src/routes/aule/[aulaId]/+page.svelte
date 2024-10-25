@@ -66,50 +66,33 @@
 			setupMap();
 		}
 	});
-
-	function offset(impegno: Impegno) {
-		const now = moment();
-		const start = moment(impegno.dataInizio);
-		const end = moment(impegno.dataFine);
-
-		if (!now.isBetween(start, end)) {
-			return -1;
-		}
-
-		const nowMs = now.valueOf();
-		const startMs = start.valueOf();
-		const endMs = end.valueOf();
-
-		const percentage = (nowMs - startMs) / (endMs - startMs);
-
-		return percentage * 100;
-	}
 </script>
 
 <h1 class="text-4xl font-bold my-4">{aula?.descrizione}</h1>
 
-<p class="my-4 grid gap-x-8 grid-cols-[max-content,1fr]">
-	<span class="font-bold text-end">Record creato il:</span>
-	<span>{moment(aula.dataCreazione).format('lll')}</span>
-	<span class="font-bold text-end">Ultima modifica il:</span>
-	<span>{moment(aula.dataModifica).format('lll')}</span>
-</p>
+<div class="my-4 justify-between gap-x-8 text-end">
+	<div>
+		<span class="font-bold text-end">Record creato il:</span>
+		<span>{moment(aula.dataCreazione).format('lll')}</span>
+	</div>
+	<div>
+		<span class="font-bold text-end">Ultima modifica il:</span>
+		<span>{moment(aula.dataModifica).format('lll')}</span>
+	</div>
+</div>
 
 <p class="grid gap-x-2 grid-cols-[max-content,1fr,max-content,1fr]">
 	<span class="font-bold text-end">Capienza:</span>
 	<span>{aula?.capienza}</span>
 
-	<span class="font-bold text-end">Divisore capienza: </span>
-	<span>{aula?.divisoreCapienza}</span>
-
 	<span class="font-bold text-end">Capienza effettiva:</span>
 	<span>{aula?.capienzaEffettiva}</span>
 
-	<span class="font-bold text-end">Numero postazioni:</span>
+	<span class="font-bold text-end">N. postazioni:</span>
 	<span>{aula?.numeroPostazioni}</span>
 
 	<span class="font-bold text-end">Metri quadri:</span>
-	<span>{aula?.metriQuadri} mq</span>
+	<span>{Math.round(aula?.metriQuadri)} mq</span>
 
 	{#if aula.piano != null}
 		<span class="font-bold text-end">Piano:</span>
@@ -148,7 +131,7 @@
 	<h2 class="text-2xl font-bold mt-6 mb-2">Prossimi impegni</h2>
 
 	{#await data.impegni}
-		<progress class="progress" />
+		<progress class="progress"> </progress>
 	{:then impegni}
 		{#if impegni.length === 0}
 			<p class="alert mb-4">Nessun impegno</p>
@@ -212,7 +195,7 @@
 	{/await}
 </div>
 <div>
-	<div class="h-80 w-full mt-4" id="map" />
+	<div class="h-80 w-full mt-4" id="map"></div>
 </div>
 
 <dialog class="modal" bind:this={eventModal}>

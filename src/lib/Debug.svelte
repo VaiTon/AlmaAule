@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { dev } from '$app/environment';
-	import {JsonView} from '@zerodevx/svelte-json-view';
+	import { JsonView } from '@zerodevx/svelte-json-view';
 
-	export let data: object;
+	let { data }: { data: object } = $props();
 </script>
 
 {#if dev}

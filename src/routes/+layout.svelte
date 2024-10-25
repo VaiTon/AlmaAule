@@ -1,7 +1,5 @@
 <script lang="ts">
 	import '../app.css';
-
-	import { CAL_MAP } from '$lib/cals';
 </script>
 
 <div class="mx-auto max-w-5xl">
@@ -10,7 +8,7 @@
 			<h2 class="font-bold">Aule@Unibo</h2>
 		</a>
 
-		<div class="flex-1" />
+		<div class="flex-1"></div>
 
 		<a href="/aule" class="btn">Aule</a>
 	</nav>
@@ -19,3 +17,7 @@
 		<slot />
 	</main>
 </div>
+
+<svelte:head>
+	<title>Aule@Unibo</title>
+</svelte:head>

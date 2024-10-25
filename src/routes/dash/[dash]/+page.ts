@@ -17,7 +17,7 @@ export const load: PageLoad = async ({ fetch, params, setHeaders }) => {
 		error(500, 'Aule non trovate');
 	}
 
-	const impegni = await getImpegni(fetch, id, {
+	const impegni = getImpegni(fetch, id, {
 		aule: aule.map((a) => a.id),
 		dataFine: dayjs().add(1, 'day'),
 		dataInizio: dayjs().subtract(1, 'day')
