@@ -22,8 +22,8 @@ export const load: PageLoad = async ({ fetch, params, setHeaders }) => {
 	}
 
 	let impegni = getImpegni(fetch, aula.calId, {
-		dataInizio: dayjs().subtract(2, 'day'),
-		dataFine: dayjs().add(1, 'week'),
+		dataInizio: dayjs().subtract(1, "week"),
+		dataFine: dayjs().add(1, 'month'),
 		idAule: [aula.id]
 	}).then((impegni) =>
 		impegni.filter((impegno) =>

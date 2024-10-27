@@ -48,6 +48,6 @@
 <h2 class="text-2xl text-center font-bold mt-16 mb-4" id="calendars">Select a <em>calendar</em></h2>
 <div class="grid grid-cols-4 gap-4">
 	{#each CAL_MAP as { id, name }}
-		<a href={`/dash/${id}`} class="btn btn-lg h-auto leading-6 card btn-ghost">{name}</a>
+		<a href={`/cal/${id}`} class="btn btn-lg h-auto leading-6 card btn-ghost">{name}</a>
 	{/each}
 </div>

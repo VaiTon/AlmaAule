@@ -1,28 +1,28 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-
 	import moment from 'moment';
-	import { JsonView } from '@zerodevx/svelte-json-view';
+	import L from 'leaflet';
+	import { onMount } from 'svelte';
 
 	import markerIcon from 'leaflet/dist/images/marker-icon.png';
 	import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 	import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
+	import Debug from '$lib/Debug.svelte';
+	import type { Impegno } from '$lib/api';
+
+	import type { PageData } from './$types';
+
 	import Calendar from '@event-calendar/core';
 	import TimeGrid from '@event-calendar/time-grid';
 	import List from '@event-calendar/list';
+
+	import 'leaflet/dist/leaflet.css';
 	import '@event-calendar/core/index.css';
 
 	export let data: PageData;
 	$: aula = data.aula;
 
 	let eventModal: HTMLDialogElement;
-
-	import { onMount } from 'svelte';
-	import L from 'leaflet';
-	import 'leaflet/dist/leaflet.css';
-	import Debug from '$lib/Debug.svelte';
-	import type { Impegno } from '$lib/api';
 
 	let selectedEvent: Impegno | undefined = null;
 
@@ -66,6 +66,43 @@
 			setupMap();
 		}
 	});
+
+	function impegnoToEvent(impegno: Impegno) {
+		const title = document.createElement('div');
+		title.innerHTML = impegno.nome;
+		if (impegno.icona === 'attivitaDidattica') {
+			title.innerHTML = '📚 ' + title.innerHTML;
+		} else if (impegno.icona === 'altraAttivita') {
+			title.innerHTML = '🎉 ' + title.innerHTML;
+		}
+
+		title.classList.add('text-sm', 'font-bold', 'mb-1');
+
+		const nodes = [title];
+
+		const didattica = impegno?.evento?.dettagliDidattici?.[0];
+
+		if (didattica?.corso != null) {
+			const course = document.createElement('div');
+			course.innerHTML = '🎓 ' + didattica.corso?.descrizione;
+			course.classList.add('text-xs', 'mb-1');
+			nodes.push(course);
+		}
+
+		if (impegno.docenti.length > 0) {
+			const teacher = document.createElement('div');
+			teacher.innerHTML = '🧑‍🏫 ' + impegno.docenti.map((d) => d.nome + ' ' + d.cognome).join(', ');
+			teacher.classList.add('text-xs');
+			nodes.push(teacher);
+		}
+
+		return {
+			id: impegno.id,
+			title: { domNodes: nodes },
+			start: moment(impegno.dataInizio).toDate(),
+			end: moment(impegno.dataFine).toDate()
+		};
+	}
 </script>
 
 <h1 class="text-4xl font-bold my-4">{aula?.descrizione}</h1>
@@ -131,7 +168,7 @@
 	<h2 class="text-2xl font-bold mt-6 mb-2">Prossimi impegni</h2>
 
 	{#await data.impegni}
-		<progress class="progress"> </progress>
+		<progress class="progress"></progress>
 	{:then impegni}
 		{#if impegni.length === 0}
 			<p class="alert mb-4">Nessun impegno</p>
@@ -146,7 +183,7 @@
 					slotMinTime: '08:00',
 					slotMaxTime: '20:00',
 
-					eventClick: (info) => {
+					eventClick: (info: { event: { id: string } }) => {
 						selectedEvent = impegni.find((i) => i.id === info.event.id);
 						eventModal.showModal();
 					},
@@ -160,41 +197,19 @@
 					views: {
 						timeGridWeek: { pointer: true }
 					},
-					events: impegni.map((impegno) => {
-						const title = document.createElement('div');
-						title.innerHTML = impegno.nome;
-						title.classList.add('text-sm', 'font-bold', 'mb-1');
-
-						const nodes = [title];
-
-						const didattica = impegno?.evento?.dettagliDidattici?.[0];
-
-						if (didattica?.corso != null) {
-							const course = document.createElement('div');
-							course.innerHTML = '🎓 ' + didattica.corso?.descrizione;
-							course.classList.add('text-xs', 'mb-1');
-							nodes.push(course);
-						}
-
-						const teacher = document.createElement('div');
-						teacher.innerHTML =
-							'🧑‍🏫 ' + impegno.docenti.map((d) => d.nome + ' ' + d.cognome).join(', ');
-						teacher.classList.add('text-xs');
-						nodes.push(teacher);
-
-						return {
-							id: impegno.id,
-							title: { domNodes: nodes },
-							start: moment(impegno.dataInizio).toDate(),
-							end: moment(impegno.dataFine).toDate()
-						};
-					})
+					events: impegni.map(impegnoToEvent)
 				}}
 			/>
+
+			<div class="alert alert-warning my-8">
+				<p class="font-bold">Warning:</p>
+				<p>To save bandwith, we only show the next month of events.</p>
+			</div>
 		{/if}
 	{/await}
 </div>
 <div>
+	<h2 class="text-2xl font-bold mt-6 mb-2">Mappa</h2>
 	<div class="h-80 w-full mt-4" id="map"></div>
 </div>
 
@@ -224,11 +239,11 @@
 
 			<span class="font-bold text-end">Docenti:</span>
 			<span>{selectedEvent?.docenti.map((d) => d.nome + ' ' + d.cognome).join(', ')}</span>
-
-			<span class="font-bold text-end">Dettagli:</span>
-			<span><JsonView json={selectedEvent} depth={0} /></span>
 		</p>
 	</div>
+	<form method="dialog" class="modal-backdrop">
+		<button>close</button>
+	</form>
 </dialog>
 
 <Debug {data} />

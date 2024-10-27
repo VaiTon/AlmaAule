@@ -1,18 +1,18 @@
 import { getAule, getImpegni } from '$lib/api';
 import dayjs from 'dayjs';
-import type { PageLoad } from './$types';
 import { CAL_MAP } from '$lib/cals';
 import { error } from '@sveltejs/kit';
+import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch, params, setHeaders }) => {
-	const { dash } = params;
+	const { calId } = params;
 
-	const cal = CAL_MAP.find((c) => c.id === dash);
+	const cal = CAL_MAP.find((c) => c.id === calId);
 	if (cal == null) error(400, 'Calendario non trovato');
 
 	const { id } = cal;
 
-	const aule = await getAule(fetch, id);
+	let aule = await getAule(fetch, id);
 	if (aule == null) {
 		error(500, 'Aule non trovate');
 	}

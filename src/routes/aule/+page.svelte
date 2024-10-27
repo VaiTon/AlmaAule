@@ -5,38 +5,37 @@
 
 	export let data: PageData;
 
-	function addName(aula: Aula) {
-		return {
-			...aula,
-			name: `${aula.relazioneEdificio.comune} - ${aula.relazioneEdificio.descrizione} - ${aula.descrizione}`
-		};
+	function sortingName(aula: Aula) {
+		return `${aula.relazioneEdificio.comune} - ${aula.relazioneEdificio.descrizione} - ${aula.descrizione}`;
 	}
 
 	let search = '';
-	function filterAule(aula: Aula) {
-		return aula.descrizione.toLowerCase().includes(search.toLowerCase());
-	}
 
 	$: filteredClass = data.aule
-		.map(addName)
-		.sort((a, b) => a.name.localeCompare(b.name))
-		.filter(filterAule);
+		.sort((a, b) => {
+			const nameA = sortingName(a);
+			const nameB = sortingName(b);
+			return nameA.toLowerCase().localeCompare(nameB.toLowerCase());
+		})
+		.filter((aula) => {
+			return aula.descrizione.toLowerCase().includes(search.toLowerCase());
+		});
 </script>
 
 <table class="table table-zebra hover">
 	<thead>
 		<tr>
-			<th>Aula</th>
 			<th>Comune</th>
 			<th>Edificio</th>
+			<th>Aula</th>
 		</tr>
 	</thead>
 	<tbody>
 		{#each filteredClass as aula}
-			<tr class="hover cursor-pointer" on:click={() => goto(`aule/${aula.id}`)}>
-				<td><a class="link" href={`aule/${aula.id}`}>{aula.descrizione}</a></td>
-				<td>{aula.relazioneEdificio.comune}</td>
-				<td>{aula.relazioneEdificio.descrizione}</td>
+			<tr class="hover cursor-pointer" on:click={() => goto(`/cal/${aula.calId}/${aula.id}`)}>
+				<td> {aula.relazioneEdificio.comune} </td>
+				<td>{aula.relazioneEdificio.descrizione} - {aula.relazioneEdificio.plesso} </td>
+				<td>{aula.descrizione}</td>
 			</tr>
 		{/each}
 	</tbody>

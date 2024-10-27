@@ -82,18 +82,21 @@ type Risorsa = {
 	  }
 );
 
-export type Impegno = {
-	risorse: Risorsa[];
-	evento: {
-		tipoAttivita: {
-			descrizione: string;
-		};
-		dettagliDidattici: {
-			corso?: {
-				descrizione?: string;
-			};
-		}[];
+export type Evento = {
+	tipoAttivita: {
+		descrizione: string;
 	};
+	dettagliDidattici: {
+		corso?: {
+			descrizione?: string;
+		};
+	}[];
+};
+
+export type Impegno = {
+	icona?: string;
+	risorse: Risorsa[];
+	evento: Evento;
 	id: string;
 	annoCorso?: string;
 	attivo: boolean;
