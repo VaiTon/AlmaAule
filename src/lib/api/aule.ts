@@ -6,8 +6,7 @@ const AULE_URL = API_URL + '/Aule/getAulePerCalendarioPubblico';
 export async function getAule(
 	fetch: (url: string, init?: RequestInit) => Promise<Response>,
 	idCalendario: string,
-	order = 'edificio.codice, descrizione',
-	limit = 250
+	options: { order?: string; limit?: number; auleIds?: string[] } = {}
 ): Promise<Aula[]> {
 	return fetch(AULE_URL, {
 		method: 'POST',
@@ -19,10 +18,10 @@ export async function getAule(
 		body: JSON.stringify({
 			linkCalendarioId: idCalendario,
 			clienteId: UNIBO_CLIENT,
-			order,
-			auleIds: [],
+			order: options.order ?? 'edificio.codice, descrizione',
+			auleIds: options.auleIds ?? [],
 			edificiIds: [],
-			limit
+			limit: options.limit ?? 250
 		})
 	}).then((res) => res.json());
 }

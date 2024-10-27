@@ -8,7 +8,7 @@
 	import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
 	import Debug from '$lib/Debug.svelte';
-	import type { Impegno } from '$lib/api';
+	import { getImpegni, type Impegno } from '$lib/api';
 
 	import type { PageData } from './$types';
 
@@ -19,12 +19,57 @@
 	import 'leaflet/dist/leaflet.css';
 	import '@event-calendar/core/index.css';
 
+	import dayjs, { Dayjs } from 'dayjs';
+	import utc from 'dayjs/plugin/utc';
+	import timezone from 'dayjs/plugin/timezone';
+	import 'dayjs/locale/it';
+	import { page } from '$app/stores';
+
+	dayjs.extend(utc);
+	dayjs.extend(timezone);
+	dayjs.tz.setDefault('Europe/Rome');
+	dayjs.locale('it');
+
 	export let data: PageData;
 	$: aula = data.aula;
 
+	let loadingEvents = false;
+	let events: Impegno[] = [];
+
+	let lastInterval: { startDate: Dayjs; endDate: Dayjs } | undefined = undefined;
+	async function updateImpegni(
+		startDate: Dayjs = dayjs().startOf('week'),
+		endDate: Dayjs = dayjs().endOf('week')
+	) {
+		console.debug('updateImpegni', startDate, endDate);
+
+		if (
+			lastInterval != null &&
+			startDate.isSame(lastInterval.startDate) &&
+			endDate.isSame(lastInterval.endDate)
+		) {
+			return;
+		}
+		lastInterval = { startDate, endDate };
+
+		let e = getImpegni(fetch, $page.params.calId, {
+			dataInizio: startDate,
+			dataFine: endDate,
+			idAule: [aula.id]
+		}).then((impegni) =>
+			impegni.filter((impegno) =>
+				impegno.risorse.some((risorsa) => 'aulaId' in risorsa && risorsa.aulaId === aula.id)
+			)
+		);
+
+		loadingEvents = true;
+		events = await e;
+		loadingEvents = false;
+	}
+
 	let eventModal: HTMLDialogElement;
 
-	let selectedEvent: Impegno | undefined = null;
+	let selectedEvent: Impegno | undefined = undefined;
 
 	function setupMap() {
 		const map = L.map('map', {
@@ -65,6 +110,8 @@
 		if (aula.relazioneEdificio.geo != null) {
 			setupMap();
 		}
+
+		updateImpegni();
 	});
 
 	function impegnoToEvent(impegno: Impegno) {
@@ -167,46 +214,46 @@
 <div>
 	<h2 class="text-2xl font-bold mt-6 mb-2">Prossimi impegni</h2>
 
-	{#await data.impegni}
+	{#if loadingEvents}
 		<progress class="progress"></progress>
-	{:then impegni}
-		{#if impegni.length === 0}
-			<p class="alert mb-4">Nessun impegno</p>
-		{:else}
-			<Calendar
-				plugins={[TimeGrid, List]}
-				options={{
-					resources: [],
-					firstDay: 1,
-					nowIndicator: true,
-					flexibleSlotTimeLimits: true,
-					slotMinTime: '08:00',
-					slotMaxTime: '20:00',
+	{/if}
 
-					eventClick: (info: { event: { id: string } }) => {
-						selectedEvent = impegni.find((i) => i.id === info.event.id);
-						eventModal.showModal();
-					},
+	{#if events.length === 0}
+		<p class="alert mb-4">Nessun impegno</p>
+	{/if}
 
-					headerToolbar: {
-						start: 'title',
-						center: '',
-						end: 'timeGridWeek,listWeek today prev,next'
-					},
-					view: 'timeGridWeek',
-					views: {
-						timeGridWeek: { pointer: true }
-					},
-					events: impegni.map(impegnoToEvent)
-				}}
-			/>
+	<div class:hidden={loadingEvents || events.length === 0}>
+		<Calendar
+			plugins={[TimeGrid, List]}
+			options={{
+				resources: [],
+				firstDay: 1,
+				nowIndicator: true,
+				flexibleSlotTimeLimits: true,
+				slotMinTime: '08:00',
+				slotMaxTime: '20:00',
 
-			<div class="alert alert-warning my-8">
-				<p class="font-bold">Warning:</p>
-				<p>To save bandwith, we only show the next month of events.</p>
-			</div>
-		{/if}
-	{/await}
+				eventClick: (info: { event: { id: string } }) => {
+					selectedEvent = events.find((i) => i.id === info.event.id);
+					eventModal.showModal();
+				},
+
+				headerToolbar: {
+					start: 'title',
+					center: '',
+					end: 'timeGridWeek,listWeek today prev,next'
+				},
+				view: 'timeGridWeek',
+				views: {
+					timeGridWeek: { pointer: true }
+				},
+				events: events.map(impegnoToEvent),
+				datesSet: ({ start, end }: { start: Date; end: Date }) => {
+					updateImpegni(dayjs(start), dayjs(end));
+				}
+			}}
+		/>
+	</div>
 </div>
 <div>
 	<h2 class="text-2xl font-bold mt-6 mb-2">Mappa</h2>
