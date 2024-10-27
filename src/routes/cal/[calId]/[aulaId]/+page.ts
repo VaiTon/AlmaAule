@@ -2,27 +2,18 @@ import { getAule, getImpegni } from '$lib/api';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 import dayjs from 'dayjs';
-import { CAL_MAP } from '$lib/cals';
 
 export const ssr = false;
 
-export const load: PageLoad = async ({ fetch, params, setHeaders }) => {
-	const calIds = Object.values(CAL_MAP).map((cal) => cal.id);
-
-	const aule = await Promise.all(
-		calIds.map(async (calId) => {
-			return await getAule(fetch, calId).then((aule) => aule.map((a) => ({ ...a, calId })));
-		})
-	).then((aule) => aule.flat());
-
+export const load: PageLoad = async ({ fetch, params }) => {
+	const aule = await getAule(fetch, params.calId);
 	const aula = aule.find((a) => a.id === params.aulaId);
-
 	if (aula == null) {
 		error(404, 'Aula non trovata');
 	}
 
-	let impegni = getImpegni(fetch, aula.calId, {
-		dataInizio: dayjs().subtract(1, "week"),
+	let impegni = getImpegni(fetch, params.calId, {
+		dataInizio: dayjs().subtract(1, 'week'),
 		dataFine: dayjs().add(1, 'month'),
 		idAule: [aula.id]
 	}).then((impegni) =>
