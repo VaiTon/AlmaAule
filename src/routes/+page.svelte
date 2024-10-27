@@ -2,7 +2,7 @@
 	import { CAL_MAP } from '$lib/cals';
 </script>
 
-<div class="prose mx-auto">
+<div class="prose md:mx-auto mx-4">
 	<h1 class="text-3xl text-center font-bold">AULE @ UNIBO</h1>
 	<p>
 		Welcome to the <strong>🚀 Unofficial Classroom Availability Checker 🚀</strong> for the University
@@ -46,7 +46,7 @@
 </div>
 
 <h2 class="text-2xl text-center font-bold mt-16 mb-4" id="calendars">Select a <em>calendar</em></h2>
-<div class="grid grid-cols-4 gap-4">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
 	{#each CAL_MAP as { id, name }}
 		<a href={`/cal/${id}`} class="btn btn-lg h-auto leading-6 card btn-ghost">{name}</a>
 	{/each}
