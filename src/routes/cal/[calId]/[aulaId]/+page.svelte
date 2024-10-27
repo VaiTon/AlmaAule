@@ -165,7 +165,7 @@
 	</div>
 </div>
 
-<p class="grid gap-x-2 grid-cols-[max-content,1fr,max-content,1fr]">
+<p class="grid gap-x-2 grid-cols-[max-content,1fr] md:grid-cols-[max-content,1fr,max-content,1fr]">
 	<span class="font-bold text-end">Capienza:</span>
 	<span>{aula?.capienza}</span>
 
@@ -189,7 +189,7 @@
 <div>
 	<h2 class="text-2xl font-bold mt-6 mb-2">Edificio</h2>
 
-	<div class="grid gap-x-2 grid-cols-[max-content,1fr,max-content,1fr]">
+	<div class="grid gap-x-2 grid-cols-[max-content,1fr] md:grid-cols-[max-content,1fr,max-content,1fr]">
 		<span class="font-bold text-end">Descrizione:</span>
 		<span>{aula?.relazioneEdificio.descrizione}</span>
 
@@ -232,6 +232,7 @@
 				flexibleSlotTimeLimits: true,
 				slotMinTime: '08:00',
 				slotMaxTime: '20:00',
+				hiddenDays: [0, 6],
 
 				eventClick: (info: { event: { id: string } }) => {
 					selectedEvent = events.find((i) => i.id === info.event.id);

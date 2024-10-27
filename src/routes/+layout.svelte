@@ -2,7 +2,7 @@
 	import '../app.css';
 </script>
 
-<div class="mx-auto max-w-5xl">
+<div class="mx-4 md:mx-auto max-w-5xl">
 	<nav class="navbar bg-base-100 gap-2" aria-label="main navigation">
 		<a href="/">
 			<h2 class="font-bold">Aule@Unibo</h2>
