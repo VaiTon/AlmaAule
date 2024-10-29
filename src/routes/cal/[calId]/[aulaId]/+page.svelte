@@ -152,6 +152,17 @@
 	}
 </script>
 
+
+<svelte:head>
+	<title>{aula?.descrizione} - Aule@Unibo</title>
+	<meta name="description" content="Dettagli dell'aula {aula?.descrizione}" />
+
+	<!-- Open Graph / Facebook -->
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content={window.location.href} />
+	<meta property="og:title" content="{aula?.descrizione} - Aule@Unibo" />
+</svelte:head>
+
 <h1 class="text-4xl font-bold my-4">{aula?.descrizione}</h1>
 
 <div class="my-4 justify-between gap-x-8 text-end">
@@ -189,7 +200,9 @@
 <div>
 	<h2 class="text-2xl font-bold mt-6 mb-2">Edificio</h2>
 
-	<div class="grid gap-x-2 grid-cols-[max-content,1fr] md:grid-cols-[max-content,1fr,max-content,1fr]">
+	<div
+		class="grid gap-x-2 grid-cols-[max-content,1fr] md:grid-cols-[max-content,1fr,max-content,1fr]"
+	>
 		<span class="font-bold text-end">Descrizione:</span>
 		<span>{aula?.relazioneEdificio.descrizione}</span>
 
@@ -216,9 +229,7 @@
 
 	{#if loadingEvents}
 		<progress class="progress"></progress>
-	{/if}
-
-	{#if events.length === 0}
+	{:else if events.length === 0}
 		<p class="alert mb-4">Nessun impegno</p>
 	{/if}
 

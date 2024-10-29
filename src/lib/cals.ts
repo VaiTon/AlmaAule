@@ -5,6 +5,7 @@ export const CAL_MAP: { id: string; name: string }[] = [
 	{ id: '5f5b3cb4dd64620012b0f502', name: 'Chimica Industriale' },
 	{ id: '5e99b3883252110012b67395', name: 'Ingegneria Terracini' },
 	{ id: '5facf686fa03a40018c76c91', name: 'Navile' },
+	{ id: '613216659f5a940011ad923c', name: 'Navile 2'},
 	{ id: '6130b28e50feed001775ba08', name: 'Navile - UE1' },
 	{ id: '6130cea9ec45f20012e3e449', name: 'Navile - UE4' },
 	{ id: '5f438f86f99ac70017442977', name: 'Aule Ciamician' },
