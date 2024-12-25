@@ -9,20 +9,20 @@ importers:
   .:
     devDependencies:
       '@event-calendar/core':
-        specifier: ^3.6.2
-        version: 3.6.2
+        specifier: ^3.7.2
+        version: 3.7.2
       '@event-calendar/list':
-        specifier: ^3.6.2
-        version: 3.6.2
+        specifier: ^3.7.2
+        version: 3.7.2
       '@event-calendar/resource-time-grid':
-        specifier: ^3.6.2
-        version: 3.6.2
+        specifier: ^3.7.2
+        version: 3.7.2
       '@event-calendar/resource-timeline':
-        specifier: ^3.6.2
-        version: 3.6.2
+        specifier: ^3.7.2
+        version: 3.7.2
       '@event-calendar/time-grid':
-        specifier: ^3.6.2
-        version: 3.6.2
+        specifier: ^3.7.2
+        version: 3.7.2
       '@sveltejs/adapter-auto':
         specifier: ^3.3.0
         version: 3.3.0(@sveltejs/kit@2.8.3(@sveltejs/vite-plugin-svelte@4.0.0(svelte@5.1.2)(vite@5.4.10(sass@1.80.4)))(svelte@5.1.2)(vite@5.4.10(sass@1.80.4)))
@@ -290,20 +290,20 @@ packages:
     resolution: {integrity: sha512-2b/g5hRmpbb1o4GnTZax9N9m0FXzz9OV42ZzI4rDDMDuHUqigAiQCEWChBWCY4ztAGVRjoWT19v0yMmc5/L5kA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@event-calendar/core@3.6.2':
-    resolution: {integrity: sha512-DUSKtuhc49Uhjadk3sBQnB0ZaR8JeZnxcmA5xAN2Gv7HLNinXcUOPOwuraBeL25nASxGgAQ7kQxDSgv4EOxcmQ==}
+  '@event-calendar/core@3.7.2':
+    resolution: {integrity: sha512-W7TZVQLGYmYS7ZjwsjAndxaAfut3RSxiRmOldcCEQ/3q4v3YyQ5vTchi6qGIKEBPEMyIH99KU6FjkK4P3EISFw==}
 
-  '@event-calendar/list@3.6.2':
-    resolution: {integrity: sha512-AUGqHsU+pVND5yZPjZbAkJ7oxjOhScQwUEs2A0B8TgjCd1622bWNvdM1YKjzqi16bi+bYaeE1CDtdjRcz3cU4w==}
+  '@event-calendar/list@3.7.2':
+    resolution: {integrity: sha512-8NOd66G8+wfpjlkT+dSpXjSpT0QWIZ1uLlTVE6DurSB3wJnPsNAXXTzAUT/pzK1RuftfNLl44a3B3AvuLLQEvA==}
 
-  '@event-calendar/resource-time-grid@3.6.2':
-    resolution: {integrity: sha512-6Y3ZU72OS0LwS5gQckVS2DX07fpvpmAYKs12DC7STqYxSmeCfyoFVBKJnni8ybNIzNLdnN26NWL7/6I1VhvlYQ==}
+  '@event-calendar/resource-time-grid@3.7.2':
+    resolution: {integrity: sha512-XBywIrsVSb083j6layo/ZQ3whWLOmtC9RWPtaY7vdCA0syHjv/AJlnCUPOSSYNkrW69EZzAjPim+0kkzOcx2oQ==}
 
-  '@event-calendar/resource-timeline@3.6.2':
-    resolution: {integrity: sha512-XceJOtEtRSL9DanL31I+O9NUoi1qz/YufkJFUg90Ldm1AzHCkj8F+q3972AgTUpMlM2GsfaCwLXgx2eZRyiTLA==}
+  '@event-calendar/resource-timeline@3.7.2':
+    resolution: {integrity: sha512-2aTzTBf5C64+UdwzYYOmJeKhcIUVENtitED4WvrtI62hb9VSbnkWKHoJVdeN4OE08q8415ttt+PFpJ7tefs+dg==}
 
-  '@event-calendar/time-grid@3.6.2':
-    resolution: {integrity: sha512-iMMBQg4ooNYLMsqz2DLu4QuT1zvuNfjcSI8P/wcjR1YeaL64wPbPCxW5B1PTecxTnaTIaITHP1oDzG/zvd20pA==}
+  '@event-calendar/time-grid@3.7.2':
+    resolution: {integrity: sha512-hiVKbr6rweYa3RAJKrTgIijm6g217b2HBx3NcIyduYs4ChDIUDINxTG7FGzixf1wXjJM3nVsxNsbQ6SRRYa+yA==}
 
   '@humanfs/core@0.19.0':
     resolution: {integrity: sha512-2cbWIHbZVEweE853g8jymffCA+NCMiuqeECeBBLm8dg2oFdjuGJhgN4UAbI+6v0CKbbhvtXA4qV8YR5Ji86nmw==}
@@ -641,6 +641,11 @@ packages:
 
   acorn@8.13.0:
     resolution: {integrity: sha512-8zSiw54Oxrdym50NlZ9sUusyO1Z1ZchgRLWRaK6c86XJFClyCgFKetdowBg5bKxyp/u+CDBJG4Mpp0m3HLZl9w==}
+    engines: {node: '>=0.4.0'}
+    hasBin: true
+
+  acorn@8.14.0:
+    resolution: {integrity: sha512-cl669nCJTZBsL97OF4kUQm5g5hC2uihk0NxY3WENAC0TYdILVkAyHymAntgxGkl7K+t0cXIrH5siy5S4XkFycA==}
     engines: {node: '>=0.4.0'}
     hasBin: true
 
@@ -1062,6 +1067,9 @@ packages:
   is-reference@3.0.2:
     resolution: {integrity: sha512-v3rht/LgVcsdZa3O2Nqs+NMowLOxeOm7Ay9+/ARQ2F+qEoANRcqrjAZKGN0v8ymUetZGgkp26LTnGT7H0Qo9Pg==}
 
+  is-reference@3.0.3:
+    resolution: {integrity: sha512-ixkJoqQvAP88E6wLydLGGqCJsrFUnqoH6HnaczB8XmDH1oaWU+xxdptvikTgaEhtZ53Ky6YXiBuUI2WXLMCwjw==}
+
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
@@ -1134,6 +1142,9 @@ packages:
 
   magic-string@0.30.12:
     resolution: {integrity: sha512-Ea8I3sQMVXr8JhN4z+H/d8zwo+tYDgHE9+5G4Wnrwhs0gaK9fXTKx0Tw5Xwsd/bCPTTZNRAdpyzvoeORe9LYpw==}
+
+  magic-string@0.30.17:
+    resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
 
   mdn-data@2.0.30:
     resolution: {integrity: sha512-GaqWWShW4kv/G9IEucWScBx9G1/vsFZZJUO+tD26M8J8z3Kw5RDQjaoZe03YAClgeS/SWPOcb4nkFBTEi5DUEA==}
@@ -1724,29 +1735,29 @@ snapshots:
     dependencies:
       levn: 0.4.1
 
-  '@event-calendar/core@3.6.2':
+  '@event-calendar/core@3.7.2':
     dependencies:
       svelte: 4.2.19
 
-  '@event-calendar/list@3.6.2':
+  '@event-calendar/list@3.7.2':
     dependencies:
-      '@event-calendar/core': 3.6.2
+      '@event-calendar/core': 3.7.2
       svelte: 4.2.19
 
-  '@event-calendar/resource-time-grid@3.6.2':
+  '@event-calendar/resource-time-grid@3.7.2':
     dependencies:
-      '@event-calendar/core': 3.6.2
-      '@event-calendar/time-grid': 3.6.2
+      '@event-calendar/core': 3.7.2
+      '@event-calendar/time-grid': 3.7.2
       svelte: 4.2.19
 
-  '@event-calendar/resource-timeline@3.6.2':
+  '@event-calendar/resource-timeline@3.7.2':
     dependencies:
-      '@event-calendar/core': 3.6.2
+      '@event-calendar/core': 3.7.2
       svelte: 4.2.19
 
-  '@event-calendar/time-grid@3.6.2':
+  '@event-calendar/time-grid@3.7.2':
     dependencies:
-      '@event-calendar/core': 3.6.2
+      '@event-calendar/core': 3.7.2
       svelte: 4.2.19
 
   '@humanfs/core@0.19.0': {}
@@ -2067,6 +2078,8 @@ snapshots:
 
   acorn@8.13.0: {}
 
+  acorn@8.14.0: {}
+
   ajv@6.12.6:
     dependencies:
       fast-deep-equal: 3.1.3
@@ -2166,7 +2179,7 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.0
       '@types/estree': 1.0.6
-      acorn: 8.13.0
+      acorn: 8.14.0
       estree-walker: 3.0.3
       periscopic: 3.1.0
 
@@ -2506,6 +2519,10 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.6
 
+  is-reference@3.0.3:
+    dependencies:
+      '@types/estree': 1.0.6
+
   isexe@2.0.0: {}
 
   jackspeak@3.4.3:
@@ -2562,6 +2579,10 @@ snapshots:
   lru-cache@10.4.3: {}
 
   magic-string@0.30.12:
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.5.0
+
+  magic-string@0.30.17:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.0
 
@@ -2654,7 +2675,7 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.6
       estree-walker: 3.0.3
-      is-reference: 3.0.2
+      is-reference: 3.0.3
 
   picocolors@1.1.1: {}
 
@@ -2877,15 +2898,15 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.0
       '@jridgewell/trace-mapping': 0.3.25
       '@types/estree': 1.0.6
-      acorn: 8.13.0
+      acorn: 8.14.0
       aria-query: 5.3.2
       axobject-query: 4.1.0
       code-red: 1.0.4
       css-tree: 2.3.1
       estree-walker: 3.0.3
-      is-reference: 3.0.2
+      is-reference: 3.0.3
       locate-character: 3.0.0
-      magic-string: 0.30.12
+      magic-string: 0.30.17
       periscopic: 3.1.0
 
   svelte@5.1.2:
