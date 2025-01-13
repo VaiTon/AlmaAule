@@ -15,8 +15,8 @@ importers:
         specifier: ^3.7.2
         version: 3.7.2
       '@event-calendar/resource-time-grid':
-        specifier: ^3.7.2
-        version: 3.7.2
+        specifier: ^3.8.0
+        version: 3.8.0
       '@event-calendar/resource-timeline':
         specifier: ^3.7.2
         version: 3.7.2
@@ -305,17 +305,23 @@ packages:
   '@event-calendar/core@3.7.2':
     resolution: {integrity: sha512-W7TZVQLGYmYS7ZjwsjAndxaAfut3RSxiRmOldcCEQ/3q4v3YyQ5vTchi6qGIKEBPEMyIH99KU6FjkK4P3EISFw==}
 
+  '@event-calendar/core@3.8.0':
+    resolution: {integrity: sha512-gP1kevyrRHDCrsAx3vppxtTHEhkx7SL0NZMYTGPZCILJAyc9g/lD4aS7ZOJPxY4F51xJ10TtGku7uCcYG1aeOw==}
+
   '@event-calendar/list@3.7.2':
     resolution: {integrity: sha512-8NOd66G8+wfpjlkT+dSpXjSpT0QWIZ1uLlTVE6DurSB3wJnPsNAXXTzAUT/pzK1RuftfNLl44a3B3AvuLLQEvA==}
 
-  '@event-calendar/resource-time-grid@3.7.2':
-    resolution: {integrity: sha512-XBywIrsVSb083j6layo/ZQ3whWLOmtC9RWPtaY7vdCA0syHjv/AJlnCUPOSSYNkrW69EZzAjPim+0kkzOcx2oQ==}
+  '@event-calendar/resource-time-grid@3.8.0':
+    resolution: {integrity: sha512-+Z0eCRu9QklQ0JYg96LzT2gCFbBNWJ7ThErwlgBZs/4QaK/WwGwGjWtXtgWk6xPvuhOSbFtLQvGcE5LKORRNDw==}
 
   '@event-calendar/resource-timeline@3.7.2':
     resolution: {integrity: sha512-2aTzTBf5C64+UdwzYYOmJeKhcIUVENtitED4WvrtI62hb9VSbnkWKHoJVdeN4OE08q8415ttt+PFpJ7tefs+dg==}
 
   '@event-calendar/time-grid@3.7.2':
     resolution: {integrity: sha512-hiVKbr6rweYa3RAJKrTgIijm6g217b2HBx3NcIyduYs4ChDIUDINxTG7FGzixf1wXjJM3nVsxNsbQ6SRRYa+yA==}
+
+  '@event-calendar/time-grid@3.8.0':
+    resolution: {integrity: sha512-jgcHmjYmPbty7zJ6ZibH0BrUFeNiflW3R8HNFNyCoQ6wlIw+nro3D7RiJD2egvZY6fbX7idMIwO1AIMImTuLEA==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -1774,15 +1780,19 @@ snapshots:
     dependencies:
       svelte: 4.2.19
 
+  '@event-calendar/core@3.8.0':
+    dependencies:
+      svelte: 4.2.19
+
   '@event-calendar/list@3.7.2':
     dependencies:
       '@event-calendar/core': 3.7.2
       svelte: 4.2.19
 
-  '@event-calendar/resource-time-grid@3.7.2':
+  '@event-calendar/resource-time-grid@3.8.0':
     dependencies:
-      '@event-calendar/core': 3.7.2
-      '@event-calendar/time-grid': 3.7.2
+      '@event-calendar/core': 3.8.0
+      '@event-calendar/time-grid': 3.8.0
       svelte: 4.2.19
 
   '@event-calendar/resource-timeline@3.7.2':
@@ -1793,6 +1803,11 @@ snapshots:
   '@event-calendar/time-grid@3.7.2':
     dependencies:
       '@event-calendar/core': 3.7.2
+      svelte: 4.2.19
+
+  '@event-calendar/time-grid@3.8.0':
+    dependencies:
+      '@event-calendar/core': 3.8.0
       svelte: 4.2.19
 
   '@humanfs/core@0.19.1': {}

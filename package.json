@@ -16,7 +16,7 @@
 	"devDependencies": {
 		"@event-calendar/core": "^3.7.2",
 		"@event-calendar/list": "^3.7.2",
-		"@event-calendar/resource-time-grid": "^3.7.2",
+		"@event-calendar/resource-time-grid": "^3.8.0",
 		"@event-calendar/resource-timeline": "^3.7.2",
 		"@event-calendar/time-grid": "^3.7.2",
 		"@sveltejs/adapter-auto": "^3.3.1",
