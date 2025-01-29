@@ -5,5 +5,9 @@ updates:
     schedule:
       interval: "weekly"
     groups:
-      minor:
-        update-types: ["minor"]
+      minor-patches:
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'
