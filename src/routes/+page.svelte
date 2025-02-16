@@ -25,9 +25,14 @@
 	</p>
 
 	<hr />
-	<div class="flex not-prose gap-4">
-		<a href="#calendars" class="not-prose btn btn-primary grow"> Go to calendars 📅 </a>
-		<a href="/aule" class="not-prose btn btn-secondary mx-auto grow"> Go to classroom list 📚 </a>
+
+	<div class="md:flex not-prose gap-4 ">
+		<a href="#calendars" class="not-prose btn btn-primary grow max-md:w-full max-md:mb-4">
+			Go to calendars 📅
+		</a>
+		<a href="/aule" class="not-prose btn btn-secondary mx-auto grow max-md:w-full">
+			Go to classroom list 📚
+		</a>
 	</div>
 
 	<hr />
