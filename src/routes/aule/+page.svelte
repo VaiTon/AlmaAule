@@ -3,39 +3,52 @@
 	import type { Aula } from '$lib/api';
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
 
 	function sortingName(aula: Aula) {
-		return `${aula.relazioneEdificio.comune} - ${aula.relazioneEdificio.descrizione} - ${aula.descrizione}`;
+		return `${aula.relazioneEdificio.comune} - ${aula.relazioneEdificio.plesso} - ${aula.descrizione}`;
 	}
 
-	let search = '';
+	function filterAule(aula: Aula) {
+		return sortingName(aula).toLowerCase().includes(search.toLowerCase());
+	}
 
-	$: filteredClass = data.aule
-		.sort((a, b) => {
-			const nameA = sortingName(a);
-			const nameB = sortingName(b);
-			return nameA.toLowerCase().localeCompare(nameB.toLowerCase());
-		})
-		.filter((aula) => {
-			return aula.descrizione.toLowerCase().includes(search.toLowerCase());
-		});
+	function sortAule(a: Aula, b: Aula) {
+		const nameA = sortingName(a);
+		const nameB = sortingName(b);
+		return nameA.toLowerCase().localeCompare(nameB.toLowerCase());
+	}
+
+	let search = $state('');
+	let filteredClass = $derived(data.aule.sort(sortAule).filter(filterAule));
 </script>
+
+<h1 class="text-2xl font-bold mb-4">Aule</h1>
+
+<input
+	type="text"
+	class="input input-bordered w-full my-4"
+	placeholder="Cerca aula"
+	bind:value={search}
+/>
 
 <table class="table table-zebra hover">
 	<thead>
 		<tr>
+			<th>Aula</th>
 			<th>Comune</th>
 			<th>Edificio</th>
-			<th>Aula</th>
 		</tr>
 	</thead>
 	<tbody>
 		{#each filteredClass as aula}
-			<tr class="hover cursor-pointer" on:click={() => goto(`/cal/${aula.calId}/${aula.id}`)}>
-				<td> {aula.relazioneEdificio.comune} </td>
-				<td>{aula.relazioneEdificio.descrizione} - {aula.relazioneEdificio.plesso} </td>
-				<td>{aula.descrizione}</td>
+			{@const edificio = aula.relazioneEdificio}
+			<tr class="hover cursor-pointer" onclick={() => goto(`/cal/${aula.calId}/${aula.id}`)}>
+				<td>
+					<a href="/cal/{aula.calId}/{aula.id}"> {edificio.plesso} - {aula.descrizione} </a>
+				</td>
+				<td>{edificio.comune}</td>
+				<td>{edificio.descrizione}</td>
 			</tr>
 		{/each}
 	</tbody>

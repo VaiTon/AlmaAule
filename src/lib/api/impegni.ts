@@ -33,6 +33,7 @@ export async function getImpegni(
 			clienteId: UNIBO_CLIENT,
 			dataInizio,
 			dataFine,
+			auleIds: idAule,
 			aule: idAule,
 			limitaRisultati,
 			mostraImpegniAnnullati,

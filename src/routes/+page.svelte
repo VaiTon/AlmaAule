@@ -5,24 +5,29 @@
 <div class="prose md:mx-auto mx-4">
 	<h1 class="text-3xl text-center font-bold">AULE @ UNIBO</h1>
 	<p>
-		Welcome to the <strong>🚀 Unofficial Classroom Availability Checker 🚀</strong> for the University
-		of Bologna!
+		Welcome to the <strong>🚀 Unofficial Classroom Calendar 🚀</strong> for the University of Bologna!
 	</p>
 	<p>
 		Since the University doesn't offer a system to check the availability of classrooms, this
 		website was created to assist students in locating <strong>free spaces for studying</strong>.
 	</p>
 	<p>
-		We <strong>don't scrape</strong> the university's website, but instead rely on the data provided
-		by the university itself via some hidden but <strong>public</strong> APIs.
+		It can also be useful for teachers who need to book a classroom for their lessons, or in general
+		to anyone who needs to know the events scheduled in a specific classroom.
+	</p>
+	<p>
+		We <strong>don't scrape</strong> the university's website, but instead rely data provided by the
+		university itself via some hidden but <strong>public</strong> APIs.
 	</p>
 	<p>
 		Actually, it's your browser that makes the HTTP requests to the servers, so we're not doing
-		anything at all. We're just providing a nice interface to the data. 😼
+		anything at all. We're just providing a nice interface. 😼
 	</p>
+
+	<hr />
 	<div class="flex not-prose gap-4">
-		<a href="#calendars" class="not-prose btn btn-primary grow"> CALENDARS </a>
-		<a href="/aule" class="not-prose btn btn-secondary mx-auto grow"> CLASSROOMS </a>
+		<a href="#calendars" class="not-prose btn btn-primary grow"> Go to calendars 📅 </a>
+		<a href="/aule" class="not-prose btn btn-secondary mx-auto grow"> Go to classroom list 📚 </a>
 	</div>
 
 	<hr />
@@ -45,7 +50,7 @@
 	<hr />
 </div>
 
-<h2 class="text-2xl text-center font-bold mt-16 mb-4" id="calendars">Select a <em>calendar</em></h2>
+<h2 class="text-2xl text-center font-bold mt-16 mb-4" id="calendars">Select a calendar</h2>
 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
 	{#each CAL_MAP as { id, name }}
 		<a href={`/cal/${id}`} class="btn btn-lg h-auto leading-6 card btn-ghost">{name}</a>

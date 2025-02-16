@@ -4,6 +4,7 @@
 	import { getActualImpegniAule } from '../../../lib/impegni';
 	import type { PageData } from '../$types';
 	import dayjs from 'dayjs';
+	import { page } from '$app/state';
 
 	function formatTimeImpegno(impegno: Impegno) {
 		return (
@@ -31,8 +32,8 @@
 		</thead>
 		<tbody>
 			{#each impegnoAule as { aula, impegno }}
-				<tr class="hover cursor-pointer" on:click={() => goto(`/cal/${data.cal.id}/${aula.id}`)}>
-					<td><a href="/cal/${data.cal.id}/{aula.id}"> {aula.descrizione} </a></td>
+				<tr class="hover cursor-pointer" on:click={() => goto(page.url + `/${aula.id}`)}>
+					<td><a href="{page.url}/{aula.id}"> {aula.descrizione} </a></td>
 					<td>{aula.capienza}</td>
 					<td>{impegno != null ? impegno.nome : ''}</td>
 					<td>{impegno != null ? formatTimeImpegno(impegno) : ''}</td>

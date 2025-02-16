@@ -7,7 +7,6 @@
 	import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 	import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
-	import Debug from '$lib/Debug.svelte';
 	import { getImpegni, type Impegno } from '$lib/api';
 
 	import type { PageData } from './$types';
@@ -23,26 +22,39 @@
 	import utc from 'dayjs/plugin/utc';
 	import timezone from 'dayjs/plugin/timezone';
 	import 'dayjs/locale/it';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
 
 	dayjs.extend(utc);
 	dayjs.extend(timezone);
 	dayjs.tz.setDefault('Europe/Rome');
 	dayjs.locale('it');
 
-	export let data: PageData;
-	$: aula = data.aula;
+	let { data }: { data: PageData } = $props();
+	let { aula } = $derived(data);
 
-	let loadingEvents = false;
-	let events: Impegno[] = [];
-
+	let events: Impegno[] = $state([]);
+	let loadingEvents = $state(false);
 	let lastInterval: { startDate: Dayjs; endDate: Dayjs } | undefined = undefined;
+	let selectedEvent: Impegno | undefined = $state(undefined);
+
+	let eventModal: HTMLDialogElement;
+
+	let nowEvent = $derived.by(() => {
+		const now = dayjs();
+
+		return events.find((e) => {
+			return now.isAfter(e.dataInizio) && now.isBefore(e.dataFine);
+		});
+	});
+
 	async function updateImpegni(
 		startDate: Dayjs = dayjs().startOf('week'),
 		endDate: Dayjs = dayjs().endOf('week')
 	) {
 		console.debug('updateImpegni', startDate, endDate);
 
+		// Skip if the interval is the same
 		if (
 			lastInterval != null &&
 			startDate.isSame(lastInterval.startDate) &&
@@ -50,26 +62,23 @@
 		) {
 			return;
 		}
-		lastInterval = { startDate, endDate };
 
-		let e = getImpegni(fetch, $page.params.calId, {
+		loadingEvents = true; // Show loading spinner
+		lastInterval = { startDate, endDate }; // Save the interval
+
+		const unfilteredEvents = await getImpegni(fetch, page.params.calId, {
 			dataInizio: startDate,
 			dataFine: endDate,
 			idAule: [aula.id]
-		}).then((impegni) =>
-			impegni.filter((impegno) =>
-				impegno.risorse.some((risorsa) => 'aulaId' in risorsa && risorsa.aulaId === aula.id)
-			)
+		});
+
+		const filteredEvents = unfilteredEvents.filter((impegno) =>
+			impegno.risorse.some((risorsa) => 'aulaId' in risorsa && risorsa.aulaId === aula.id)
 		);
 
-		loadingEvents = true;
-		events = await e;
+		events = filteredEvents;
 		loadingEvents = false;
 	}
-
-	let eventModal: HTMLDialogElement;
-
-	let selectedEvent: Impegno | undefined = undefined;
 
 	function setupMap() {
 		const map = L.map('map', {
@@ -106,24 +115,18 @@
 			.openPopup();
 	}
 
-	onMount(() => {
-		if (aula.relazioneEdificio.geo != null) {
-			setupMap();
-		}
-
-		updateImpegni();
-	});
-
 	function impegnoToEvent(impegno: Impegno) {
-		const title = document.createElement('div');
-		title.innerHTML = impegno.nome;
+		let nome = impegno.nome;
+
 		if (impegno.icona === 'attivitaDidattica') {
-			title.innerHTML = '📚 ' + title.innerHTML;
+			nome = '📚 ' + nome;
 		} else if (impegno.icona === 'altraAttivita') {
-			title.innerHTML = '🎉 ' + title.innerHTML;
+			nome = '🎉 ' + nome;
 		}
 
-		title.classList.add('text-sm', 'font-bold', 'mb-1');
+		const title = document.createElement('p');
+		title.innerHTML = impegno.nome;
+		title.classList.add('text-sm', 'font-bold', 'mb-1', 'truncate');
 
 		const nodes = [title];
 
@@ -150,8 +153,17 @@
 			end: moment(impegno.dataFine).toDate()
 		};
 	}
-</script>
 
+	$effect(() => {
+		updateImpegni();
+	});
+
+	$effect(() => {
+		if (aula.relazioneEdificio.geo != null) {
+			setupMap();
+		}
+	});
+</script>
 
 <svelte:head>
 	<title>{aula?.descrizione} - Aule@Unibo</title>
@@ -165,75 +177,85 @@
 
 <h1 class="text-4xl font-bold my-4">{aula?.descrizione}</h1>
 
-<div class="my-4 justify-between gap-x-8 text-end">
-	<div>
-		<span class="font-bold text-end">Record creato il:</span>
-		<span>{moment(aula.dataCreazione).format('lll')}</span>
-	</div>
-	<div>
-		<span class="font-bold text-end">Ultima modifica il:</span>
-		<span>{moment(aula.dataModifica).format('lll')}</span>
-	</div>
+<div class="divider"></div>
+
+<div class="prose max-w-full text-lg">
+	<p>
+		The classroom <strong>"{aula?.descrizione}"</strong> is located on the
+		<strong> {aula?.piano?.descrizione} </strong>
+		of the building <strong>"{aula?.relazioneEdificio.descrizione}"</strong> , at
+		<strong> {aula?.relazioneEdificio.via}, {aula?.relazioneEdificio.comune}</strong>.
+	</p>
+
+	<p>
+		At this moment, the classroom is
+		{#if nowEvent != null}
+			<strong>occupied</strong> by the event <strong>{nowEvent.nome}</strong>
+			({dayjs(nowEvent.dataInizio).format('lll')} - {dayjs(nowEvent.dataFine).format('lll')}). 📚
+		{:else}
+			<strong>free</strong>. 🤩
+		{/if}
+	</p>
 </div>
 
-<p class="grid gap-x-2 grid-cols-[max-content,1fr] md:grid-cols-[max-content,1fr,max-content,1fr]">
-	<span class="font-bold text-end">Capienza:</span>
-	<span>{aula?.capienza}</span>
+<div class="divider"></div>
 
-	<span class="font-bold text-end">Capienza effettiva:</span>
-	<span>{aula?.capienzaEffettiva}</span>
+<details class="collapse bg-base-300 text-base-content collapse-plus mt-8">
+	<summary class="collapse-title text-2xl">
+		<div class="flex">
+			<span class="font-bold"> Edificio </span>
+			<div class="flex-1"></div>
+			<span>
+				{aula?.relazioneEdificio.descrizione}
+			</span>
+		</div>
+	</summary>
 
-	<span class="font-bold text-end">N. postazioni:</span>
-	<span>{aula?.numeroPostazioni}</span>
+	<div class="collapse-content">
+		<table class="table">
+			<tbody>
+				<tr>
+					<td class="font-bold text-end">Descrizione:</td>
+					<td> {aula?.relazioneEdificio.descrizione} </td>
+				</tr>
 
-	<span class="font-bold text-end">Metri quadri:</span>
-	<span>{Math.round(aula?.metriQuadri)} mq</span>
+				<tr>
+					<td class="font-bold text-end"> Indirizzo</td>
+					<td>{aula?.relazioneEdificio.via}, {aula?.relazioneEdificio.comune}</td>
+				</tr>
 
-	{#if aula.piano != null}
-		<span class="font-bold text-end">Piano:</span>
-		<span>{aula?.piano.descrizione} (<code>{aula?.piano.codice}</code>)</span>
-	{/if}
-</p>
+				<tr>
+					<td class="font-bold text-end"> Plesso: </td>
+					<td>{aula?.relazioneEdificio.plesso}</td>
+				</tr>
 
-<Debug data={aula} />
-
-<div>
-	<h2 class="text-2xl font-bold mt-6 mb-2">Edificio</h2>
-
-	<div
-		class="grid gap-x-2 grid-cols-[max-content,1fr] md:grid-cols-[max-content,1fr,max-content,1fr]"
-	>
-		<span class="font-bold text-end">Descrizione:</span>
-		<span>{aula?.relazioneEdificio.descrizione}</span>
-
-		<span class="font-bold text-end">Indirizzo:</span>
-		<span>{aula?.relazioneEdificio.via}, {aula?.relazioneEdificio.comune}</span>
-
-		<span class="font-bold text-end"> Plesso:</span>
-		<span>{aula?.relazioneEdificio.plesso}</span>
-
-		<span class="font-bold text-end">Codice:</span>
-		<span>{aula?.relazioneEdificio.codice}</span>
-
-		<span class="font-bold text-end">Orario apertura:</span>
-		<span>{aula?.relazioneEdificio.orarioApertura}</span>
-
-		<span class="font-bold text-end">Orario chiusura:</span>
-		<span>{aula?.relazioneEdificio.orarioChiusura}</span>
-
-		<Debug data={aula.relazioneEdificio} />
+				<tr>
+					<td class="font-bold text-end">Codice:</td>
+					<td>{aula?.relazioneEdificio.codice}</td>
+				</tr>
+				<tr>
+					<td class="font-bold text-end">Orario apertura:</td>
+					<td>{aula?.relazioneEdificio.orarioApertura}</td>
+				</tr>
+				<tr>
+					<td class="font-bold text-end">Orario chiusura:</td>
+					<td>{aula?.relazioneEdificio.orarioChiusura}</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
-</div>
+</details>
+
 <div>
 	<h2 class="text-2xl font-bold mt-6 mb-2">Prossimi impegni</h2>
 
 	{#if loadingEvents}
 		<progress class="progress"></progress>
 	{:else if events.length === 0}
-		<p class="alert mb-4">Nessun impegno</p>
+		<p class="alert alert-warning mb-4">Nessun impegno</p>
 	{/if}
 
-	<div class:hidden={loadingEvents || events.length === 0}>
+	<div>
 		<Calendar
 			plugins={[TimeGrid, List]}
 			options={{
@@ -243,10 +265,10 @@
 				flexibleSlotTimeLimits: true,
 				slotMinTime: '08:00',
 				slotMaxTime: '20:00',
-				hiddenDays: [0, 6],
 
 				eventClick: (info: { event: { id: string } }) => {
 					selectedEvent = events.find((i) => i.id === info.event.id);
+
 					eventModal.showModal();
 				},
 
@@ -269,8 +291,77 @@
 </div>
 <div>
 	<h2 class="text-2xl font-bold mt-6 mb-2">Mappa</h2>
+
+	<div class="flex justify-center gap-x-4">
+		<a
+			href="https://www.google.com/maps/search/?api=1&query={aula?.relazioneEdificio.geo.lat},{aula
+				?.relazioneEdificio.geo.lng}"
+			target="_blank"
+			rel="noopener"
+			class="btn btn-primary"
+		>
+			Open in Google Maps
+		</a>
+
+		<a
+			href="http://www.openstreetmap.org/?mlat={aula?.relazioneEdificio.geo.lat}&mlon={aula
+				?.relazioneEdificio.geo.lng}&zoom=15"
+			target="_blank"
+			rel="noopener"
+			class="btn btn-primary"
+		>
+			Open in OpenStreetMap
+		</a>
+	</div>
+
 	<div class="h-80 w-full mt-4" id="map"></div>
 </div>
+
+<details class="collapse bg-base-300 text-base-content collapse-plus mt-8">
+	<summary class="collapse-title text-2xl">
+		<div class="flex">
+			<span class="font-bold"> Additional information </span>
+		</div>
+	</summary>
+
+	<div class="collapse-content">
+		<table class="table">
+			<tbody>
+				<tr>
+					<td class="font-bold text-end">Capienza:</td>
+					<td>{aula?.capienza}</td>
+				</tr>
+				<tr>
+					<td class="font-bold text-end">Capienza effettiva:</td>
+					<td>{aula?.capienzaEffettiva}</td>
+				</tr>
+				<tr>
+					<td class="font-bold text-end">N. postazioni:</td>
+					<td>{aula?.numeroPostazioni}</td>
+				</tr>
+				<tr>
+					<td class="font-bold text-end">Metri quadri:</td>
+					<td>{Math.round(aula?.metriQuadri)} mq</td>
+				</tr>
+				{#if aula.piano != null}
+					<tr>
+						<td class="font-bold text-end">Piano:</td>
+						<td>{aula?.piano.descrizione} (<code>{aula?.piano.codice}</code>)</td>
+					</tr>
+				{/if}
+
+				<tr>
+					<td class="font-bold text-end">Record creato il:</td>
+					<td>{moment(aula.dataCreazione).format('lll')}</td>
+				</tr>
+				<tr>
+					<td class="font-bold text-end">Ultima modifica il:</td>
+					<td>{moment(aula.dataModifica).format('lll')}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</details>
 
 <dialog class="modal" bind:this={eventModal}>
 	<div class="modal-box">
@@ -290,8 +381,8 @@
 			<span>{moment(selectedEvent?.dataFine).format('lll')}</span>
 
 			<span class="font-bold text-end">Durata:</span>
-			<span
-				>{moment
+			<span>
+				{moment
 					.duration(moment(selectedEvent?.dataFine).diff(moment(selectedEvent?.dataInizio)))
 					.humanize()}</span
 			>
@@ -304,5 +395,3 @@
 		<button>close</button>
 	</form>
 </dialog>
-
-<Debug {data} />
