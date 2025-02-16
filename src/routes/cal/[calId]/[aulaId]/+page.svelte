@@ -198,21 +198,19 @@
 	</p>
 </div>
 
-<div class="divider"></div>
-
-<details class="collapse bg-base-300 text-base-content collapse-plus mt-8">
-	<summary class="collapse-title text-2xl">
-		<div class="flex">
-			<span class="font-bold"> Edificio </span>
+<details class="collapse bg-base-300 text-base-content collapse-arrow mt-8">
+	<summary class="collapse-title">
+		<div class="flex items-center">
+			<span class="font-bold me-4 text-2xl"> Building: </span>
 			<div class="flex-1"></div>
-			<span>
+			<span class="text-xl">
 				{aula?.relazioneEdificio.descrizione}
 			</span>
 		</div>
 	</summary>
 
 	<div class="collapse-content">
-		<table class="table">
+		<table class="table table-sm">
 			<tbody>
 				<tr>
 					<td class="font-bold text-end">Descrizione:</td>
@@ -246,8 +244,56 @@
 	</div>
 </details>
 
+<details class="collapse bg-base-300 text-base-content collapse-plus mt-2">
+	<summary class="collapse-title text-2xl">
+		<div class="flex">
+			<span class="font-bold"> Classroom details </span>
+		</div>
+	</summary>
+
+	<div class="collapse-content">
+		<table class="table table-sm">
+			<tbody>
+				<tr>
+					<td class="font-bold text-end">Capienza:</td>
+					<td>{aula?.capienza}</td>
+				</tr>
+				<tr>
+					<td class="font-bold text-end">Capienza effettiva:</td>
+					<td>{aula?.capienzaEffettiva}</td>
+				</tr>
+				<tr>
+					<td class="font-bold text-end">N. postazioni:</td>
+					<td>{aula?.numeroPostazioni}</td>
+				</tr>
+				<tr>
+					<td class="font-bold text-end">Metri quadri:</td>
+					<td>{Math.round(aula?.metriQuadri)} mq</td>
+				</tr>
+				{#if aula.piano != null}
+					<tr>
+						<td class="font-bold text-end">Piano:</td>
+						<td>{aula?.piano.descrizione} (<code>{aula?.piano.codice}</code>)</td>
+					</tr>
+				{/if}
+
+				<tr>
+					<td class="font-bold text-end">Record creato il:</td>
+					<td>{moment(aula.dataCreazione).format('lll')}</td>
+				</tr>
+				<tr>
+					<td class="font-bold text-end">Ultima modifica il:</td>
+					<td>{moment(aula.dataModifica).format('lll')}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</details>
+
+<div class="divider"></div>
+
 <div>
-	<h2 class="text-2xl font-bold mt-6 mb-2">Prossimi impegni</h2>
+	<h2 class="text-2xl font-bold mt-6 mb-2">Next events</h2>
 
 	{#if loadingEvents}
 		<progress class="progress"></progress>
@@ -316,52 +362,6 @@
 
 	<div class="h-80 w-full mt-4" id="map"></div>
 </div>
-
-<details class="collapse bg-base-300 text-base-content collapse-plus mt-8">
-	<summary class="collapse-title text-2xl">
-		<div class="flex">
-			<span class="font-bold"> Additional information </span>
-		</div>
-	</summary>
-
-	<div class="collapse-content">
-		<table class="table">
-			<tbody>
-				<tr>
-					<td class="font-bold text-end">Capienza:</td>
-					<td>{aula?.capienza}</td>
-				</tr>
-				<tr>
-					<td class="font-bold text-end">Capienza effettiva:</td>
-					<td>{aula?.capienzaEffettiva}</td>
-				</tr>
-				<tr>
-					<td class="font-bold text-end">N. postazioni:</td>
-					<td>{aula?.numeroPostazioni}</td>
-				</tr>
-				<tr>
-					<td class="font-bold text-end">Metri quadri:</td>
-					<td>{Math.round(aula?.metriQuadri)} mq</td>
-				</tr>
-				{#if aula.piano != null}
-					<tr>
-						<td class="font-bold text-end">Piano:</td>
-						<td>{aula?.piano.descrizione} (<code>{aula?.piano.codice}</code>)</td>
-					</tr>
-				{/if}
-
-				<tr>
-					<td class="font-bold text-end">Record creato il:</td>
-					<td>{moment(aula.dataCreazione).format('lll')}</td>
-				</tr>
-				<tr>
-					<td class="font-bold text-end">Ultima modifica il:</td>
-					<td>{moment(aula.dataModifica).format('lll')}</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-</details>
 
 <dialog class="modal" bind:this={eventModal}>
 	<div class="modal-box">
