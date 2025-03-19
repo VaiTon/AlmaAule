@@ -29,7 +29,7 @@
 		"@zerodevx/svelte-json-view": "^1.0.11",
 		"autoprefixer": "^10.4.21",
 		"bulma": "^1.0.3",
-		"daisyui": "^4.12.23",
+		"daisyui": "^5.0.6",
 		"dayjs": "^1.11.13",
 		"eslint": "^9.22.0",
 		"eslint-config-prettier": "^10.1.1",
