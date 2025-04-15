@@ -26,7 +26,7 @@
 
 	<hr />
 
-	<div class="md:flex not-prose gap-4 ">
+	<div class="md:flex not-prose gap-4">
 		<a href="#calendars" class="not-prose btn btn-primary grow max-md:w-full max-md:mb-4">
 			Go to calendars 📅
 		</a>
@@ -58,6 +58,6 @@
 <h2 class="text-2xl text-center font-bold mt-16 mb-4" id="calendars">Select a calendar</h2>
 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
 	{#each CAL_MAP as { id, name }}
-		<a href={`/cal/${id}`} class="btn btn-lg h-auto leading-6 card btn-ghost">{name}</a>
+		<a href={`/cal/${id}`} class="btn btn-lg btn-border h-auto min-h-15 leading-6 card">{name}</a>
 	{/each}
 </div>

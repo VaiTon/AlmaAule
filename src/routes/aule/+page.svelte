@@ -20,36 +20,42 @@
 	}
 
 	let search = $state('');
-	let filteredClass = $derived(data.aule.sort(sortAule).filter(filterAule));
 </script>
 
 <h1 class="text-2xl font-bold mb-4">Aule</h1>
 
-<input
-	type="text"
-	class="input input-bordered w-full my-4"
-	placeholder="Cerca aula"
-	bind:value={search}
-/>
+{#await data.aule}
+	<div class="text-center">
+		<p class="loading loading-spinner loading-lg"></p>
+		<p class="mt-4">Caricamento aule...</p>
+	</div>
+{:then aule}
+	<input
+		type="text"
+		class="input input-bordered w-full my-4"
+		placeholder="Cerca aula"
+		bind:value={search}
+	/>
 
-<table class="table table-zebra hover">
-	<thead>
-		<tr>
-			<th>Aula</th>
-			<th>Comune</th>
-			<th>Edificio</th>
-		</tr>
-	</thead>
-	<tbody>
-		{#each filteredClass as aula}
-			{@const edificio = aula.relazioneEdificio}
-			<tr class="hover cursor-pointer" onclick={() => goto(`/cal/${aula.calId}/${aula.id}`)}>
-				<td>
-					<a href="/cal/{aula.calId}/{aula.id}"> {edificio.plesso} - {aula.descrizione} </a>
-				</td>
-				<td>{edificio.comune}</td>
-				<td>{edificio.descrizione}</td>
+	<table class="table table-zebra hover">
+		<thead>
+			<tr>
+				<th>Aula</th>
+				<th>Comune</th>
+				<th>Edificio</th>
 			</tr>
-		{/each}
-	</tbody>
-</table>
+		</thead>
+		<tbody>
+			{#each aule.sort(sortAule).filter(filterAule) as aula}
+				{@const edificio = aula.relazioneEdificio}
+				<tr class="hover cursor-pointer" onclick={() => goto(`/cal/${aula.calId}/${aula.id}`)}>
+					<td>
+						<a href="/cal/{aula.calId}/{aula.id}"> {edificio.plesso} - {aula.descrizione} </a>
+					</td>
+					<td>{edificio.comune}</td>
+					<td>{edificio.descrizione}</td>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
+{/await}

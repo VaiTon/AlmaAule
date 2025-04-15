@@ -22,8 +22,9 @@ export const load: PageLoad = async ({ fetch }) => {
 		return aule.map((a) => ({ ...a, calId: cal.id }));
 	});
 
-	let aule: CalendarAula[] = (await Promise.all(aulePromises)).flat();
-	aule = deduplicate(aule);
+	let aule: Promise<CalendarAula[]> = Promise.all(aulePromises)
+		.then((it) => it.flat())
+		.then((it) => deduplicate(it));
 
 	return { aule };
 };

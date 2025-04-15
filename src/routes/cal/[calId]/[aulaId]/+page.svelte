@@ -370,7 +370,7 @@
 			<button class="btn" on:click={() => eventModal.close()}>Chiudi</button>
 		</div>
 
-		<p class="grid gap-x-2 grid-cols-[max-content,1fr]">
+		<p class="grid gap-x-2 grid-cols-[max-content_1fr]">
 			<span class="font-bold text-end">Corso:</span>
 			<span>{selectedEvent?.evento?.dettagliDidattici?.[0]?.corso?.descrizione}</span>
 

@@ -23,6 +23,5 @@ export const load: PageLoad = async ({ fetch, params }) => {
 		error(404, 'Aula non trovata');
 	}
 
-
 	return { aula };
 };

@@ -1,6 +1,5 @@
 # Aule Unibo
 
-
 ## Instances
 
 - https://uniboaule.vercel.app/

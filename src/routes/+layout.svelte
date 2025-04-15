@@ -4,7 +4,7 @@
 	import '../app.css';
 </script>
 
-<div class="mx-4 md:mx-auto max-w-5xl">
+<div class="mx-4 lg:mx-auto max-w-5xl">
 	<nav
 		class="navbar bg-base-300 text-base-content rounded-box mt-4 mb-8"
 		aria-label="main navigation"
