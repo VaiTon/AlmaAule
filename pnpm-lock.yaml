@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@event-calendar/core':
-        specifier: ^3.12.0
-        version: 3.12.0
+        specifier: ^4.4.1
+        version: 4.4.1
       '@event-calendar/list':
         specifier: ^3.12.0
         version: 3.12.0
@@ -315,6 +315,9 @@ packages:
 
   '@event-calendar/core@3.12.0':
     resolution: {integrity: sha512-aKtDwEKzWHOV2PLVdhR/f843ecW3C0w5G5VhGl1f0GBEgT8dZvoYreQ7QKTBWh7B7YEtEn2P0Dn36zFYj5XEXQ==}
+
+  '@event-calendar/core@4.4.1':
+    resolution: {integrity: sha512-raKGJ3O8D2KoB9/hUvfUp9fbP9NiKi6bGU6l0SWrY9yAeGXVkylWHYv2S+QIKxcwx/MyoNLworDVvJasDJISrg==}
 
   '@event-calendar/list@3.12.0':
     resolution: {integrity: sha512-1PqqiSHb6vl2tbdtAeQuQwvTID0N/GQfuTSpXxskVlFwqcDNkc9GnCyZRidmS50bQuzT2CM0gYjXY823TihAeQ==}
@@ -1719,6 +1722,10 @@ snapshots:
   '@event-calendar/core@3.12.0':
     dependencies:
       svelte: 4.2.20
+
+  '@event-calendar/core@4.4.1':
+    dependencies:
+      svelte: 5.34.3
 
   '@event-calendar/list@3.12.0':
     dependencies:
