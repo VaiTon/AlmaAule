@@ -16,29 +16,51 @@
 	$: impegnoAule = data.impegni.then((i) => getActualImpegniAule(data.aule, i));
 </script>
 
-<h1 class="text-4xl font-bold my-4">{data.cal.name}</h1>
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 my-4">
+	<h1 class="text-4xl font-bold">{data.cal.name}</h1>
+	<a
+		href={`/cal/${data.cal.id}/impegni`}
+		class="btn btn-primary btn-sm"
+	>
+		View Resource Timeline
+	</a>
+</div>
 
 {#await impegnoAule}
 	<progress class="progress progress-primary"></progress>
 {:then impegnoAule}
-	<table class="table table-zebra">
-		<thead>
-			<tr>
-				<th>Aula</th>
-				<th>Capienza</th>
-				<th>Impegno</th>
-				<th>Orari</th>
-			</tr>
-		</thead>
-		<tbody>
-			{#each impegnoAule as { aula, impegno }}
-				<tr class="hover cursor-pointer" on:click={() => goto(page.url + `/${aula.id}`)}>
-					<td><a href="{page.url}/{aula.id}"> {aula.descrizione} </a></td>
-					<td>{aula.capienza}</td>
-					<td>{impegno != null ? impegno.nome : ''}</td>
-					<td>{impegno != null ? formatTimeImpegno(impegno) : ''}</td>
+	<label for="search-cal" class="sr-only">Search classroom</label>
+	<!-- Optionally, you could add a search input here for filtering -->
+	<div class="overflow-x-auto">
+		<table class="table table-zebra">
+			<thead>
+				<tr>
+					<th>Aula</th>
+					<th>Capienza</th>
+					<th>Impegno</th>
+					<th>Orari</th>
 				</tr>
-			{/each}
-		</tbody>
-	</table>
+			</thead>
+			<tbody>
+				{#each impegnoAule as { aula, impegno }}
+					<tr
+						class="hover cursor-pointer"
+						role="button"
+						tabindex="0"
+						aria-label={`Go to details for ${aula.descrizione}`}
+						on:click={() => goto(page.url + `/${aula.id}`)}
+						on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && goto(page.url + `/${aula.id}`)}
+					>
+						<td><a href="{page.url}/{aula.id}"> {aula.descrizione} </a></td>
+						<td>{aula.capienza}</td>
+						<td>{impegno != null ? impegno.nome : ''}</td>
+						<td>{impegno != null ? formatTimeImpegno(impegno) : ''}</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+		{#if impegnoAule.length === 0}
+			<div class="alert alert-info mt-4">No results found.</div>
+		{/if}
+	</div>
 {/await}

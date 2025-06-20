@@ -23,6 +23,9 @@ importers:
       '@event-calendar/time-grid':
         specifier: ^3.12.0
         version: 3.12.0
+      '@fontsource-variable/merriweather-sans':
+        specifier: ^5.2.6
+        version: 5.2.6
       '@sveltejs/adapter-auto':
         specifier: ^6.0.1
         version: 6.0.1(@sveltejs/kit@2.21.5(@sveltejs/vite-plugin-svelte@5.1.0(svelte@5.34.3)(vite@6.3.5(jiti@2.4.2)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.6.1)))(svelte@5.34.3)(vite@6.3.5(jiti@2.4.2)(lightningcss@1.30.1)(sass@1.89.2)(yaml@2.6.1)))
@@ -324,6 +327,9 @@ packages:
 
   '@event-calendar/time-grid@3.12.0':
     resolution: {integrity: sha512-n/IoFSq/ym6ad2k+H9RL2A8GpfOJy1zpKKLb1Edp/QEusexpPg8LNdSbxhmKGz6ip5ud0Bi/xgUa8xUqut8ooQ==}
+
+  '@fontsource-variable/merriweather-sans@5.2.6':
+    resolution: {integrity: sha512-m1PqGAd/d7z55ZxnhoRbJD1DQUumP356CW2q3lB6AWMtrotVBIT8TJAFTiSllA9Y1qCSqUN4Mu4bHdqK9xM+Uw==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -1734,6 +1740,8 @@ snapshots:
     dependencies:
       '@event-calendar/core': 3.12.0
       svelte: 4.2.20
+
+  '@fontsource-variable/merriweather-sans@5.2.6': {}
 
   '@humanfs/core@0.19.1': {}
 

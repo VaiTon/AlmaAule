@@ -5,12 +5,17 @@ import type { PageLoad } from './$types';
 
 export const ssr = false;
 
-export const load: PageLoad = async ({ fetch, params }) => {
+export const load: PageLoad = async ({ fetch, params, url }) => {
 	const calIds = Object.values(CAL_MAP).map((cal) => cal.id);
 
+	const dayParam = url.searchParams.get('day');
+	const day = dayParam ?? dayjs().format('YYYY-MM-DD');
+	const startOfDay = dayjs(day).startOf('day');
+	const endOfDay = dayjs(day).endOf('day');
+
 	let impegni = await getImpegni(fetch, params.calId, {
-		dataInizio: dayjs().subtract(1, 'day'),
-		dataFine: dayjs().add(1, 'day'),
+		dataInizio: startOfDay,
+		dataFine: endOfDay,
 		idAule: []
 	});
 

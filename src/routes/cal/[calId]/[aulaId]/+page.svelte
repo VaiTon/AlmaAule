@@ -24,6 +24,7 @@
 	import 'dayjs/locale/it';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
+	import calendarIcon from '$lib/icons/Calendar.svg?raw';
 
 	dayjs.extend(utc);
 	dayjs.extend(timezone);
@@ -166,67 +167,60 @@
 </script>
 
 <svelte:head>
-	<title>{aula?.descrizione} - Aule@Unibo</title>
+	<title>{aula?.descrizione} - AlmaAule</title>
 	<meta name="description" content="Dettagli dell'aula {aula?.descrizione}" />
 
 	<!-- Open Graph / Facebook -->
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content={window.location.href} />
-	<meta property="og:title" content="{aula?.descrizione} - Aule@Unibo" />
+	<meta property="og:title" content="{aula?.descrizione} - AlmaAule" />
 </svelte:head>
 
-<h1 class="text-4xl font-bold my-4">{aula?.descrizione}</h1>
-
-<div class="divider"></div>
-
-<div class="prose max-w-full text-lg">
-	<p>
-		The classroom <strong>"{aula?.descrizione}"</strong> is located on the
-		<strong> {aula?.piano?.descrizione} </strong>
-		of the building <strong>"{aula?.relazioneEdificio.descrizione}"</strong> , at
-		<strong> {aula?.relazioneEdificio.via}, {aula?.relazioneEdificio.comune}</strong>.
-	</p>
-
-	<p>
-		At this moment, the classroom is
+<div class="card bg-base-100 shadow-xl mb-6">
+	<div class="card-body">
+		<h1 class="card-title text-3xl sm:text-4xl font-bold">{aula?.descrizione}</h1>
+		<p>
+			The classroom <strong>"{aula?.descrizione}"</strong> is located on the
+			<strong>{aula?.piano?.descrizione}</strong>
+			of the building <strong>"{aula?.relazioneEdificio.descrizione}"</strong>, at
+			<strong>{aula?.relazioneEdificio.via}, {aula?.relazioneEdificio.comune}</strong>.
+		</p>
 		{#if nowEvent != null}
-			<strong>occupied</strong> by the event <strong>{nowEvent.nome}</strong>
-			({dayjs(nowEvent.dataInizio).format('lll')} - {dayjs(nowEvent.dataFine).format('lll')}). 📚
+			<div class="flex items-center gap-2 mt-4 border border-error rounded-lg px-4 py-2" role="alert">
+				<span class="font-bold text-error">Occupied</span>
+				<span>
+					by <strong>{nowEvent.nome}</strong>
+					({dayjs(nowEvent.dataInizio).format('lll')} - {dayjs(nowEvent.dataFine).format('lll')})
+				</span>
+			</div>
 		{:else}
-			<strong>free</strong>. 🤩
+			<div class="flex items-center gap-2 mt-4 border border-success rounded-lg px-4 py-2" role="alert">
+				<span class="font-bold text-success">Free</span>
+			</div>
 		{/if}
-	</p>
+	</div>
 </div>
 
-<details class="collapse bg-base-300 text-base-content collapse-arrow mt-8">
-	<summary class="collapse-title">
-		<div class="flex items-center">
-			<span class="font-bold me-4 text-2xl"> Building: </span>
-			<div class="flex-1"></div>
-			<span class="text-xl">
-				{aula?.relazioneEdificio.descrizione}
-			</span>
-		</div>
-	</summary>
+<details class="collapse bg-base-300 text-base-content collapse-arrow mb-4">
+ 	<summary class="collapse-title card-title text-xl font-bold">
+ 		Building: <span class="ml-2 font-normal">{aula?.relazioneEdificio.descrizione}</span>
+ 	</summary>
 
-	<div class="collapse-content">
-		<table class="table table-sm">
-			<tbody>
+ 	<div class="collapse-content overflow-x-auto">
+ 		<table class="table table-zebra rounded-box table-sm">
+ 			<tbody>
 				<tr>
 					<td class="font-bold text-end">Descrizione:</td>
-					<td> {aula?.relazioneEdificio.descrizione} </td>
+					<td>{aula?.relazioneEdificio.descrizione}</td>
 				</tr>
-
 				<tr>
-					<td class="font-bold text-end"> Indirizzo</td>
+					<td class="font-bold text-end">Indirizzo:</td>
 					<td>{aula?.relazioneEdificio.via}, {aula?.relazioneEdificio.comune}</td>
 				</tr>
-
 				<tr>
-					<td class="font-bold text-end"> Plesso: </td>
+					<td class="font-bold text-end">Plesso:</td>
 					<td>{aula?.relazioneEdificio.plesso}</td>
 				</tr>
-
 				<tr>
 					<td class="font-bold text-end">Codice:</td>
 					<td>{aula?.relazioneEdificio.codice}</td>
@@ -244,16 +238,14 @@
 	</div>
 </details>
 
-<details class="collapse bg-base-300 text-base-content collapse-plus mt-2">
-	<summary class="collapse-title text-2xl">
-		<div class="flex">
-			<span class="font-bold"> Classroom details </span>
-		</div>
-	</summary>
+<details class="collapse bg-base-300 text-base-content collapse-plus mb-4">
+ 	<summary class="collapse-title card-title text-xl font-bold">
+ 		Classroom details
+ 	</summary>
 
-	<div class="collapse-content">
-		<table class="table table-sm">
-			<tbody>
+ 	<div class="collapse-content overflow-x-auto">
+ 		<table class="table table-zebra rounded-box table-sm">
+ 			<tbody>
 				<tr>
 					<td class="font-bold text-end">Capienza:</td>
 					<td>{aula?.capienza}</td>
@@ -276,7 +268,6 @@
 						<td>{aula?.piano.descrizione} (<code>{aula?.piano.codice}</code>)</td>
 					</tr>
 				{/if}
-
 				<tr>
 					<td class="font-bold text-end">Record creato il:</td>
 					<td>{moment(aula.dataCreazione).format('lll')}</td>
@@ -292,106 +283,105 @@
 
 <div class="divider"></div>
 
-<div>
-	<h2 class="text-2xl font-bold mt-6 mb-2">Next events</h2>
+<div class="card bg-base-100 shadow-xl mb-6">
+ 	<div class="card-body">
+ 		<h2 class="card-title text-2xl font-bold mb-2 flex items-center gap-2">
+ 			{@html calendarIcon}
+ 			<span>Next events</span>
+ 		</h2>
+ 		{#if loadingEvents}
+ 			<progress class="progress w-full"></progress>
+ 		{:else if events.length === 0}
+ 			<div class="alert alert-warning mb-4">Nessun impegno</div>
+ 		{/if}
+ 		<div>
+ 			<Calendar
+				plugins={[TimeGrid, List]}
+				options={{
+					resources: [],
+					firstDay: 1,
+					nowIndicator: true,
+					flexibleSlotTimeLimits: true,
+					slotMinTime: '08:00',
+					slotMaxTime: '20:00',
 
-	{#if loadingEvents}
-		<progress class="progress"></progress>
-	{:else if events.length === 0}
-		<p class="alert alert-warning mb-4">Nessun impegno</p>
-	{/if}
+					eventClick: (info: { event: { id: string } }) => {
+						selectedEvent = events.find((i) => i.id === info.event.id);
 
-	<div>
-		<Calendar
-			plugins={[TimeGrid, List]}
-			options={{
-				resources: [],
-				firstDay: 1,
-				nowIndicator: true,
-				flexibleSlotTimeLimits: true,
-				slotMinTime: '08:00',
-				slotMaxTime: '20:00',
+						eventModal.showModal();
+					},
 
-				eventClick: (info: { event: { id: string } }) => {
-					selectedEvent = events.find((i) => i.id === info.event.id);
-
-					eventModal.showModal();
-				},
-
-				headerToolbar: {
-					start: 'title',
-					center: '',
-					end: 'timeGridWeek,listWeek today prev,next'
-				},
-				view: 'timeGridWeek',
-				views: {
-					timeGridWeek: { pointer: true }
-				},
-				events: events.map(impegnoToEvent),
-				datesSet: ({ start, end }: { start: Date; end: Date }) => {
-					updateImpegni(dayjs(start), dayjs(end));
-				}
-			}}
-		/>
+					headerToolbar: {
+						start: 'title',
+						center: '',
+						end: 'timeGridWeek,listWeek today prev,next'
+					},
+					view: 'timeGridWeek',
+					views: {
+						timeGridWeek: { pointer: true }
+					},
+					events: events.map(impegnoToEvent),
+					datesSet: ({ start, end }: { start: Date; end: Date }) => {
+						updateImpegni(dayjs(start), dayjs(end));
+					}
+				}}
+			/>
+		</div>
 	</div>
 </div>
-<div>
-	<h2 class="text-2xl font-bold mt-6 mb-2">Mappa</h2>
-
-	<div class="flex justify-center gap-x-4">
-		<a
-			href="https://www.google.com/maps/search/?api=1&query={aula?.relazioneEdificio.geo.lat},{aula
-				?.relazioneEdificio.geo.lng}"
-			target="_blank"
-			rel="noopener"
-			class="btn btn-primary"
-		>
-			Open in Google Maps
-		</a>
-
-		<a
-			href="http://www.openstreetmap.org/?mlat={aula?.relazioneEdificio.geo.lat}&mlon={aula
-				?.relazioneEdificio.geo.lng}&zoom=15"
-			target="_blank"
-			rel="noopener"
-			class="btn btn-primary"
-		>
-			Open in OpenStreetMap
-		</a>
-	</div>
-
-	<div class="h-80 w-full mt-4" id="map"></div>
-</div>
+<div class="card bg-base-100 shadow-xl mb-6">
+	<div class="card-body">
+		<h2 class="card-title text-2xl font-bold mb-2">Map</h2>
+ 		<div class="flex flex-col sm:flex-row justify-center gap-2 mb-4">
+ 			<a
+ 				href="https://www.google.com/maps/search/?api=1&query={aula?.relazioneEdificio.geo.lat},{aula?.relazioneEdificio.geo.lng}"
+ 				target="_blank"
+ 				rel="noopener"
+ 				class="btn btn-primary btn-md"
+ 			>
+ 				Open in Google Maps
+ 			</a>
+ 			<a
+ 				href="http://www.openstreetmap.org/?mlat={aula?.relazioneEdificio.geo.lat}&mlon={aula?.relazioneEdificio.geo.lng}&zoom=15"
+ 				target="_blank"
+ 				rel="noopener"
+ 				class="btn btn-primary btn-md"
+ 			>
+ 				Open in OpenStreetMap
+ 			</a>
+ 		</div>
+ 		<div class="w-full rounded-box overflow-hidden h-64 sm:h-80" id="map"></div>
+ 	</div>
+ </div>
 
 <dialog class="modal" bind:this={eventModal}>
-	<div class="modal-box">
-		<div class="flex gap-4 mb-4">
+	<div class="modal-box shadow-lg border border-base-300">
+		<div class="flex gap-4 mb-4 items-center">
 			<h2 class="text-xl font-bold grow">{selectedEvent?.nome}</h2>
-			<button class="btn" on:click={() => eventModal.close()}>Chiudi</button>
+			<form method="dialog" class="modal-action m-0">
+				<button class="btn btn-sm btn-ghost">Close</button>
+			</form>
 		</div>
-
-		<p class="grid gap-x-2 grid-cols-[max-content_1fr]">
+		<div class="divider my-2"></div>
+		<div class="grid gap-x-2 gap-y-1 grid-cols-[max-content_1fr]">
 			<span class="font-bold text-end">Corso:</span>
 			<span>{selectedEvent?.evento?.dettagliDidattici?.[0]?.corso?.descrizione}</span>
-
+ 
 			<span class="font-bold text-end">Data inizio:</span>
 			<span>{moment(selectedEvent?.dataInizio).format('lll')}</span>
-
+ 
 			<span class="font-bold text-end">Data fine:</span>
 			<span>{moment(selectedEvent?.dataFine).format('lll')}</span>
-
+ 
 			<span class="font-bold text-end">Durata:</span>
 			<span>
 				{moment
 					.duration(moment(selectedEvent?.dataFine).diff(moment(selectedEvent?.dataInizio)))
-					.humanize()}</span
-			>
-
+					.humanize()}
+			</span>
+ 
 			<span class="font-bold text-end">Docenti:</span>
 			<span>{selectedEvent?.docenti.map((d) => d.nome + ' ' + d.cognome).join(', ')}</span>
-		</p>
+		</div>
 	</div>
-	<form method="dialog" class="modal-backdrop">
-		<button>close</button>
-	</form>
 </dialog>

@@ -3,25 +3,21 @@
 </script>
 
 <div class="prose md:mx-auto mx-4">
-	<h1 class="text-3xl text-center font-bold">AULE @ UNIBO</h1>
-	<p>
-		Welcome to the <strong>🚀 Unofficial Classroom Calendar 🚀</strong> for the University of Bologna!
+	<h1 class="text-3xl text-center font-bold">AlmaAule</h1>
+	<p class="text-center font-semibold text-base text-warning">
+		<strong>Unofficial tool made by the Computer Science community of Unibo</strong>
 	</p>
 	<p>
-		Since the University doesn't offer a system to check the availability of classrooms, this
-		website was created to assist students in locating <strong>free spaces for studying</strong>.
+		Welcome to <strong>AlmaAule</strong> — your tool for checking classroom availability and schedules.
 	</p>
 	<p>
-		It can also be useful for teachers who need to book a classroom for their lessons, or in general
-		to anyone who needs to know the events scheduled in a specific classroom.
+		This website helps students and staff find <strong>free classrooms</strong> for studying, teaching, or events.
 	</p>
 	<p>
-		We <strong>don't scrape</strong> the university's website, but instead rely data provided by the
-		university itself via some hidden but <strong>public</strong> APIs.
+		We <strong>don't scrape</strong> any other website—AlmaAule relies on public APIs for all its data.
 	</p>
 	<p>
-		Actually, it's your browser that makes the HTTP requests to the servers, so we're not doing
-		anything at all. We're just providing a nice interface. 😼
+		Actually, it's your browser that makes the HTTP requests to the servers, so we're not doing anything at all. We're just providing a nice interface. 😼
 	</p>
 
 	<hr />
@@ -38,26 +34,23 @@
 	<hr />
 
 	<p>
-		Please note that the API could be changed / removed at any time, so this website could stop
-		working without notice. We're not responsible for any inconvenience caused by the unavailability
-		of the service.
-	</p>
-
-	<p>
-		The website is being served on the <a href="https://vercel.com">Vercel</a> free tier and is
-		available at: <a href="https://uniboaule.vercel.app/">uniboaule.vercel.app</a>.
+		<strong>Disclaimer:</strong> This service depends on public APIs and may become unavailable if those APIs change or are removed. We're not responsible for any inconvenience caused by the unavailability of the service.
 	</p>
 	<p>
-		You can find the source code on <a href="https://github.com/VaiTon/uniboaule/">GitHub</a>.
-		Please feel free to inspect, fork, and contribute to the project. Or use it as a base for your
-		own project. That's the beauty of open source! 🌈
+		AlmaAule is open source and available on <a href="https://github.com/VaiTon/uniboaule/">GitHub</a>. Feel free to contribute or use it as a base for your own project!
 	</p>
 	<hr />
 </div>
 
 <h2 class="text-2xl text-center font-bold mt-16 mb-4" id="calendars">Select a calendar</h2>
-<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
 	{#each CAL_MAP as { id, name }}
-		<a href={`/cal/${id}`} class="btn btn-lg btn-border h-auto min-h-15 leading-6 card">{name}</a>
+		<a href={`/cal/${id}`}
+			class="card bg-base-100 shadow hover:shadow-lg transition rounded-xl border border-base-300 flex flex-col items-center justify-center p-6 text-base-content no-underline hover:bg-primary/10"
+			style="min-height: 110px;"
+		>
+			<span class="text-3xl mb-2" aria-hidden="true">📅</span>
+			<span class="font-semibold text-lg text-center">{name}</span>
+		</a>
 	{/each}
 </div>
