@@ -1,5 +1,4 @@
 <script lang="ts">
-	import moment from 'moment';
 	import L from 'leaflet';
 	import { onMount } from 'svelte';
 
@@ -11,12 +10,7 @@
 
 	import type { PageData } from './$types';
 
-	import Calendar from '@event-calendar/core';
-	import TimeGrid from '@event-calendar/time-grid';
-	import List from '@event-calendar/list';
-
 	import 'leaflet/dist/leaflet.css';
-	import '@event-calendar/core/index.css';
 
 	import dayjs, { Dayjs } from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
@@ -25,6 +19,8 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import calendarIcon from '$lib/icons/Calendar.svg?raw';
+	import AulaWeekTimeline from '$lib/AulaWeekTimeline.svelte';
+	import EventModal from '$lib/EventModal.svelte';
 
 	dayjs.extend(utc);
 	dayjs.extend(timezone);
@@ -36,7 +32,6 @@
 
 	let events: Impegno[] = $state([]);
 	let loadingEvents = $state(false);
-	let lastInterval: { startDate: Dayjs; endDate: Dayjs } | undefined = undefined;
 	let selectedEvent: Impegno | undefined = $state(undefined);
 
 	let eventModal: HTMLDialogElement;
@@ -49,12 +44,11 @@
 		});
 	});
 
+	let lastInterval: { startDate: Dayjs; endDate: Dayjs } | undefined = undefined;
 	async function updateImpegni(
 		startDate: Dayjs = dayjs().startOf('week'),
 		endDate: Dayjs = dayjs().endOf('week')
 	) {
-		console.debug('updateImpegni', startDate, endDate);
-
 		// Skip if the interval is the same
 		if (
 			lastInterval != null &&
@@ -150,8 +144,8 @@
 		return {
 			id: impegno.id,
 			title: { domNodes: nodes },
-			start: moment(impegno.dataInizio).toDate(),
-			end: moment(impegno.dataFine).toDate()
+			start: dayjs(impegno.dataInizio).toDate(),
+			end: dayjs(impegno.dataFine).toDate()
 		};
 	}
 
@@ -186,7 +180,10 @@
 			<strong>{aula?.relazioneEdificio.via}, {aula?.relazioneEdificio.comune}</strong>.
 		</p>
 		{#if nowEvent != null}
-			<div class="flex items-center gap-2 mt-4 border border-error rounded-lg px-4 py-2" role="alert">
+			<div
+				class="flex items-center gap-2 mt-4 border border-error rounded-lg px-4 py-2"
+				role="alert"
+			>
 				<span class="font-bold text-error">Occupied</span>
 				<span>
 					by <strong>{nowEvent.nome}</strong>
@@ -194,7 +191,10 @@
 				</span>
 			</div>
 		{:else}
-			<div class="flex items-center gap-2 mt-4 border border-success rounded-lg px-4 py-2" role="alert">
+			<div
+				class="flex items-center gap-2 mt-4 border border-success rounded-lg px-4 py-2"
+				role="alert"
+			>
 				<span class="font-bold text-success">Free</span>
 			</div>
 		{/if}
@@ -202,13 +202,13 @@
 </div>
 
 <details class="collapse bg-base-300 text-base-content collapse-arrow mb-4">
- 	<summary class="collapse-title card-title text-xl font-bold">
- 		Building: <span class="ml-2 font-normal">{aula?.relazioneEdificio.descrizione}</span>
- 	</summary>
+	<summary class="collapse-title card-title text-xl font-bold">
+		Building: <span class="ml-2 font-normal">{aula?.relazioneEdificio.descrizione}</span>
+	</summary>
 
- 	<div class="collapse-content overflow-x-auto">
- 		<table class="table table-zebra rounded-box table-sm">
- 			<tbody>
+	<div class="collapse-content overflow-x-auto">
+		<table class="table table-zebra rounded-box table-sm">
+			<tbody>
 				<tr>
 					<td class="font-bold text-end">Descrizione:</td>
 					<td>{aula?.relazioneEdificio.descrizione}</td>
@@ -239,13 +239,11 @@
 </details>
 
 <details class="collapse bg-base-300 text-base-content collapse-plus mb-4">
- 	<summary class="collapse-title card-title text-xl font-bold">
- 		Classroom details
- 	</summary>
+	<summary class="collapse-title card-title text-xl font-bold"> Classroom details </summary>
 
- 	<div class="collapse-content overflow-x-auto">
- 		<table class="table table-zebra rounded-box table-sm">
- 			<tbody>
+	<div class="collapse-content overflow-x-auto">
+		<table class="table table-zebra rounded-box table-sm">
+			<tbody>
 				<tr>
 					<td class="font-bold text-end">Capienza:</td>
 					<td>{aula?.capienza}</td>
@@ -270,11 +268,11 @@
 				{/if}
 				<tr>
 					<td class="font-bold text-end">Record creato il:</td>
-					<td>{moment(aula.dataCreazione).format('lll')}</td>
+					<td>{dayjs(aula.dataCreazione).format('lll')}</td>
 				</tr>
 				<tr>
 					<td class="font-bold text-end">Ultima modifica il:</td>
-					<td>{moment(aula.dataModifica).format('lll')}</td>
+					<td>{dayjs(aula.dataModifica).format('lll')}</td>
 				</tr>
 			</tbody>
 		</table>
@@ -284,104 +282,52 @@
 <div class="divider"></div>
 
 <div class="card bg-base-100 shadow-xl mb-6">
- 	<div class="card-body">
- 		<h2 class="card-title text-2xl font-bold mb-2 flex items-center gap-2">
- 			{@html calendarIcon}
- 			<span>Next events</span>
- 		</h2>
- 		{#if loadingEvents}
- 			<progress class="progress w-full"></progress>
- 		{:else if events.length === 0}
- 			<div class="alert alert-warning mb-4">Nessun impegno</div>
- 		{/if}
- 		<div>
- 			<Calendar
-				plugins={[TimeGrid, List]}
-				options={{
-					resources: [],
-					firstDay: 1,
-					nowIndicator: true,
-					flexibleSlotTimeLimits: true,
-					slotMinTime: '08:00',
-					slotMaxTime: '20:00',
-
-					eventClick: (info: { event: { id: string } }) => {
-						selectedEvent = events.find((i) => i.id === info.event.id);
-
-						eventModal.showModal();
-					},
-
-					headerToolbar: {
-						start: 'title',
-						center: '',
-						end: 'timeGridWeek,listWeek today prev,next'
-					},
-					view: 'timeGridWeek',
-					views: {
-						timeGridWeek: { pointer: true }
-					},
-					events: events.map(impegnoToEvent),
-					datesSet: ({ start, end }: { start: Date; end: Date }) => {
-						updateImpegni(dayjs(start), dayjs(end));
-					}
-				}}
-			/>
-		</div>
+	<div class="card-body">
+		<h2 class="card-title text-2xl font-bold mb-2 flex items-center gap-2">
+			{@html calendarIcon}
+			<span>Weekly Events</span>
+		</h2>
+		<AulaWeekTimeline
+			{aula}
+			{events}
+			onEventClick={(impegno) => {
+				selectedEvent = impegno;
+			}}
+			onCalendarChange={(start, end) => {
+				updateImpegni(start, end);
+			}}
+		/>
 	</div>
 </div>
 <div class="card bg-base-100 shadow-xl mb-6">
 	<div class="card-body">
 		<h2 class="card-title text-2xl font-bold mb-2">Map</h2>
- 		<div class="flex flex-col sm:flex-row justify-center gap-2 mb-4">
- 			<a
- 				href="https://www.google.com/maps/search/?api=1&query={aula?.relazioneEdificio.geo.lat},{aula?.relazioneEdificio.geo.lng}"
- 				target="_blank"
- 				rel="noopener"
- 				class="btn btn-primary btn-md"
- 			>
- 				Open in Google Maps
- 			</a>
- 			<a
- 				href="http://www.openstreetmap.org/?mlat={aula?.relazioneEdificio.geo.lat}&mlon={aula?.relazioneEdificio.geo.lng}&zoom=15"
- 				target="_blank"
- 				rel="noopener"
- 				class="btn btn-primary btn-md"
- 			>
- 				Open in OpenStreetMap
- 			</a>
- 		</div>
- 		<div class="w-full rounded-box overflow-hidden h-64 sm:h-80" id="map"></div>
- 	</div>
- </div>
-
-<dialog class="modal" bind:this={eventModal}>
-	<div class="modal-box shadow-lg border border-base-300">
-		<div class="flex gap-4 mb-4 items-center">
-			<h2 class="text-xl font-bold grow">{selectedEvent?.nome}</h2>
-			<form method="dialog" class="modal-action m-0">
-				<button class="btn btn-sm btn-ghost">Close</button>
-			</form>
+		<div class="flex flex-col sm:flex-row justify-center gap-2 mb-4">
+			<a
+				href="https://www.google.com/maps/search/?api=1&query={aula?.relazioneEdificio.geo
+					.lat},{aula?.relazioneEdificio.geo.lng}"
+				target="_blank"
+				rel="noopener"
+				class="btn btn-primary btn-md"
+			>
+				Open in Google Maps
+			</a>
+			<a
+				href="http://www.openstreetmap.org/?mlat={aula?.relazioneEdificio.geo.lat}&mlon={aula
+					?.relazioneEdificio.geo.lng}&zoom=15"
+				target="_blank"
+				rel="noopener"
+				class="btn btn-primary btn-md"
+			>
+				Open in OpenStreetMap
+			</a>
 		</div>
-		<div class="divider my-2"></div>
-		<div class="grid gap-x-2 gap-y-1 grid-cols-[max-content_1fr]">
-			<span class="font-bold text-end">Corso:</span>
-			<span>{selectedEvent?.evento?.dettagliDidattici?.[0]?.corso?.descrizione}</span>
- 
-			<span class="font-bold text-end">Data inizio:</span>
-			<span>{moment(selectedEvent?.dataInizio).format('lll')}</span>
- 
-			<span class="font-bold text-end">Data fine:</span>
-			<span>{moment(selectedEvent?.dataFine).format('lll')}</span>
- 
-			<span class="font-bold text-end">Durata:</span>
-			<span>
-				{moment
-					.duration(moment(selectedEvent?.dataFine).diff(moment(selectedEvent?.dataInizio)))
-					.humanize()}
-			</span>
- 
-			<span class="font-bold text-end">Docenti:</span>
-			<span>{selectedEvent?.docenti.map((d) => d.nome + ' ' + d.cognome).join(', ')}</span>
-		</div>
+		<div class="w-full rounded-box overflow-hidden h-64 sm:h-80" id="map"></div>
 	</div>
-</dialog>
+</div>
+
+<EventModal
+	event={selectedEvent}
+	open={selectedEvent != null}
+	onClose={() => (selectedEvent = undefined)}
+/>

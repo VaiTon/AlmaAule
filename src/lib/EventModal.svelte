@@ -1,6 +1,8 @@
 <script lang="ts">
-	import moment from 'moment';
 	import type { Impegno } from '$lib/api';
+
+	import dayjs from 'dayjs';
+	import duration from 'dayjs/plugin/duration';
 
 	export let event: Impegno | undefined;
 	export let open: boolean = false;
@@ -35,8 +37,19 @@
 			aria-label="Close"
 			on:click={handleClose}
 		>
-			<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="w-6 h-6"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M6 18L18 6M6 6l12 12"
+				/>
 			</svg>
 		</button>
 		<div class="flex gap-4 mb-4 items-center">
@@ -55,7 +68,9 @@
 			<div class="mb-2">
 				<span class="badge badge-outline badge-primary text-xs px-3 py-1">{event.stato}</span>
 				{#if event?.annoCorso}
-					<span class="badge badge-outline badge-secondary text-xs px-3 py-1 ml-2">Year: {event.annoCorso}</span>
+					<span class="badge badge-outline badge-secondary text-xs px-3 py-1 ml-2"
+						>Year: {event.annoCorso}</span
+					>
 				{/if}
 			</div>
 		{/if}
@@ -71,15 +86,29 @@
 			</span>
 
 			<span class="font-bold text-end">Start:</span>
-			<span>{event ? new Date(event.dataInizio).toLocaleString(undefined, { dateStyle: 'full', timeStyle: 'short' }) : ''}</span>
+			<span
+				>{event
+					? new Date(event.dataInizio).toLocaleString(undefined, {
+							dateStyle: 'full',
+							timeStyle: 'short'
+						})
+					: ''}</span
+			>
 
 			<span class="font-bold text-end">End:</span>
-			<span>{event ? new Date(event.dataFine).toLocaleString(undefined, { dateStyle: 'full', timeStyle: 'short' }) : ''}</span>
+			<span
+				>{event
+					? new Date(event.dataFine).toLocaleString(undefined, {
+							dateStyle: 'full',
+							timeStyle: 'short'
+						})
+					: ''}</span
+			>
 
 			<span class="font-bold text-end">Duration:</span>
 			<span>
 				{event
-					? moment.duration(moment(event.dataFine).diff(moment(event.dataInizio))).humanize()
+					? dayjs.duration(dayjs(event.dataFine).diff(dayjs(event.dataInizio))).humanize()
 					: ''}
 			</span>
 
@@ -91,14 +120,14 @@
 					<span class="italic opacity-70">N/A</span>
 				{/if}
 			</span>
-
-
 		</div>
 		{#if event?.evento?.tipoAttivita?.descrizione}
 			<div class="mt-4">
-				<span class="badge badge-accent px-3 py-2 text-xs">{event.evento.tipoAttivita.descrizione}</span>
+				<span class="badge badge-accent px-3 py-2 text-xs"
+					>{event.evento.tipoAttivita.descrizione}</span
+				>
 			</div>
 		{/if}
 	</div>
-  <form method="dialog" class="modal-backdrop" on:click={handleClose}></form>
+	<form method="dialog" class="modal-backdrop" on:click={handleClose}></form>
 </dialog>
