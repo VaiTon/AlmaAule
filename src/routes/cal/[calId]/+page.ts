@@ -1,30 +1,33 @@
-import { getAule, getImpegni } from '$lib/api';
 import dayjs from 'dayjs';
+import { getAule, getImpegni } from '$lib/api';
 import { CAL_MAP } from '$lib/cals';
-import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
+import { error } from '@sveltejs/kit';
 
-export const load: PageLoad = async ({ fetch, params, setHeaders }) => {
-	const { calId } = params;
+export const ssr = false;
 
-	const cal = CAL_MAP.find((c) => c.id === calId);
-	if (cal == null) error(400, 'Calendario non trovato');
-
-	const { id } = cal;
-
-	let aule = await getAule(fetch, id);
-	if (aule == null) {
-		error(500, 'Aule non trovate');
+export const load: PageLoad = async ({ fetch, params, url }) => {
+	const cal = CAL_MAP.find((c) => c.id === params.calId);
+	if (cal == null) {
+		error(404, `Calendario con id ${params.calId} non trovato`);
 	}
 
-	const impegni = getImpegni(fetch, id, {
-		aule: aule.map((a) => a.id),
-		dataFine: dayjs().add(1, 'day'),
-		dataInizio: dayjs().subtract(1, 'day')
+	const dayParam = url.searchParams.get('day');
+	const day = dayParam ?? dayjs().format('YYYY-MM-DD');
+	const startOfDay = dayjs(day).startOf('day');
+	const endOfDay = dayjs(day).endOf('day');
+
+	const aule = getAule(fetch, params.calId);
+
+	const impegni = getImpegni(fetch, params.calId, {
+		dataInizio: startOfDay,
+		dataFine: endOfDay,
+		idAule: []
 	});
 
-	// Cache for 1 day
-	setHeaders({ 'Cache-Control': 'max-age=86400' });
-
-	return { cal, impegni, aule };
+	return {
+		aule: await aule,
+		impegni: await impegni,
+		cal
+	};
 };

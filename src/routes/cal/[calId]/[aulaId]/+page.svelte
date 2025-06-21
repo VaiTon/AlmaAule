@@ -13,8 +13,6 @@
 	import 'leaflet/dist/leaflet.css';
 
 	import dayjs, { Dayjs } from 'dayjs';
-	import utc from 'dayjs/plugin/utc';
-	import timezone from 'dayjs/plugin/timezone';
 	import 'dayjs/locale/it';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
@@ -22,19 +20,13 @@
 	import AulaWeekTimeline from '$lib/AulaWeekTimeline.svelte';
 	import EventModal from '$lib/EventModal.svelte';
 
-	dayjs.extend(utc);
-	dayjs.extend(timezone);
-	dayjs.tz.setDefault('Europe/Rome');
-	dayjs.locale('it');
-
 	let { data }: { data: PageData } = $props();
 	let { aula } = $derived(data);
 
 	let events: Impegno[] = $state([]);
 	let loadingEvents = $state(false);
-	let selectedEvent: Impegno | undefined = $state(undefined);
 
-	let eventModal: HTMLDialogElement;
+	let eventModal: EventModal | undefined = $state(undefined);
 
 	let nowEvent = $derived.by(() => {
 		const now = dayjs();
@@ -110,43 +102,8 @@
 			.openPopup();
 	}
 
-	function impegnoToEvent(impegno: Impegno) {
-		let nome = impegno.nome;
-
-		if (impegno.icona === 'attivitaDidattica') {
-			nome = '📚 ' + nome;
-		} else if (impegno.icona === 'altraAttivita') {
-			nome = '🎉 ' + nome;
-		}
-
-		const title = document.createElement('p');
-		title.innerHTML = impegno.nome;
-		title.classList.add('text-sm', 'font-bold', 'mb-1', 'truncate');
-
-		const nodes = [title];
-
-		const didattica = impegno?.evento?.dettagliDidattici?.[0];
-
-		if (didattica?.corso != null) {
-			const course = document.createElement('div');
-			course.innerHTML = '🎓 ' + didattica.corso?.descrizione;
-			course.classList.add('text-xs', 'mb-1');
-			nodes.push(course);
-		}
-
-		if (impegno.docenti.length > 0) {
-			const teacher = document.createElement('div');
-			teacher.innerHTML = '🧑‍🏫 ' + impegno.docenti.map((d) => d.nome + ' ' + d.cognome).join(', ');
-			teacher.classList.add('text-xs');
-			nodes.push(teacher);
-		}
-
-		return {
-			id: impegno.id,
-			title: { domNodes: nodes },
-			start: dayjs(impegno.dataInizio).toDate(),
-			end: dayjs(impegno.dataFine).toDate()
-		};
+	function openModal(impegno: Impegno) {
+		eventModal?.showModal(impegno);
 	}
 
 	$effect(() => {
@@ -287,11 +244,13 @@
 			{@html calendarIcon}
 			<span>Weekly Events</span>
 		</h2>
+
 		<AulaWeekTimeline
+			loading={loadingEvents}
 			{aula}
 			{events}
 			onEventClick={(impegno) => {
-				selectedEvent = impegno;
+				eventModal?.showModal(impegno);
 			}}
 			onCalendarChange={(start, end) => {
 				updateImpegni(start, end);
@@ -299,6 +258,7 @@
 		/>
 	</div>
 </div>
+
 <div class="card bg-base-100 shadow-xl mb-6">
 	<div class="card-body">
 		<h2 class="card-title text-2xl font-bold mb-2">Map</h2>
@@ -326,8 +286,4 @@
 	</div>
 </div>
 
-<EventModal
-	event={selectedEvent}
-	open={selectedEvent != null}
-	onClose={() => (selectedEvent = undefined)}
-/>
+<EventModal bind:this={eventModal} />

@@ -6,6 +6,24 @@
 	import calendarIcon from '$lib/icons/Calendar.svg?raw';
 	import logoIcon from '$lib/icons/Logo.svg?raw';
 	import gitIcon from '$lib/icons/Git.svg?raw';
+
+	import dayjs from 'dayjs';
+
+	import utc from 'dayjs/plugin/utc';
+	dayjs.extend(utc);
+
+	import timezone from 'dayjs/plugin/timezone';
+	dayjs.extend(timezone);
+
+	import relativeTime from 'dayjs/plugin/relativeTime';
+	dayjs.extend(relativeTime);
+
+	import duration from 'dayjs/plugin/duration';
+	dayjs.extend(duration);
+
+	import 'dayjs/locale/it';
+	dayjs.tz.setDefault('Europe/Rome');
+	dayjs.locale('it');
 </script>
 
 <svelte:head>
@@ -37,7 +55,9 @@
 					class:btn-active={page.url.pathname === '/aule'}
 					aria-label="Classrooms"
 				>
-					<span class="w-5 h-5 sm:w-6 sm:h-6 text-inherit flex items-center justify-center">{@html calendarIcon}</span>
+					<span class="w-5 h-5 sm:w-6 sm:h-6 text-inherit flex items-center justify-center"
+						>{@html calendarIcon}</span
+					>
 					<span class="hidden sm:inline">Classrooms</span>
 				</a>
 			</div>
@@ -62,7 +82,9 @@
 					rel="noopener"
 					class="link link-hover text-primary-content underline-offset-2 flex items-center gap-1"
 				>
-					<span class="w-5 h-5 sm:w-6 sm:h-6 text-primary-content flex items-center justify-center">{@html gitIcon}</span>
+					<span class="w-5 h-5 sm:w-6 sm:h-6 text-primary-content flex items-center justify-center"
+						>{@html gitIcon}</span
+					>
 					<span class="hidden sm:inline">Git</span>
 				</a>
 				<span class="opacity-80">&copy; {new Date().getFullYear()} Eyad Issa</span>

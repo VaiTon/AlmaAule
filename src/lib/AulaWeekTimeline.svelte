@@ -3,7 +3,6 @@
 	import type { Impegno } from '$lib/api';
 
 	type TimelineEvent = {
-		resourceId: string;
 		start: Date;
 		end: Date;
 		title: string;
@@ -13,10 +12,11 @@
 	type Props = {
 		aula: { id: string; descrizione: string };
 		events?: Impegno[];
+		loading?: boolean;
 		onEventClick?: (event: Impegno) => void;
 		onCalendarChange: (startDate: Dayjs, endDate: Dayjs) => void;
 	};
-	const { aula, events = [], onEventClick, onCalendarChange }: Props = $props();
+	const { aula, events = [], loading = false, onEventClick, onCalendarChange }: Props = $props();
 
 	function getDayLabel(date: Dayjs): string {
 		return date.format('ddd D MMM');
@@ -38,7 +38,6 @@
 				)
 			)
 			.map((impegno) => ({
-				resourceId: aula.id,
 				start: new Date(impegno.dataInizio),
 				end: new Date(impegno.dataFine),
 				title: impegno.nome,
@@ -92,17 +91,46 @@
 			z-index: 5;
 		`;
 	}
+
+	function getGridColumnStyle(dayIdx: number): string {
+		return `
+          left: calc(4rem + ${dayIdx} * (100% - 4rem) / 7);
+          width: calc((100% - 4rem) / 7);
+        `;
+	}
 </script>
+
+{#snippet eventInside(impegno: Impegno)}
+	<div class="block text-start h-full py-4">
+		<p class="text-xs font-bold mb-2">{impegno.nome}</p>
+
+		{#if impegno?.evento?.dettagliDidattici?.[0]?.corso != null}
+			<div class="text-xs mb-2">
+				🎓 {impegno.evento.dettagliDidattici[0].corso.descrizione}
+			</div>
+		{/if}
+
+		{#if impegno.docenti.length > 0}
+			<div class="text-xs">
+				🧑‍🏫 {impegno.docenti.map((d) => d.nome + ' ' + d.cognome).join(', ')}
+			</div>
+		{/if}
+	</div>
+{/snippet}
 
 <div class="mb-4 flex justify-center w-full gap-2">
 	<div class="flex items-center gap-2">
-		<button class="btn btn-sm btn-ghost" on:click={goToPrevWeek}>&larr;</button>
+		<button class="btn btn-sm btn-ghost" onclick={goToPrevWeek}>&larr;</button>
 		<span class="font-semibold">
 			{weekStart.format('D MMM')} - {weekStart.add(6, 'day').format('D MMM, YYYY')}
 		</span>
-		<button class="btn btn-sm btn-ghost" on:click={goToNextWeek}>&rarr;</button>
+		<button class="btn btn-sm btn-ghost" onclick={goToNextWeek}>&rarr;</button>
 	</div>
+	{#if loading}
+		<span class="loading loading-spinner loading-xs"></span>
+	{/if}
 </div>
+
 <div class="overflow-x-auto">
 	<div class="min-w-[700px] overflow-x-scroll">
 		<!-- Days axis -->
@@ -129,29 +157,28 @@
 					</div>
 				{/each}
 			</div>
+
 			<!-- Grid columns for days -->
 			{#each weekDaysArr as day, dayIdx}
-				<div
-					class="absolute top-0"
-					style="left:calc(4rem + {dayIdx} * (100% - 4rem) / 7);width:calc((100% - 4rem) / 7);height:100%;"
-				>
-					{#each hours as hour}
+				<div class="absolute top-0" style={getGridColumnStyle(dayIdx)}>
+					{#each hours as _hour}
 						<div class="h-12 border-l border-base-300 border-b"></div>
 					{/each}
 				</div>
 			{/each}
+
 			<!-- Render events for this classroom -->
 			{#each weekEvents as event}
 				{@const startDayIdx = weekDaysArr.findIndex((day) => dayjs(event.start).isSame(day, 'day'))}
 				{#if startDayIdx >= 0}
-					<div
-						class="absolute bg-primary text-primary-content rounded shadow flex px-2 text-xs font-semibold overflow-auto break-words cursor-pointer mx-1 my-1 items-start"
+					<button
+						class="absolute bg-primary text-primary-content rounded shadow px-2 text-xs font-semibold overflow-auto break-words cursor-pointer mx-1 my-1"
 						style={getEventBlockStyle(event, startDayIdx)}
 						title={event.title}
-						on:click={() => handleTimelineEventClick(event.impegno)}
+						onclick={() => handleTimelineEventClick(event.impegno)}
 					>
-						<span class="block w-full">{event.title}</span>
-					</div>
+						{@render eventInside(event.impegno)}
+					</button>
 				{/if}
 			{/each}
 		</div>
