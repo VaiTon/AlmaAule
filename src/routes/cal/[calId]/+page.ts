@@ -27,7 +27,7 @@ export const load: PageLoad = async ({ fetch, params, url }) => {
 
 	return {
 		aule: await aule,
-		impegni: await impegni,
+		impegni: impegni,
 		cal
 	};
 };

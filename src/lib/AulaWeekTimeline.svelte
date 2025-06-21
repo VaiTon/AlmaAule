@@ -104,11 +104,13 @@
 	<div class="block text-start h-full py-4">
 		<p class="text-xs font-bold mb-2">{impegno.nome}</p>
 
-		{#if impegno?.evento?.dettagliDidattici?.[0]?.corso != null}
-			<div class="text-xs mb-2">
+		<div class="text-xs mb-2">
+			{#if impegno?.evento?.dettagliDidattici?.[0]?.corso != null}
 				🎓 {impegno.evento.dettagliDidattici[0].corso.descrizione}
-			</div>
-		{/if}
+			{:else if impegno?.causaleIndisponibilita != null}
+				🚫 {impegno.causaleIndisponibilita}
+			{/if}
+		</div>
 
 		{#if impegno.docenti.length > 0}
 			<div class="text-xs">

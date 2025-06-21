@@ -57,40 +57,43 @@
 					/>
 				</svg>
 			</button>
-			<div class="flex gap-4 mb-4 items-center">
-				<div class="flex items-center gap-2">
-					{#if event.nome != null}
-						{#if event?.icona === 'attivitaDidattica'}
-							<span class="text-2xl">📚</span>
-						{:else if event?.icona === 'altraAttivita'}
-							<span class="text-2xl">🎉</span>
-						{:else}
-							<span class="text-2xl">🗓️</span>
-						{/if}
-						<h2 class="text-xl font-bold grow">{event?.nome}</h2>
+			<div class="flex items-center gap-4 mb-6">
+				<span class="text-4xl" style="line-height: 1;">
+					{#if event?.icona === 'attivitaDidattica'}
+						📚
+					{:else if event?.icona === 'altraAttivita'}
+						🛠️
+					{:else if event?.icona === 'esame'}
+						📝
 					{:else if event.causaleIndisponibilita != null}
-						<span class="text-2xl">🚫</span>
-						<h2 class="text-xl font-bold grow">
-							{event.causaleIndisponibilita}
-						</h2>
+						🚫
 					{:else}
-						<span class="text-2xl">❓</span>
-						<h2 class="text-xl font-bold grow">Unknown Event</h2>
+						❓
+					{/if}
+				</span>
+				<div class="flex flex-col flex-1 min-w-0">
+					<h2 class="text-2xl font-bold truncate">
+						{event?.nome ?? event.causaleIndisponibilita ?? 'Unknown Event'}
+					</h2>
+					{#if event?.evento?.tipoAttivita?.descrizione}
+						<span class="text-base text-gray-500">{event.evento.tipoAttivita.descrizione}</span>
 					{/if}
 				</div>
 			</div>
 
-			{#if event?.stato}
-				<div class="mb-2">
-					<span class="badge badge-outline badge-primary text-xs px-3 py-1">
-						{event.stato == 'P' ? 'Reserved' : event.stato}
-					</span>
-
-					{#if event?.annoCorso}
-						<span class="badge badge-outline badge-secondary text-xs px-3 py-1 ml-2">
-							Year: {event.annoCorso}
-						</span>
-					{/if}
+			{#if event.warning && (event.warning.senzaRisorse || (event.warning.sovrapposizione ?? 0) > 0 || (event.warning.risorsaDaConfermare ?? 0) > 0 || event.warning.sovrapposizioniSospensione)}
+				<div class="alert alert-warning mb-4">
+					<div>
+						<strong>Warning:</strong>
+						{event.warning.senzaRisorse ? ' No resources assigned. ' : ''}
+						{event.warning.sovrapposizione > 0
+							? ` Overlaps: ${event.warning.sovrapposizione}. `
+							: ''}
+						{event.warning.risorsaDaConfermare > 0
+							? ` Resources to confirm: ${event.warning.risorsaDaConfermare}. `
+							: ''}
+						{event.warning.sovrapposizioniSospensione ? ' Suspension overlaps. ' : ''}
+					</div>
 				</div>
 			{/if}
 
@@ -101,6 +104,20 @@
 					<span class="font-bold text-end">Course:</span>
 					<span>
 						{course.descrizione}
+					</span>
+				{/if}
+
+				{#if event?.evento?.dettagliDidattici?.[0]?.nome}
+					<span class="font-bold text-end">Activity:</span>
+					<span>
+						{event.evento.dettagliDidattici[0].nome}
+					</span>
+				{/if}
+
+				{#if event?.evento?.dettagliDidattici?.[0]?.cfu}
+					<span class="font-bold text-end">CFU:</span>
+					<span>
+						{event.evento.dettagliDidattici[0].cfu}
 					</span>
 				{/if}
 
@@ -121,12 +138,64 @@
 						{event.docenti.map((d) => d.nome + ' ' + d.cognome).join(', ')}
 					</span>
 				{/if}
+
+				{#if event.sovrapposizioni?.length > 0}
+					<span class="font-bold text-end">Overlaps:</span>
+					<span>
+						{event.sovrapposizioni
+							.map((s) =>
+								s.docente
+									? `${s.docente.nome} ${s.docente.cognome}${s.accettata ? ' (accepted)' : ''}`
+									: s.risorsaId
+							)
+							.join(', ')}
+					</span>
+				{/if}
+
+				{#if event.warning && (event.warning.senzaRisorse || (event.warning.sovrapposizione ?? 0) > 0 || (event.warning.risorsaDaConfermare ?? 0) > 0 || event.warning.sovrapposizioniSospensione)}
+					<span class="font-bold text-end">Warnings:</span>
+					<span>
+						{event.warning.senzaRisorse ? 'No resources assigned. ' : ''}
+						{event.warning.sovrapposizione > 0
+							? `Overlaps: ${event.warning.sovrapposizione}. `
+							: ''}
+						{event.warning.risorsaDaConfermare > 0
+							? `Resources to confirm: ${event.warning.risorsaDaConfermare}. `
+							: ''}
+						{event.warning.sovrapposizioniSospensione ? 'Suspension overlaps. ' : ''}
+					</span>
+				{/if}
+
+				{#if event.oreAccademiche}
+					<span class="font-bold text-end">Academic Hours:</span>
+					<span>
+						{event.oreAccademiche}
+						{event.oreAccademicheBloccate ? ' (locked)' : ''}
+					</span>
+				{/if}
+
+				{#if event.evento?.annoAccademico?.descrizione}
+					<span class="font-bold text-end">Academic Year:</span>
+					<span>
+						{event.evento.annoAccademico.descrizione}
+					</span>
+				{/if}
 			</div>
 
-			<div class="mt-4">
+			<div class="mt-4 flex flex-wrap gap-2">
 				<span class="badge badge-accent px-3 py-2 text-xs">
-					{event?.evento?.tipoAttivita?.descrizione ?? 'N/A'}
+					Type: {event?.evento?.tipoAttivita?.descrizione ?? 'N/A'}
 				</span>
+				{#if event.stato}
+					<span class="badge badge-outline badge-info px-3 py-2 text-xs">
+						Status: {event.stato}
+					</span>
+				{/if}
+				{#if event.icona}
+					<span class="badge badge-outline badge-ghost px-3 py-2 text-xs">
+						Icon: {event.icona}
+					</span>
+				{/if}
 			</div>
 		</div>
 		<form method="dialog" class="modal-backdrop">
