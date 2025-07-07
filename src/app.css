@@ -4,67 +4,67 @@
 @plugin "daisyui";
 
 @plugin "daisyui/theme" {
-  name: "unibo";
-  default: true;
-  prefersdark: "unibo-dark";
-  color-scheme: light;
+	name: 'unibo';
+	default: true;
+	prefersdark: 'unibo-dark';
+	color-scheme: light;
 
-  --color-primary: #b5151b;
-  --color-primary-content: #fff;
-  --color-secondary: #6d0710;
-  --color-secondary-content: #fff;
-  --color-accent: #e2b007;
-  --color-accent-content: #fff;
-  --color-neutral: #222;
-  --color-neutral-content: #fff;
-  --color-base-100: #fff;
-  --color-base-200: #f7f7f7;
-  --color-base-300: #e5e5e5;
-  --color-base-content: #222;
-  --color-info: #2563eb;
-  --color-info-content: #fff;
-  --color-success: #16a34a;
-  --color-success-content: #fff;
-  --color-warning: #eab308;
-  --color-warning-content: #fff;
-  --color-error: #dc2626;
-  --color-error-content: #fff;
+	--color-primary: #b5151b;
+	--color-primary-content: #fff;
+	--color-secondary: #6d0710;
+	--color-secondary-content: #fff;
+	--color-accent: #e2b007;
+	--color-accent-content: #fff;
+	--color-neutral: #222;
+	--color-neutral-content: #fff;
+	--color-base-100: #fff;
+	--color-base-200: #f7f7f7;
+	--color-base-300: #e5e5e5;
+	--color-base-content: #222;
+	--color-info: #2563eb;
+	--color-info-content: #fff;
+	--color-success: #16a34a;
+	--color-success-content: #fff;
+	--color-warning: #eab308;
+	--color-warning-content: #fff;
+	--color-error: #dc2626;
+	--color-error-content: #fff;
 
-  --radius-selector: 1rem;
-  --radius-field: 0.5rem;
-  --radius-box: 0.5rem;
+	--radius-selector: 1rem;
+	--radius-field: 0.5rem;
+	--radius-box: 0.5rem;
 }
 
 @plugin "daisyui/theme" {
-  name: "unibo-dark";
-  default: false;
-  prefersdark: true;
-  color-scheme: dark;
+	name: 'unibo-dark';
+	default: false;
+	prefersdark: true;
+	color-scheme: dark;
 
-  --color-primary: #b5151b;
-  --color-primary-content: #fff;
-  --color-secondary: #e2b007;
-  --color-secondary-content: #222;
-  --color-accent: #6d0710;
-  --color-accent-content: #fff;
-  --color-neutral: #fff;
-  --color-neutral-content: #222;
-  --color-base-100: #222;
-  --color-base-200: #2a2a2a;
-  --color-base-300: #333;
-  --color-base-content: #fff;
-  --color-info: #60a5fa;
-  --color-info-content: #222;
-  --color-success: #4ade80;
-  --color-success-content: #222;
-  --color-warning: #fde68a;
-  --color-warning-content: #222;
-  --color-error: #f87171;
-  --color-error-content: #222;
+	--color-primary: #b5151b;
+	--color-primary-content: #fff;
+	--color-secondary: #e2b007;
+	--color-secondary-content: #222;
+	--color-accent: #6d0710;
+	--color-accent-content: #fff;
+	--color-neutral: #fff;
+	--color-neutral-content: #222;
+	--color-base-100: #222;
+	--color-base-200: #2a2a2a;
+	--color-base-300: #333;
+	--color-base-content: #fff;
+	--color-info: #60a5fa;
+	--color-info-content: #222;
+	--color-success: #4ade80;
+	--color-success-content: #222;
+	--color-warning: #fde68a;
+	--color-warning-content: #222;
+	--color-error: #f87171;
+	--color-error-content: #222;
 
-  --radius-selector: 1rem;
-  --radius-field: 0.5rem;
-  --radius-box: 0.5rem;
+	--radius-selector: 1rem;
+	--radius-field: 0.5rem;
+	--radius-box: 0.5rem;
 }
 
 :root {

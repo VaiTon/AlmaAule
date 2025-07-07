@@ -57,8 +57,12 @@
 						role="button"
 						tabindex="0"
 						aria-label={`Go to details for ${edificio.plesso} - ${aula.descrizione}`}
-						on:click={() => goto(`/cal/${aula.calId}/${aula.id}`)}
-						on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && goto(`/cal/${aula.calId}/${aula.id}`)}
+						onclick={() => goto(`/cal/${aula.calId}/${aula.id}`)}
+						onkeydown={(e) => {
+							if (e.key === 'Enter' || e.key === ' ') {
+								goto(`/cal/${aula.calId}/${aula.id}`);
+							}
+						}}
 					>
 						<td>
 							<a href="/cal/{aula.calId}/{aula.id}"> {edificio.plesso} - {aula.descrizione} </a>

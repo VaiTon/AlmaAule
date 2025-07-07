@@ -11,13 +11,15 @@
 		Welcome to <strong>AlmaAule</strong> — your tool for checking classroom availability and schedules.
 	</p>
 	<p>
-		This website helps students and staff find <strong>free classrooms</strong> for studying, teaching, or events.
+		This website helps students and staff find <strong>free classrooms</strong> for studying, teaching,
+		or events.
 	</p>
 	<p>
 		We <strong>don't scrape</strong> any other website—AlmaAule relies on public APIs for all its data.
 	</p>
 	<p>
-		Actually, it's your browser that makes the HTTP requests to the servers, so we're not doing anything at all. We're just providing a nice interface. 😼
+		Actually, it's your browser that makes the HTTP requests to the servers, so we're not doing
+		anything at all. We're just providing a nice interface. 😼
 	</p>
 
 	<hr />
@@ -34,10 +36,14 @@
 	<hr />
 
 	<p>
-		<strong>Disclaimer:</strong> This service depends on public APIs and may become unavailable if those APIs change or are removed. We're not responsible for any inconvenience caused by the unavailability of the service.
+		<strong>Disclaimer:</strong> This service depends on public APIs and may become unavailable if those
+		APIs change or are removed. We're not responsible for any inconvenience caused by the unavailability
+		of the service.
 	</p>
 	<p>
-		AlmaAule is open source and available on <a href="https://github.com/VaiTon/uniboaule/">GitHub</a>. Feel free to contribute or use it as a base for your own project!
+		AlmaAule is open source and available on <a href="https://github.com/VaiTon/uniboaule/"
+			>GitHub</a
+		>. Feel free to contribute or use it as a base for your own project!
 	</p>
 	<hr />
 </div>
@@ -45,7 +51,8 @@
 <h2 class="text-2xl text-center font-bold mt-16 mb-4" id="calendars">Select a calendar</h2>
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
 	{#each CAL_MAP as { id, name }}
-		<a href={`/cal/${id}`}
+		<a
+			href={`/cal/${id}`}
 			class="card bg-base-100 shadow hover:shadow-lg transition rounded-xl border border-base-300 flex flex-col items-center justify-center p-6 text-base-content no-underline hover:bg-primary/10"
 			style="min-height: 110px;"
 		>
