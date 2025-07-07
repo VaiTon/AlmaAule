@@ -115,6 +115,23 @@
 			setupMap();
 		}
 	});
+
+	function getOSMLink({ lat, lng, zoom = 17 }: { lat: number; lng: number; zoom?: number }) {
+		const params = new URLSearchParams({
+			mlat: lat.toString(),
+			mlon: lng.toString(),
+			zoom: zoom.toString()
+		});
+		return `https://www.openstreetmap.org/?${params.toString()}`;
+	}
+
+	function getGoogleMapsLink({ lat, lng }: { lat: number; lng: number }) {
+		const params = new URLSearchParams({
+			api: '1',
+			query: `${lat},${lng}`
+		});
+		return `https://www.google.com/maps/search/?${params.toString()}`;
+	}
 </script>
 
 <svelte:head>
@@ -127,35 +144,30 @@
 	<meta property="og:title" content="{aula?.descrizione} - AlmaAule" />
 </svelte:head>
 
-<div class="card bg-base-100 shadow-xl mb-6">
-	<div class="card-body">
-		<h1 class="card-title text-3xl sm:text-4xl font-bold">{aula?.descrizione}</h1>
-		<p>
-			The classroom <strong>"{aula?.descrizione}"</strong> is located on the
-			<strong>{aula?.piano?.descrizione}</strong>
-			of the building <strong>"{aula?.relazioneEdificio.descrizione}"</strong>, at
-			<strong>{aula?.relazioneEdificio.via}, {aula?.relazioneEdificio.comune}</strong>.
-		</p>
-		{#if nowEvent != null}
-			<div
-				class="flex items-center gap-2 mt-4 border border-error rounded-lg px-4 py-2"
-				role="alert"
-			>
-				<span class="font-bold text-error">Occupied</span>
-				<span>
-					by <strong>{nowEvent.nome}</strong>
-					({dayjs(nowEvent.dataInizio).format('lll')} - {dayjs(nowEvent.dataFine).format('lll')})
-				</span>
-			</div>
-		{:else}
-			<div
-				class="flex items-center gap-2 mt-4 border border-success rounded-lg px-4 py-2"
-				role="alert"
-			>
-				<span class="font-bold text-success">Free</span>
-			</div>
-		{/if}
-	</div>
+<div class="mb-6 p-4">
+	<h1 class="text-3xl sm:text-4xl font-bold mb-4">{aula?.descrizione}</h1>
+	<p class="my-4 mx-4">
+		The classroom <strong>"{aula?.descrizione}"</strong> is located on the
+		<strong>{aula?.piano?.descrizione}</strong>
+		of the building <strong>"{aula?.relazioneEdificio.descrizione}"</strong>, at
+		<strong>{aula?.relazioneEdificio.via}, {aula?.relazioneEdificio.comune}</strong>.
+	</p>
+	{#if nowEvent != null}
+		<div class="flex items-center gap-2 mt-4 border border-error rounded-lg px-4 py-2" role="alert">
+			<span class="font-bold text-error">Occupied</span>
+			<span>
+				by <strong>{nowEvent.nome}</strong>
+				({dayjs(nowEvent.dataInizio).format('lll')} - {dayjs(nowEvent.dataFine).format('lll')})
+			</span>
+		</div>
+	{:else}
+		<div
+			class="flex items-center gap-2 mt-4 border border-success rounded-lg px-4 py-2"
+			role="alert"
+		>
+			<span class="font-bold text-success">Free</span>
+		</div>
+	{/if}
 </div>
 
 <details class="collapse bg-base-300 text-base-content collapse-arrow mb-4">
@@ -238,52 +250,52 @@
 
 <div class="divider"></div>
 
-<div class="card bg-base-100 shadow-xl mb-6">
-	<div class="card-body">
-		<h2 class="card-title text-2xl font-bold mb-2 flex items-center gap-2">
-			{@html calendarIcon}
-			<span>Weekly Events</span>
-		</h2>
+<div class="p-4 mb-6">
+	<h2 class="card-title text-2xl font-bold mb-2 flex items-center gap-2">
+		{@html calendarIcon}
+		<span>Weekly Events</span>
+	</h2>
 
-		<AulaWeekTimeline
-			loading={loadingEvents}
-			{aula}
-			{events}
-			onEventClick={(impegno) => {
-				eventModal?.showModal(impegno);
-			}}
-			onCalendarChange={(start, end) => {
-				updateImpegni(start, end);
-			}}
-		/>
-	</div>
+	<AulaWeekTimeline
+		loading={loadingEvents}
+		{aula}
+		{events}
+		onEventClick={(impegno) => {
+			eventModal?.showModal(impegno);
+		}}
+		onCalendarChange={(start, end) => {
+			updateImpegni(start, end);
+		}}
+	/>
 </div>
 
-<div class="card bg-base-100 shadow-xl mb-6">
-	<div class="card-body">
-		<h2 class="card-title text-2xl font-bold mb-2">Map</h2>
-		<div class="flex flex-col sm:flex-row justify-center gap-2 mb-4">
-			<a
-				href="https://www.google.com/maps/search/?api=1&query={aula?.relazioneEdificio.geo
-					.lat},{aula?.relazioneEdificio.geo.lng}"
-				target="_blank"
-				rel="noopener"
-				class="btn btn-primary btn-md"
-			>
-				Open in Google Maps
-			</a>
-			<a
-				href="http://www.openstreetmap.org/?mlat={aula?.relazioneEdificio.geo.lat}&mlon={aula
-					?.relazioneEdificio.geo.lng}&zoom=15"
-				target="_blank"
-				rel="noopener"
-				class="btn btn-primary btn-md"
-			>
-				Open in OpenStreetMap
-			</a>
-		</div>
-		<div class="w-full rounded-box overflow-hidden h-64 sm:h-80" id="map"></div>
+<div class="p-4 mb-6">
+	<h2 class="card-title text-2xl font-bold mb-2">Map</h2>
+	<div class="flex flex-col sm:flex-row justify-center gap-2 mb-4">
+		<a
+			href={getGoogleMapsLink({
+				lat: aula?.relazioneEdificio.geo.lat,
+				lng: aula?.relazioneEdificio.geo.lng
+			})}
+			target="_blank"
+			rel="noopener"
+			class="btn btn-primary btn-md"
+		>
+			Open in Google Maps
+		</a>
+		<a
+			href={getOSMLink({
+				lat: aula?.relazioneEdificio.geo.lat,
+				lng: aula?.relazioneEdificio.geo.lng
+			})}
+			target="_blank"
+			rel="noopener"
+			class="btn btn-primary btn-md"
+		>
+			Open in OpenStreetMap
+		</a>
 	</div>
+	<div class="w-full rounded-box overflow-hidden h-64 sm:h-80" id="map"></div>
 </div>
 
 <EventModal bind:this={eventModal} />
