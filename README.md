@@ -6,7 +6,10 @@ With AlmaAule, you can search for rooms, view their schedules, and see their cur
 
 ## Disclaimer
 
-In no way is this project affiliated with or endorsed by the University of Bologna (Unibo). It is an independent project created by students and developers to provide a useful tool for the Unibo community.
+> [!WARNING]
+> In no way is this project affiliated with or endorsed by the University of Bologna (Unibo).
+>
+> It is an independent project created by students and developers to provide a useful tool for the Unibo community.
 
 ## Live deployments
 
@@ -66,6 +69,6 @@ Contributions are welcome! Feel free to open issues or submit pull requests on [
 
 ## License
 
-Where not otherwise noted, the code in this repository is licensed under the [GNU Affero General Public License v3.0 (AGPL-3.0)](https://www.gnu.org/licenses/agpl-3.0.en.html).
+Unless otherwise noted, the code in this repository is licensed under the [GNU Affero General Public License v3.0 (AGPL-3.0)](https://www.gnu.org/licenses/agpl-3.0.en.html).
 
 We follow the [REUSE 3.3](https://reuse.software/) standard for source code licensing and distribution. You can find the REUSE configuration file in the root directory of this repository.
