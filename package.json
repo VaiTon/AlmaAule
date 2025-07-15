@@ -17,7 +17,7 @@
 		"@fontsource-variable/merriweather-sans": "^5.2.6",
 		"@sveltejs/adapter-auto": "^6.0.1",
 		"@sveltejs/kit": "^2.22.5",
-		"@sveltejs/vite-plugin-svelte": "^5.1.0",
+		"@sveltejs/vite-plugin-svelte": "^6.0.0",
 		"@tailwindcss/postcss": "^4.1.11",
 		"@tailwindcss/typography": "^0.5.16",
 		"@types/leaflet": "^1.9.20",
