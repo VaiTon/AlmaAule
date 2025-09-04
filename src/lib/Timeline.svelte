@@ -39,7 +39,7 @@
 	}
 
 	let sortedResources = $derived.by(() => {
-		return resources.sort((a, b) => a.title.localeCompare(b.title));
+		return resources.toSorted((a, b) => a.title.localeCompare(b.title));
 	});
 </script>
 
