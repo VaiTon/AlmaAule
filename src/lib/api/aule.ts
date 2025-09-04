@@ -8,7 +8,7 @@ export async function getAule(
 	idCalendario: string,
 	options: { order?: string; limit?: number; auleIds?: string[] } = {}
 ): Promise<Aula[]> {
-	return fetch(AULE_URL, {
+	const resp = (await fetch(AULE_URL, {
 		method: 'POST',
 		credentials: 'omit',
 		mode: 'cors',
@@ -23,5 +23,11 @@ export async function getAule(
 			edificiIds: [],
 			limit: options.limit ?? 250
 		})
-	}).then((res) => res.json());
+	}).then((res) => res.json())) as Aula[] | { error: { statusCode: number; codiceErrore: string } };
+
+	if ('error' in resp) {
+		throw new Error(`Error fetching aule: ${resp.error.codiceErrore}: ${resp.error.statusCode}`);
+	}
+
+	return resp;
 }

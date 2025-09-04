@@ -16,7 +16,12 @@ export const load: PageLoad = async ({ fetch }) => {
 	const calendars = CAL_MAP;
 
 	const aulePromises = calendars.map(async (cal) => {
-		let aule = await getAule(fetch, cal.id);
+		let aule: Aula[] = [];
+		try {
+			aule = await getAule(fetch, cal.id);
+		} catch (error) {
+			console.error(`Error fetching aule for calendar ${cal.id}:`, error);
+		}
 
 		// Add calId to each aula
 		return aule.map((a) => ({ ...a, calId: cal.id }));
