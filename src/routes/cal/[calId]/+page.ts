@@ -1,10 +1,10 @@
+import { error } from '@sveltejs/kit';
 import dayjs from 'dayjs';
+
 import { getAule, getImpegni } from '$lib/api';
 import { CAL_MAP } from '$lib/cals';
-import type { PageLoad } from './$types';
-import { error } from '@sveltejs/kit';
 
-export const ssr = false;
+import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch, params, url }) => {
 	const cal = CAL_MAP.find((c) => c.id === params.calId);

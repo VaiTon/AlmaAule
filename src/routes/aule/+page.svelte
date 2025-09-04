@@ -50,7 +50,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each aule.sort(sortAule).filter(filterAule) as aula}
+				{#each aule.sort(sortAule).filter(filterAule) as aula (aula.id)}
 					{@const edificio = aula.relazioneEdificio}
 					<tr
 						class="hover cursor-pointer"

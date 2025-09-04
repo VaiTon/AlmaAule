@@ -3,6 +3,7 @@
 
 	import '@fontsource-variable/merriweather-sans';
 	import '../app.css';
+
 	import calendarIcon from '$lib/icons/Calendar.svg?raw';
 	import logoIcon from '$lib/icons/Logo.svg?raw';
 	import gitIcon from '$lib/icons/Git.svg?raw';
@@ -40,6 +41,7 @@
 				<span
 					class="bg-base-100 rounded-full w-9 h-9 flex items-center justify-center border-2 border-primary shadow group-hover:scale-105 transition-transform text-primary"
 				>
+					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 					{@html logoIcon}
 				</span>
 				<span
@@ -55,9 +57,10 @@
 					class:btn-active={page.url.pathname === '/aule'}
 					aria-label="Classrooms"
 				>
-					<span class="w-5 h-5 sm:w-6 sm:h-6 text-inherit flex items-center justify-center"
-						>{@html calendarIcon}</span
-					>
+					<span class="w-5 h-5 sm:w-6 sm:h-6 text-inherit flex items-center justify-center">
+						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+						{@html calendarIcon}
+					</span>
 					<span class="hidden sm:inline">Classrooms</span>
 				</a>
 			</div>
@@ -82,9 +85,10 @@
 					rel="noopener"
 					class="link link-hover text-primary-content underline-offset-2 flex items-center gap-1"
 				>
-					<span class="w-5 h-5 sm:w-6 sm:h-6 text-primary-content flex items-center justify-center"
-						>{@html gitIcon}</span
-					>
+					<span class="w-5 h-5 sm:w-6 sm:h-6 text-primary-content flex items-center justify-center">
+						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+						{@html gitIcon}
+					</span>
 					<span class="hidden sm:inline">Git</span>
 				</a>
 				<span class="opacity-80">&copy; {new Date().getFullYear()} Eyad Issa</span>

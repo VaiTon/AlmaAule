@@ -2,12 +2,12 @@
 	import dayjs from 'dayjs';
 
 	import { goto } from '$app/navigation';
-	import { CAL_MAP } from '$lib/cals';
 	import { page } from '$app/state';
-	import Timeline from '$lib/Timeline.svelte';
-	import EventModal from '$lib/EventModal.svelte';
-	import { goto as svelteGoto } from '$app/navigation';
 	import type { Impegno } from '$lib/api';
+
+	import EventModal from '$lib/EventModal.svelte';
+	import Timeline from '$lib/Timeline.svelte';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 	let { data: pageData } = $props();
 	let { cal } = $derived(pageData);
@@ -19,9 +19,9 @@
 
 	function onDayChange(e: Event) {
 		const value = (e.target as HTMLInputElement).value;
-		const params = new URLSearchParams(page.url.searchParams);
+		const params = new SvelteURLSearchParams(page.url.searchParams);
 		params.set('day', value);
-		svelteGoto(`${page.url.pathname}?${params.toString()}`, { replaceState: true });
+		goto(`${page.url.pathname}?${params.toString()}`, { replaceState: true });
 	}
 
 	let resources = $derived.by(() =>
@@ -65,7 +65,7 @@
 </script>
 
 <div class="mb-4 flex items-center gap-4">
-	<a class="btn btn-primary" href={`/`} aria-label="Back to calendar"> ← Back </a>
+	<a class="btn btn-primary" href="/" aria-label="Back to calendar"> ← Back </a>
 	<h1 class="text-2xl font-bold">Resource Timeline for {cal.name}</h1>
 </div>
 
@@ -78,9 +78,9 @@
 			aria-label="Previous day"
 			onclick={() => {
 				const prev = dayjs(selectedDay).subtract(1, 'day').format('YYYY-MM-DD');
-				const params = new URLSearchParams(page.url.searchParams);
+				const params = new SvelteURLSearchParams(page.url.searchParams);
 				params.set('day', prev);
-				svelteGoto(`${page.url.pathname}?${params.toString()}`, { replaceState: true });
+				goto(`${page.url.pathname}?${params.toString()}`, { replaceState: true });
 			}}
 		>
 			←
@@ -99,9 +99,9 @@
 			aria-label="Next day"
 			onclick={() => {
 				const next = dayjs(selectedDay).add(1, 'day').format('YYYY-MM-DD');
-				const params = new URLSearchParams(page.url.searchParams);
+				const params = new SvelteURLSearchParams(page.url.searchParams);
 				params.set('day', next);
-				svelteGoto(`${page.url.pathname}?${params.toString()}`, { replaceState: true });
+				goto(`${page.url.pathname}?${params.toString()}`, { replaceState: true });
 			}}
 		>
 			→

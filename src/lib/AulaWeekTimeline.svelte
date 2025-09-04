@@ -10,13 +10,12 @@
 	};
 
 	type Props = {
-		aula: { id: string; descrizione: string };
 		events?: Impegno[];
 		loading?: boolean;
 		onEventClick?: (event: Impegno) => void;
 		onCalendarChange: (startDate: Dayjs, endDate: Dayjs) => void;
 	};
-	const { aula, events = [], loading = false, onEventClick, onCalendarChange }: Props = $props();
+	const { events = [], loading = false, onEventClick, onCalendarChange }: Props = $props();
 
 	function getDayLabel(date: Dayjs): string {
 		return date.format('ddd D MMM');
@@ -139,7 +138,7 @@
 		<div class="flex border-b border-base-300 bg-base-200 sticky top-0 z-10" style="height:2.5rem;">
 			<!-- Empty space for hour labels -->
 			<div class="w-16 flex-shrink-0"></div>
-			{#each weekDaysArr as day}
+			{#each weekDaysArr as day (day.toDate())}
 				<div
 					class="flex-1 text-center py-2 text-xs font-semibold border-l border-base-300 first:border-l-0"
 				>
@@ -151,7 +150,7 @@
 		<div class="relative" style="height:{hours.length * 48}px;">
 			<!-- Hour labels -->
 			<div class="absolute left-0 top-0 w-16 h-full">
-				{#each hours as hour}
+				{#each hours as hour (hour)}
 					<div
 						class="h-12 flex items-center justify-end pr-2 text-xs text-base-content/70 border-b border-base-300"
 					>
@@ -161,16 +160,16 @@
 			</div>
 
 			<!-- Grid columns for days -->
-			{#each weekDaysArr as day, dayIdx}
+			{#each weekDaysArr as day, dayIdx (day.toDate())}
 				<div class="absolute top-0" style={getGridColumnStyle(dayIdx)}>
-					{#each hours as _hour}
+					{#each hours as hour (hour)}
 						<div class="h-12 border-l border-base-300 border-b"></div>
 					{/each}
 				</div>
 			{/each}
 
 			<!-- Render events for this classroom -->
-			{#each weekEvents as event}
+			{#each weekEvents as event (event.start + event.title)}
 				{@const startDayIdx = weekDaysArr.findIndex((day) => dayjs(event.start).isSame(day, 'day'))}
 				{#if startDayIdx >= 0}
 					<button

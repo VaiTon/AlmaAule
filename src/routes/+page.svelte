@@ -50,7 +50,7 @@
 
 <h2 class="text-2xl text-center font-bold mt-16 mb-4" id="calendars">Select a calendar</h2>
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-	{#each CAL_MAP as { id, name }}
+	{#each CAL_MAP as { id, name } (id)}
 		<a
 			href={`/cal/${id}`}
 			class="card bg-base-100 shadow hover:shadow-lg transition rounded-xl border border-base-300 flex flex-col items-center justify-center p-6 text-base-content no-underline hover:bg-primary/10"

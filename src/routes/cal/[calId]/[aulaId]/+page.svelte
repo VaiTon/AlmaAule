@@ -1,6 +1,5 @@
 <script lang="ts">
 	import L from 'leaflet';
-	import { onMount } from 'svelte';
 
 	import markerIcon from 'leaflet/dist/images/marker-icon.png';
 	import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
@@ -15,7 +14,6 @@
 	import dayjs, { Dayjs } from 'dayjs';
 	import 'dayjs/locale/it';
 	import { page } from '$app/state';
-	import { goto } from '$app/navigation';
 	import calendarIcon from '$lib/icons/Calendar.svg?raw';
 	import AulaWeekTimeline from '$lib/AulaWeekTimeline.svelte';
 	import EventModal from '$lib/EventModal.svelte';
@@ -100,10 +98,6 @@
 			.addTo(map)
 			.bindPopup(aula.relazioneEdificio.descrizione)
 			.openPopup();
-	}
-
-	function openModal(impegno: Impegno) {
-		eventModal?.showModal(impegno);
 	}
 
 	$effect(() => {
@@ -252,13 +246,13 @@
 
 <div class="p-4 mb-6">
 	<h2 class="card-title text-2xl font-bold mb-2 flex items-center gap-2">
+		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 		{@html calendarIcon}
 		<span>Weekly Events</span>
 	</h2>
 
 	<AulaWeekTimeline
 		loading={loadingEvents}
-		{aula}
 		{events}
 		onEventClick={(impegno) => {
 			eventModal?.showModal(impegno);

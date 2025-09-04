@@ -27,7 +27,7 @@ export const load: PageLoad = async ({ fetch }) => {
 		return aule.map((a) => ({ ...a, calId: cal.id }));
 	});
 
-	let aule: Promise<CalendarAula[]> = Promise.all(aulePromises)
+	const aule: Promise<CalendarAula[]> = Promise.all(aulePromises)
 		.then((it) => it.flat())
 		.then((it) => deduplicate(it));
 
