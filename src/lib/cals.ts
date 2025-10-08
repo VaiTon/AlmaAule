@@ -1,9 +1,27 @@
 export const CAL_MAP: { id: string; name: string }[] = [
+	{ id: '638f165a59ae3800e8297862', name: 'Distretto Filippo Re' },
+	{ id: '638f169a2d594f10264624ba', name: 'Distretto Imola' },
+	{ id: '638f16c7029ea90fdd1191c2', name: 'Distretto Navile' },
+	{ id: '638f16ff00bc45111a4aa703', name: 'Distretto Nord Ovest' },
+	{ id: '638f172a2d594f10264624c9', name: 'Distretto Poggi' },
+	{ id: '638f175737cb9f1055e3192f', name: 'Distretto Risorgimento' },
+	{ id: '638f178d00bc45111a4aa70f', name: 'Distretto SAM' },
+	{ id: '638f17b9f6e1a1114978d835', name: 'Distretto S. Giacomo' },
+	{ id: '638f184b00bc45111a4aa729', name: 'Distretto Sud Est' },
+	{ id: '63761cd987bf5b1a522089f7', name: 'Distretto Zamboni' },
+	{ id: '5f070dd94fb4b60018b0c34b', name: 'Distretto Ozzano' },
+	{ id: '638f113bd007e90ff1eefe36', name: 'Campus di Cesena' },
+	{ id: '6385cd2170c0d004c96d8543', name: 'Campus di Forlì' },
+	{ id: '638f0a9712e6300f79e7278a', name: 'Campus di Ravenna' },
+	{ id: '6388ab8ac210130d5cf453d3', name: 'Campus di Rimini' },
+
 	{ id: '5e9996a228a649001237296d', name: 'Risorgimento' },
-	{ id: '619b9674a810d60017224b93', name: 'Risorgimento - Labs' },
+	{ id: '60f5938d5fce9400180b2e43', name: 'Risorgimento - Lab CeSIA' },
+	{ id: '5fabdbe0080608001bb8b239', name: 'Risorgimento - Lab Strani' },
 	{ id: '5f0310d366e423001758ae01', name: 'Matematica' },
 	{ id: '5e9995b828a649001237296a', name: 'Matematicaa (backup)' },
 	{ id: '5f5b3cb4dd64620012b0f502', name: 'Chimica Industriale' },
+
 	{ id: '5e99b3883252110012b67395', name: 'Terracini' },
 	{ id: '5facf686fa03a40018c76c91', name: 'Navile - 1' },
 	{ id: '613216659f5a940011ad923c', name: 'Navile - 2' },
@@ -35,5 +53,7 @@ export const CAL_MAP: { id: string; name: string }[] = [
 	{ id: '5e9da51f651dc60017d8e4ff', name: 'Laboratorio 4.2 - Campus Ex Zuccherificio' },
 	{ id: '642be07ba9496f00e20a1a73', name: 'Ex Zuccherificio' },
 	{ id: '5f5b704fed932e00125444bb', name: 'Aule Vespignani e Pero' },
-	{ id: '5e9f0969290c0b0017e5b122', name: ' Sala Tesi - Villa Almerici ' }
+	{ id: '5e9f0969290c0b0017e5b122', name: 'Sala Tesi - Villa Almerici ' },
+	{ id: '615ff6970990430018f7370c', name: 'Zamboni 1' },
+	{ id: '64b8eff10882b0001c939ab9', name: 'Farmacia 4 anno' }
 ];
