@@ -1,28 +1,14 @@
 <script lang="ts">
 	import dayjs from 'dayjs';
 
-	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
 	import type { Impegno } from '$lib/api';
 
-	import EventModal from '$lib/EventModal.svelte';
-	import Timeline from '$lib/Timeline.svelte';
-	import { SvelteURLSearchParams } from 'svelte/reactivity';
+	import { onMount } from 'svelte';
 
 	let { data: pageData } = $props();
 	let { cal } = $derived(pageData);
-
-	const hours = Array.from({ length: 13 }, (_, i) => 8 + i); // 8:00 to 20:00
-
-	let urlDay = $derived(page.url.searchParams.get('day'));
-	let selectedDay = $derived(urlDay ?? dayjs().format('YYYY-MM-DD'));
-
-	function onDayChange(e: Event) {
-		const value = (e.target as HTMLInputElement).value;
-		const params = new SvelteURLSearchParams(page.url.searchParams);
-		params.set('day', value);
-		goto(`${page.url.pathname}?${params.toString()}`, { replaceState: true });
-	}
 
 	let resources = $derived.by(() =>
 		pageData.aule.map((aula) => ({
@@ -41,6 +27,7 @@
 
 	let loadingEvents = $state(false);
 	let timelineEvents: TimelineEvent[] = $state([]);
+	let currentTime = $state(new Date());
 
 	$effect(() => {
 		loadingEvents = true;
@@ -58,64 +45,103 @@
 		});
 	});
 
-	let eventModal: EventModal | undefined = $state(undefined);
-	function handleEventClick(event: Impegno) {
-		eventModal?.showModal(event);
+	// Update current time every minute
+	onMount(() => {
+		const interval = setInterval(() => {
+			currentTime = new Date();
+		}, 60000); // Update every minute
+
+		return () => clearInterval(interval);
+	});
+
+	// Get current activity for a resource
+	function getCurrentActivity(resourceId: string) {
+		const now = currentTime;
+		const currentEvent = timelineEvents.find(
+			(e) => e.resourceId === resourceId && e.start <= now && e.end >= now
+		);
+		return currentEvent;
 	}
+
+	// Get next activity for a resource
+	function getNextActivity(resourceId: string) {
+		const now = currentTime;
+		const futureEvents = timelineEvents
+			.filter((e) => e.resourceId === resourceId && e.start > now)
+			.sort((a, b) => a.start.getTime() - b.start.getTime());
+		return futureEvents[0];
+	}
+
+	let sortedResources = $derived.by(() => {
+		return resources.toSorted((a, b) => a.title.localeCompare(b.title));
+	});
 </script>
 
+{#snippet roomCard(resource: { id: string; title: string })}
+	{@const currentActivity = getCurrentActivity(resource.id)}
+	{@const nextActivity = getNextActivity(resource.id)}
+	<a
+		href={resolve('/cal/[calId]/[aulaId]', {
+			calId: page.params.calId,
+			aulaId: resource.id
+		})}
+		class={[
+			'card border-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer',
+			{
+				'border-error bg-error/10': currentActivity,
+				'border-success bg-success/10': !currentActivity
+			}
+		]}
+	>
+		<div class="card-body p-4">
+			<h2 class="card-title text-base font-bold truncate" title={resource.title}>
+				{resource.title}
+			</h2>
+
+			{#if currentActivity}
+				<div class="mt-2">
+					<div class="badge badge-sm mb-2">OCCUPIED</div>
+					<p class="text-sm font-semibold truncate" title={currentActivity.title}>
+						{currentActivity.title ||
+							currentActivity.impegno.causaleIndisponibilita ||
+							'Activity in progress'}
+					</p>
+					<p class="text-xs opacity-90 mt-1">
+						Until {dayjs(currentActivity.end).format('HH:mm')}
+					</p>
+				</div>
+			{:else}
+				<div class="mt-2">
+					<div class="badge badge-sm mb-2">FREE</div>
+					{#if nextActivity}
+						<p class="text-xs opacity-90 mt-1">
+							Next: {dayjs(nextActivity.start).format('HH:mm')}
+						</p>
+						<p class="text-xs opacity-75 truncate" title={nextActivity.title}>
+							{nextActivity.title}
+						</p>
+					{:else}
+						<p class="text-xs opacity-90 mt-1">Free for the rest of the day</p>
+					{/if}
+				</div>
+			{/if}
+		</div>
+	</a>
+{/snippet}
+
 <div class="mb-4 flex items-center gap-4">
-	<a class="btn btn-primary" href="/" aria-label="Back to calendar"> ← Back </a>
-	<h1 class="text-2xl font-bold">Resource Timeline for {cal.name}</h1>
+	<a class="btn btn-primary" href={resolve('/')} aria-label="Back to home page"> ← Back </a>
+	<h1 class="text-2xl font-bold">Availability for '{cal.name}' rooms</h1>
 </div>
 
-<div class="mb-4 flex flex-col sm:flex-row items-center gap-2">
-	<label for="day-select" class="font-semibold">Select day:</label>
-	<div class="flex items-center gap-2">
-		<button
-			type="button"
-			class="btn btn-sm btn-outline"
-			aria-label="Previous day"
-			onclick={() => {
-				const prev = dayjs(selectedDay).subtract(1, 'day').format('YYYY-MM-DD');
-				const params = new SvelteURLSearchParams(page.url.searchParams);
-				params.set('day', prev);
-				goto(`${page.url.pathname}?${params.toString()}`, { replaceState: true });
-			}}
-		>
-			←
-		</button>
-		<input
-			id="day-select"
-			type="date"
-			class="input input-bordered input-sm"
-			value={selectedDay}
-			max="2100-12-31"
-			onchange={onDayChange}
-		/>
-		<button
-			type="button"
-			class="btn btn-sm btn-outline"
-			aria-label="Next day"
-			onclick={() => {
-				const next = dayjs(selectedDay).add(1, 'day').format('YYYY-MM-DD');
-				const params = new SvelteURLSearchParams(page.url.searchParams);
-				params.set('day', next);
-				goto(`${page.url.pathname}?${params.toString()}`, { replaceState: true });
-			}}
-		>
-			→
-		</button>
+{#if loadingEvents}
+	<div class="flex justify-center items-center h-32">
+		<div class="loading loading-spinner text-primary"></div>
 	</div>
-
-	{#if loadingEvents}
-		<span class="loading loading-spinner loading-sm"></span>
-	{:else}
-		<span class="text-sm text-gray-500">
-			{timelineEvents.length} events loaded
-		</span>
-	{/if}
-</div>
-
-<Timeline {resources} {hours} events={timelineEvents} onEventClick={handleEventClick} />
-<EventModal bind:this={eventModal} />
+{:else if page.params.calId}
+	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+		{#each sortedResources as resource (resource.id)}
+			{@render roomCard(resource)}
+		{/each}
+	</div>
+{/if}

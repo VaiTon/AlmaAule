@@ -13,7 +13,7 @@
 		events?: Impegno[];
 		loading?: boolean;
 		onEventClick?: (event: Impegno) => void;
-		onCalendarChange: (startDate: Dayjs, endDate: Dayjs) => void;
+		onCalendarChange?: (startDate: Dayjs, endDate: Dayjs) => void;
 	};
 	const { events = [], loading = false, onEventClick, onCalendarChange }: Props = $props();
 
@@ -57,8 +57,20 @@
 		onCalendarChange?.(weekStart, weekStart.add(6, 'day'));
 	}
 
-	const startHour = 8; // 7:00 AM
-	const endHour = 19; // 9:00 PM
+	let startHour = $derived.by(() => {
+		if (weekEvents.length === 0) return 8;
+		return Math.min(...weekEvents.map((e) => dayjs(e.start).hour()));
+	});
+
+	let endHour = $derived.by(() => {
+		if (weekEvents.length === 0) return 19;
+		return Math.max(
+			...weekEvents.map((e) => {
+				const end = dayjs(e.end);
+				return end.hour() + (end.minute() > 0 ? 1 : 0); // Round up if there are minutes
+			})
+		);
+	});
 
 	const hours: number[] = $derived.by(() => {
 		const range = [];
@@ -133,11 +145,11 @@
 </div>
 
 <div class="overflow-x-auto">
-	<div class="min-w-[700px] overflow-x-scroll">
+	<div class="min-w-175 overflow-x-scroll">
 		<!-- Days axis -->
 		<div class="flex border-b border-base-300 bg-base-200 sticky top-0 z-10" style="height:2.5rem;">
 			<!-- Empty space for hour labels -->
-			<div class="w-16 flex-shrink-0"></div>
+			<div class="w-16 shrink-0"></div>
 			{#each weekDaysArr as day (day.toDate())}
 				<div
 					class="flex-1 text-center py-2 text-xs font-semibold border-l border-base-300 first:border-l-0"
@@ -173,7 +185,7 @@
 				{@const startDayIdx = weekDaysArr.findIndex((day) => dayjs(event.start).isSame(day, 'day'))}
 				{#if startDayIdx >= 0}
 					<button
-						class="absolute bg-primary text-primary-content rounded shadow px-2 text-xs font-semibold overflow-auto break-words cursor-pointer mx-1 my-1"
+						class="absolute bg-primary text-primary-content rounded shadow px-2 text-xs font-semibold overflow-auto wrap-break-word cursor-pointer mx-1 my-1"
 						style={getEventBlockStyle(event, startDayIdx)}
 						title={event.title}
 						onclick={() => handleTimelineEventClick(event.impegno)}

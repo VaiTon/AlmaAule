@@ -19,7 +19,6 @@
 	let { onclose }: Props = $props();
 
 	export function showModal(impegno: Impegno) {
-		console.log('Showing event modal:', impegno);
 		event = impegno;
 		setTimeout(() => dialogEl?.showModal(), 0); // Ensure the dialog is shown after the DOM update
 	}
@@ -135,7 +134,19 @@
 				{#if (event.docenti?.length ?? 0) > 0}
 					<span class="font-bold text-end">Teachers:</span>
 					<span>
-						{event.docenti.map((d) => d.nome + ' ' + d.cognome).join(', ')}
+						{#each event.docenti as docente, index (docente.id)}
+							<a
+								href={'https://www.unibo.it/uniboweb/unibosearch/rubrica.aspx?tab=FullTextPanel&lang=it&query=' +
+									encodeURIComponent(docente.nome + ' ' + docente.cognome)}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="link link-primary"
+							>
+								{docente.nome}
+								{docente.cognome} ({docente.id})
+								{index < event.docenti.length - 1 ? ', ' : ''}
+							</a>
+						{/each}
 					</span>
 				{/if}
 

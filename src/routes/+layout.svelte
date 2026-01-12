@@ -23,6 +23,7 @@
 	dayjs.extend(duration);
 
 	import 'dayjs/locale/it';
+	import { resolve } from '$app/paths';
 	dayjs.tz.setDefault('Europe/Rome');
 	dayjs.locale('it');
 </script>
@@ -37,7 +38,7 @@
 			class="navbar flex flex-row items-center justify-between rounded-xl border-b border-base-300 shadow-lg bg-primary/90 text-primary-content px-2 sm:px-4 py-0 mb-8 backdrop-blur-md transition-all"
 			aria-label="main navigation"
 		>
-			<a href="/" class="flex items-center gap-2 group transition-all hover:opacity-90 min-w-0">
+			<a href={resolve('/')} class="flex items-center gap-2 group transition-all hover:opacity-90 min-w-0">
 				<span
 					class="bg-base-100 rounded-full w-9 h-9 flex items-center justify-center border-2 border-primary shadow group-hover:scale-105 transition-transform text-primary"
 				>
@@ -52,7 +53,7 @@
 			</a>
 			<div class="flex flex-row items-center gap-1 sm:gap-2">
 				<a
-					href="/aule"
+					href={resolve('/aule')}
 					class="btn btn-secondary rounded-full font-semibold flex items-center justify-center gap-2 shadow-md transition-all px-3 sm:px-5 py-2 text-base sm:text-lg"
 					class:btn-active={page.url.pathname === '/aule'}
 					aria-label="Classrooms"

@@ -10,10 +10,6 @@ export const CAL_MAP: { id: string; name: string }[] = [
 	{ id: '638f184b00bc45111a4aa729', name: 'Distretto Sud Est' },
 	{ id: '63761cd987bf5b1a522089f7', name: 'Distretto Zamboni' },
 	{ id: '5f070dd94fb4b60018b0c34b', name: 'Distretto Ozzano' },
-	{ id: '638f113bd007e90ff1eefe36', name: 'Campus di Cesena' },
-	{ id: '6385cd2170c0d004c96d8543', name: 'Campus di Forlì' },
-	{ id: '638f0a9712e6300f79e7278a', name: 'Campus di Ravenna' },
-	{ id: '6388ab8ac210130d5cf453d3', name: 'Campus di Rimini' },
 
 	{ id: '5e9996a228a649001237296d', name: 'Risorgimento' },
 	{ id: '60f5938d5fce9400180b2e43', name: 'Risorgimento - Lab CeSIA' },
@@ -21,6 +17,8 @@ export const CAL_MAP: { id: string; name: string }[] = [
 	{ id: '5f0310d366e423001758ae01', name: 'Matematica' },
 	{ id: '5e9995b828a649001237296a', name: 'Matematicaa (backup)' },
 	{ id: '5f5b3cb4dd64620012b0f502', name: 'Chimica Industriale' },
+
+	{ id: '608fdf57c203fc0018bf4f04', name: 'AULE DISPONIBILI PER CdS FABIT' },
 
 	{ id: '5e99b3883252110012b67395', name: 'Terracini' },
 	{ id: '5facf686fa03a40018c76c91', name: 'Navile - 1' },
@@ -47,13 +45,16 @@ export const CAL_MAP: { id: string; name: string }[] = [
 	{ id: '5f070dedbf12720017c41bb0', name: 'Veterinaria' },
 	{ id: '5e6f550e4ad7a80017fd3c97', name: 'Fisiologia' },
 	{ id: '5e68c480c8f72d0018de543e', name: 'Farmacologia' },
+
 	{ id: '5e68f72fc8f72d0018de653a', name: 'EX BODONIANA' },
 	{ id: '5f070e604fb4b60018b0c36e', name: 'Forlì' },
-	{ id: '5f5f768159cded0017ec015a', name: 'Non ne ho idea' },
 	{ id: '5e9da51f651dc60017d8e4ff', name: 'Laboratorio 4.2 - Campus Ex Zuccherificio' },
 	{ id: '642be07ba9496f00e20a1a73', name: 'Ex Zuccherificio' },
 	{ id: '5f5b704fed932e00125444bb', name: 'Aule Vespignani e Pero' },
 	{ id: '5e9f0969290c0b0017e5b122', name: 'Sala Tesi - Villa Almerici ' },
 	{ id: '615ff6970990430018f7370c', name: 'Zamboni 1' },
-	{ id: '64b8eff10882b0001c939ab9', name: 'Farmacia 4 anno' }
+	{ id: '64b8eff10882b0001c939ab9', name: 'Farmacia 4 anno' },
+	{ id: '5fa143274a39680017e52abf', name: 'Aule Informatiche - Villa Almerici' },
+
+	{ id: '5f69d11a7b18b40012b375af', name: 'booh' }
 ];

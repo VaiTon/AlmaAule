@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import type { Aula } from '$lib/api';
 	import type { PageData } from './$types';
 
@@ -45,7 +46,6 @@
 			<thead>
 				<tr>
 					<th>Aula</th>
-					<th>Comune</th>
 					<th>Edificio</th>
 				</tr>
 			</thead>
@@ -57,17 +57,29 @@
 						role="button"
 						tabindex="0"
 						aria-label={`Go to details for ${edificio.plesso} - ${aula.descrizione}`}
-						onclick={() => goto(`/cal/${aula.calId}/${aula.id}`)}
+						onclick={() =>
+							goto(
+								resolve('/cal/[calId]/[aulaId]', {
+									calId: aula.calId,
+									aulaId: aula.id
+								})
+							)}
 						onkeydown={(e) => {
 							if (e.key === 'Enter' || e.key === ' ') {
-								goto(`/cal/${aula.calId}/${aula.id}`);
+								goto(
+									resolve('/cal/[calId]/[aulaId]', {
+										calId: aula.calId,
+										aulaId: aula.id
+									})
+								);
 							}
 						}}
 					>
 						<td>
-							<a href="/cal/{aula.calId}/{aula.id}"> {edificio.plesso} - {aula.descrizione} </a>
+							<a href={resolve('/cal/[calId]/[aulaId]', { calId: aula.calId, aulaId: aula.id })}>
+								{edificio.plesso} - {aula.descrizione}
+							</a>
 						</td>
-						<td>{edificio.comune}</td>
 						<td>{edificio.descrizione}</td>
 					</tr>
 				{/each}

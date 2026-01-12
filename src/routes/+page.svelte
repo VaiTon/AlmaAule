@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { CAL_MAP } from '$lib/cals';
 </script>
 
@@ -28,7 +29,7 @@
 		<a href="#calendars" class="not-prose btn btn-primary grow max-md:w-full max-md:mb-4">
 			Go to calendars 📅
 		</a>
-		<a href="/aule" class="not-prose btn btn-secondary mx-auto grow max-md:w-full">
+		<a href={resolve('/aule')} class="not-prose btn btn-secondary mx-auto grow max-md:w-full">
 			Go to classroom list 📚
 		</a>
 	</div>
@@ -52,8 +53,8 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
 	{#each CAL_MAP as { id, name } (id)}
 		<a
-			href={`/cal/${id}`}
-			class="card bg-base-100 shadow hover:shadow-lg transition rounded-xl border border-base-300 flex flex-col items-center justify-center p-6 text-base-content no-underline hover:bg-primary/10"
+			href={resolve('/cal/[calId]', { calId: id })}
+			class="card bg-base-100 transition rounded-xl border border-base-300 flex flex-col items-center justify-center p-6 text-base-content no-underline hover:bg-primary/10"
 			style="min-height: 110px;"
 		>
 			<span class="text-3xl mb-2" aria-hidden="true">📅</span>

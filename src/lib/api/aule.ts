@@ -25,7 +25,9 @@ export async function getAule(
 		})
 	}).then((res) => res.json())) as Aula[] | { error: { statusCode: number; codiceErrore: string } };
 
-	if ('error' in resp) {
+	if (resp == null) {
+		throw new Error('Error fetching aule: response is null or undefined');
+	} else if ('error' in resp) {
 		throw new Error(`Error fetching aule: ${resp.error.codiceErrore}: ${resp.error.statusCode}`);
 	}
 
