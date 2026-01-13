@@ -26,6 +26,15 @@
 	import { resolve } from '$app/paths';
 	dayjs.tz.setDefault('Europe/Rome');
 	dayjs.locale('it');
+
+	import { injectAnalytics } from '@vercel/analytics/sveltekit';
+	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
+	import { onMount } from 'svelte';
+
+	onMount(() => {
+		injectAnalytics();
+		injectSpeedInsights();
+	});
 </script>
 
 <svelte:head>
