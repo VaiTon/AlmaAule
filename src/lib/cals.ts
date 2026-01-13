@@ -4,7 +4,7 @@ export const CAL_MAP: { id: string; name: string }[] = [
 	{ id: '638f16c7029ea90fdd1191c2', name: 'Distretto Navile' },
 	{ id: '638f16ff00bc45111a4aa703', name: 'Distretto Nord Ovest' },
 	{ id: '638f172a2d594f10264624c9', name: 'Distretto Poggi' },
-	{ id: '638f175737cb9f1055e3192f', name: 'Distretto Risorgimento' },
+	{ id: '638f175737cb9f1055e3192f', name: 'Distretti Risorgimento & Terracini' },
 	{ id: '638f178d00bc45111a4aa70f', name: 'Distretto SAM' },
 	{ id: '638f17b9f6e1a1114978d835', name: 'Distretto S. Giacomo' },
 	{ id: '638f184b00bc45111a4aa729', name: 'Distretto Sud Est' },
