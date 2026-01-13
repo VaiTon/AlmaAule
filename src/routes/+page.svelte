@@ -36,11 +36,19 @@
 
 	<hr />
 
-	<p>
-		<strong>Disclaimer:</strong> This service depends on public APIs and may become unavailable if those
-		APIs change or are removed. We're not responsible for any inconvenience caused by the unavailability
-		of the service.
-	</p>
+	<div class="alert alert-warning alert-outline">
+		<span class="text-xl">⚠️</span>
+		<div>
+			<div>
+				<strong>Disclaimer:</strong>
+			</div>
+			<div>
+				This service depends on public APIs and may become unavailable if those APIs change or are
+				removed. We're not responsible for any inconvenience caused by the unavailability of the
+				service.
+			</div>
+		</div>
+	</div>
 	<p>
 		AlmaAule is open source and available on <a href="https://github.com/VaiTon/uniboaule/"
 			>GitHub</a
