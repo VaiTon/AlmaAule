@@ -9,18 +9,19 @@
 		<strong>Unofficial tool made by the Computer Science community of Unibo</strong>
 	</p>
 	<p>
-		Welcome to <strong>AlmaAule</strong> — your tool for checking classroom availability and schedules.
+		Welcome to <strong>AlmaAule</strong>, your tool for checking classroom availability and
+		schedules.
 	</p>
 	<p>
 		This website helps students and staff find <strong>vacant classrooms</strong> for studying, teaching,
 		or events.
 	</p>
 	<p>
-		We <strong>don't scrape</strong> any other website—AlmaAule relies on public APIs for all its data.
+		We <strong>don't scrape</strong> websites. AlmaAule relies entirely on public APIs.
 	</p>
-	<p>
-		Actually, it's your browser that makes the HTTP requests to the servers, so we're not doing
-		anything at all. We're just providing a nice interface. 😼
+	<p class="text-sm italic">
+		Technically, your browser fetches the data directly via HTTP requests. We don't touch the data,
+		we just provide the nice interface. 😼
 	</p>
 
 	<hr />
