@@ -12,7 +12,7 @@
 		Welcome to <strong>AlmaAule</strong> — your tool for checking classroom availability and schedules.
 	</p>
 	<p>
-		This website helps students and staff find <strong>free classrooms</strong> for studying, teaching,
+		This website helps students and staff find <strong>vacant classrooms</strong> for studying, teaching,
 		or events.
 	</p>
 	<p>

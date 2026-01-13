@@ -159,7 +159,7 @@
 			class="flex items-center gap-2 mt-4 border border-success rounded-lg px-4 py-2"
 			role="alert"
 		>
-			<span class="font-bold text-success">Free</span>
+			<span class="font-bold text-success">Vacant</span>
 		</div>
 	{/if}
 </div>

@@ -108,7 +108,7 @@
 				</div>
 			{:else}
 				<div class="mt-2">
-					<div class="badge badge-sm mb-2">FREE</div>
+					<div class="badge badge-sm mb-2">VACANT</div>
 					{#if nextActivity}
 						<p class="text-xs opacity-90 mt-1">
 							Next: {dayjs(nextActivity.startTime).format('HH:mm')}
@@ -117,7 +117,7 @@
 							{nextActivity.title}
 						</p>
 					{:else}
-						<p class="text-xs opacity-90 mt-1">Free for the rest of the day</p>
+						<p class="text-xs opacity-90 mt-1">Vacant for the rest of the day</p>
 					{/if}
 				</div>
 			{/if}
