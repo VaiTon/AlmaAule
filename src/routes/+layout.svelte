@@ -30,6 +30,30 @@
 
 <svelte:head>
 	<title>AlmaAule</title>
+
+	<meta
+		name="description"
+		content="AlmaAule — Find and view classroom availability at the University of Bologna"
+	/>
+
+	<meta property="og:title" content="AlmaAule" />
+	<meta
+		property="og:description"
+		content="Find and view classroom availability at the University of Bologna"
+	/>
+
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content={page.url.href} />
+	<link rel="canonical" href={page.url.href} />
+	<meta property="og:site_name" content="AlmaAule" />
+	<meta property="og:locale" content="it_IT" />
+
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="AlmaAule" />
+	<meta
+		name="twitter:description"
+		content="Find and view classroom availability at the University of Bologna"
+	/>
 </svelte:head>
 
 <div class="bg-base-200 min-h-screen transition-colors">
@@ -38,7 +62,10 @@
 			class="navbar flex flex-row items-center justify-between rounded-xl border-b border-base-300 shadow-lg bg-primary/90 text-primary-content px-2 sm:px-4 py-0 mb-8 backdrop-blur-md transition-all"
 			aria-label="main navigation"
 		>
-			<a href={resolve('/')} class="flex items-center gap-2 group transition-all hover:opacity-90 min-w-0">
+			<a
+				href={resolve('/')}
+				class="flex items-center gap-2 group transition-all hover:opacity-90 min-w-0"
+			>
 				<span
 					class="bg-base-100 rounded-full w-9 h-9 flex items-center justify-center border-2 border-primary shadow group-hover:scale-105 transition-transform text-primary"
 				>
