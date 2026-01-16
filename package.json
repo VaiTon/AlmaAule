@@ -17,6 +17,8 @@
 		"@eslint/compat": "^2.0.0",
 		"@eslint/js": "^9.39.2",
 		"@fontsource-variable/merriweather-sans": "^5.2.7",
+		"@iconify-svelte/material-symbols": "^1.0.12",
+		"@iconify-svelte/mdi": "^1.0.0",
 		"@sveltejs/adapter-auto": "^7.0.0",
 		"@sveltejs/kit": "^2.49.5",
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
