@@ -150,7 +150,7 @@
 		<div class="flex border-b border-base-300 bg-base-200 sticky top-0 z-10" style="height:2.5rem;">
 			<!-- Empty space for hour labels -->
 			<div class="w-16 shrink-0"></div>
-			{#each weekDaysArr as day (day.toDate())}
+			{#each weekDaysArr as day (day.unix())}
 				<div
 					class="flex-1 text-center py-2 text-xs font-semibold border-l border-base-300 first:border-l-0"
 				>
@@ -181,7 +181,7 @@
 			{/each}
 
 			<!-- Render events for this classroom -->
-			{#each weekEvents as event (event.start + event.title)}
+			{#each weekEvents as event (event.start.valueOf() + event.title)}
 				{@const startDayIdx = weekDaysArr.findIndex((day) => dayjs(event.start).isSame(day, 'day'))}
 				{#if startDayIdx >= 0}
 					<button
