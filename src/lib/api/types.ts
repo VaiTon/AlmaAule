@@ -32,6 +32,9 @@ export type Aula = {
 	metriQuadri: number;
 
 	unitaOrganizzativa: UnitaOrganizzativa;
+
+	note?: string;
+	altreInformazioni?: string;
 };
 
 export type Edificio = {
