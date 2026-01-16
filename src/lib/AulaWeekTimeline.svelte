@@ -109,6 +109,22 @@
           width: calc((100% - 4rem) / 7);
         `;
 	}
+
+	function getEventColor(impegno: Impegno): string {
+		if (impegno.causaleIndisponibilita != null) {
+			return 'bg-amber-200 dark:bg-amber-700 text-amber-900 dark:text-white'; // Unavailability
+		}
+		switch (impegno.icona) {
+			case 'attivitaDidattica':
+				return 'bg-green-200 dark:bg-green-600 text-green-900 dark:text-white'; // Lectures
+			case 'esame':
+				return 'bg-red-200 dark:bg-red-700 text-red-900 dark:text-white'; // Exams
+			case 'altraAttivita':
+				return 'bg-blue-200 dark:bg-blue-600 text-blue-900 dark:text-white'; // Other activities
+			default:
+				return 'bg-gray-300 dark:bg-gray-600 text-gray-900 dark:text-white'; // Unknown
+		}
+	}
 </script>
 
 {#snippet eventInside(impegno: Impegno)}
@@ -185,7 +201,9 @@
 				{@const startDayIdx = weekDaysArr.findIndex((day) => dayjs(event.start).isSame(day, 'day'))}
 				{#if startDayIdx >= 0}
 					<button
-						class="absolute bg-primary text-primary-content rounded shadow px-2 text-xs font-semibold overflow-auto wrap-break-word cursor-pointer mx-1 my-1"
+						class="absolute rounded shadow px-2 text-xs font-semibold overflow-auto wrap-break-word cursor-pointer mx-1 my-1 {getEventColor(
+							event.impegno
+						)}"
 						style={getEventBlockStyle(event, startDayIdx)}
 						title={event.title}
 						onclick={() => handleTimelineEventClick(event.impegno)}
