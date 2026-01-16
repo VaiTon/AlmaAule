@@ -56,5 +56,5 @@ export const CAL_MAP: { id: string; name: string }[] = [
 	{ id: '64b8eff10882b0001c939ab9', name: 'Farmacia 4 anno' },
 	{ id: '5fa143274a39680017e52abf', name: 'Aule Informatiche - Villa Almerici' },
 
-	{ id: '5f69d11a7b18b40012b375af', name: 'booh' }
+	{ id: '5f69d11a7b18b40012b375af', name: 'Complesso didattico Molino Tamburi' }
 ];
