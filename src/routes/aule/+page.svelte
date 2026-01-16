@@ -1,10 +1,13 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import type { Aula } from '$lib/api';
 	import type { PageData } from './$types';
 
 	import MdiBuilding from '@iconify-svelte/mdi/building';
 	import MdiMapMarker from '@iconify-svelte/mdi/map-marker';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 	let { data }: { data: PageData } = $props();
 
@@ -22,29 +25,48 @@
 		return nameA.toLowerCase().localeCompare(nameB.toLowerCase());
 	}
 
-	let search = $state('');
+	let search = $state(page.url.searchParams.get('q') ?? '');
+	$effect(() => {
+		// Debounce search input, then update URL query parameter
+		const query = search;
+		const timeout = setTimeout(() => {
+			const searchParams = new SvelteURLSearchParams(window.location.search);
+			if (search) {
+				searchParams.set('q', query);
+			} else {
+				searchParams.delete('q');
+			}
+			goto('?' + searchParams.toString(), { replaceState: true, keepFocus: true, noScroll: true });
+		}, 300);
+		return () => clearTimeout(timeout);
+	});
 </script>
 
-<h1 class="text-2xl font-bold mb-4">Aule</h1>
+<h1 class="text-4xl font-bold mb-4">Classrooms</h1>
 
 {#await data.aule}
 	<div class="text-center">
 		<p class="loading loading-spinner loading-lg"></p>
-		<p class="mt-4">Caricamento aule...</p>
+		<p class="mt-4">Loading classrooms...</p>
 	</div>
 {:then aule}
+	{@const showedAule = aule.sort(sortAule).filter(filterAule)}
 	<label for="search" class="sr-only">Search classroom</label>
 	<input
 		id="search"
 		type="text"
 		class="input input-bordered w-full my-4"
-		placeholder="Cerca aula"
+		placeholder="Search classrooms..."
 		bind:value={search}
 		aria-label="Search classroom"
 	/>
 
+	<div class="mb-4 text-sm text-base-content/70">
+		Showing {showedAule.length} of {aule.length} classrooms.
+	</div>
+
 	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-		{#each aule.sort(sortAule).filter(filterAule) as aula (aula.id)}
+		{#each showedAule as aula (aula.id)}
 			{@const edificio = aula.relazioneEdificio}
 			<a
 				href={resolve('/cal/[calId]/[aulaId]', { calId: aula.calId, aulaId: aula.id })}
@@ -53,7 +75,7 @@
 			>
 				<div class="card-body p-4">
 					<h2 class="card-title text-lg">
-						{#if edificio.plesso}{edificio.plesso} -
+						{#if edificio.plesso}{edificio.plesso}&nbsp;-&nbsp;
 						{/if}{aula.descrizione}
 					</h2>
 					<div class="text-sm opacity-70">
