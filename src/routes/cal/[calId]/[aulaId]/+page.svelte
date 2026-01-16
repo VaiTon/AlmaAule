@@ -13,10 +13,14 @@
 
 	import dayjs, { Dayjs } from 'dayjs';
 	import 'dayjs/locale/it';
+	import localizedFormat from 'dayjs/plugin/localizedFormat';
+	dayjs.extend(localizedFormat);
+
 	import { page } from '$app/state';
 	import calendarIcon from '$lib/icons/Calendar.svg?raw';
 	import AulaWeekTimeline from '$lib/AulaWeekTimeline.svelte';
 	import EventModal from '$lib/EventModal.svelte';
+	import { tick } from 'svelte';
 
 	let { data }: { data: PageData } = $props();
 	let { aula } = $derived(data);
@@ -49,6 +53,9 @@
 		}
 
 		loadingEvents = true; // Show loading spinner
+		events = []; // Clear current events
+		await tick(); // Wait for DOM update
+
 		lastInterval = { startDate, endDate }; // Save the interval
 
 		const unfilteredEvents = await getImpegni(fetch, page.params.calId, {
@@ -138,109 +145,113 @@
 	<meta property="og:title" content="{aula?.descrizione} - AlmaAule" />
 </svelte:head>
 
-<div class="mb-6 p-4">
+<div class="px-4 mt-4">
 	<h1 class="text-3xl sm:text-4xl font-bold mb-4">{aula?.descrizione}</h1>
-	<p class="my-4 mx-4">
-		The classroom <strong>"{aula?.descrizione}"</strong> is located on the
-		<strong>{aula?.piano?.descrizione}</strong>
-		of the building <strong>"{aula?.relazioneEdificio.descrizione}"</strong>, at
-		<strong>{aula?.relazioneEdificio.via}, {aula?.relazioneEdificio.comune}</strong>.
-	</p>
-	{#if nowEvent != null}
-		<div class="flex items-center gap-2 mt-4 border border-error rounded-lg px-4 py-2" role="alert">
+
+	<div
+		class={[
+			'flex items-center gap-2 my-4 border  rounded-lg px-4 py-2',
+			nowEvent != null ? 'border-error' : 'border-success'
+		]}
+		role="alert"
+	>
+		{#if nowEvent != null}
 			<span class="font-bold text-error">Occupied</span>
 			<span>
-				by <strong>{nowEvent.nome}</strong>
-				({dayjs(nowEvent.dataInizio).format('lll')} - {dayjs(nowEvent.dataFine).format('lll')})
+				<strong>{nowEvent.nome}</strong>
+				({dayjs(nowEvent.dataInizio).format('LT')} - {dayjs(nowEvent.dataFine).format('LT')})
 			</span>
-		</div>
-	{:else}
-		<div
-			class="flex items-center gap-2 mt-4 border border-success rounded-lg px-4 py-2"
-			role="alert"
-		>
+		{:else}
 			<span class="font-bold text-success">Vacant</span>
+			<span>The classroom is currently free.</span>
+		{/if}
+	</div>
+
+	<details class="collapse bg-base-300 text-base-content collapse-arrow mb-4">
+		<summary class="collapse-title card-title text-xl font-bold">
+			<span class="ml-2 font-normal">{aula?.relazioneEdificio.descrizione}</span>
+		</summary>
+
+		<div class="collapse-content overflow-x-auto">
+			<table class="table table-zebra rounded-box table-sm">
+				<tbody>
+					<tr>
+						<td class="font-bold text-end">Descrizione:</td>
+						<td>{aula?.relazioneEdificio.descrizione}</td>
+					</tr>
+					<tr>
+						<td class="font-bold text-end">Indirizzo:</td>
+						<td>{aula?.relazioneEdificio.via}, {aula?.relazioneEdificio.comune}</td>
+					</tr>
+					<tr>
+						<td class="font-bold text-end">Plesso:</td>
+						<td>{aula?.relazioneEdificio.plesso}</td>
+					</tr>
+					<tr>
+						<td class="font-bold text-end">Codice:</td>
+						<td>{aula?.relazioneEdificio.codice}</td>
+					</tr>
+					<tr>
+						<td class="font-bold text-end">Orario apertura:</td>
+						<td>{aula?.relazioneEdificio.orarioApertura}</td>
+					</tr>
+					<tr>
+						<td class="font-bold text-end">Orario chiusura:</td>
+						<td>{aula?.relazioneEdificio.orarioChiusura}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</details>
+
+	<details class="collapse bg-base-300 text-base-content collapse-plus mb-4">
+		<summary class="collapse-title card-title text-xl font-bold"> Classroom details </summary>
+
+		<div class="collapse-content overflow-x-auto">
+			<table class="table table-zebra rounded-box table-sm">
+				<tbody>
+					<tr>
+						<td class="font-bold text-end">Capienza:</td>
+						<td>{aula?.capienza}</td>
+					</tr>
+					<tr>
+						<td class="font-bold text-end">Capienza effettiva:</td>
+						<td>{aula?.capienzaEffettiva}</td>
+					</tr>
+					<tr>
+						<td class="font-bold text-end">N. postazioni:</td>
+						<td>{aula?.numeroPostazioni}</td>
+					</tr>
+					<tr>
+						<td class="font-bold text-end">Metri quadri:</td>
+						<td>{Math.round(aula?.metriQuadri)} mq</td>
+					</tr>
+					{#if aula.piano != null}
+						<tr>
+							<td class="font-bold text-end">Piano:</td>
+							<td>{aula?.piano.descrizione} (<code>{aula?.piano.codice}</code>)</td>
+						</tr>
+					{/if}
+					{#if aula.note || aula.altreInformazioni}
+						<tr>
+							<td class="font-bold text-end">Note:</td>
+							<td>{aula.note || aula.altreInformazioni}</td>
+						</tr>
+					{/if}
+				</tbody>
+			</table>
+		</div>
+	</details>
+
+	{#if aula.note || aula.altreInformazioni}
+		<div class="alert alert-info my-4">
+			<div>
+				<strong>Note:</strong>
+				{aula.note || aula.altreInformazioni}
+			</div>
 		</div>
 	{/if}
 </div>
-
-<details class="collapse bg-base-300 text-base-content collapse-arrow mb-4">
-	<summary class="collapse-title card-title text-xl font-bold">
-		Building: <span class="ml-2 font-normal">{aula?.relazioneEdificio.descrizione}</span>
-	</summary>
-
-	<div class="collapse-content overflow-x-auto">
-		<table class="table table-zebra rounded-box table-sm">
-			<tbody>
-				<tr>
-					<td class="font-bold text-end">Descrizione:</td>
-					<td>{aula?.relazioneEdificio.descrizione}</td>
-				</tr>
-				<tr>
-					<td class="font-bold text-end">Indirizzo:</td>
-					<td>{aula?.relazioneEdificio.via}, {aula?.relazioneEdificio.comune}</td>
-				</tr>
-				<tr>
-					<td class="font-bold text-end">Plesso:</td>
-					<td>{aula?.relazioneEdificio.plesso}</td>
-				</tr>
-				<tr>
-					<td class="font-bold text-end">Codice:</td>
-					<td>{aula?.relazioneEdificio.codice}</td>
-				</tr>
-				<tr>
-					<td class="font-bold text-end">Orario apertura:</td>
-					<td>{aula?.relazioneEdificio.orarioApertura}</td>
-				</tr>
-				<tr>
-					<td class="font-bold text-end">Orario chiusura:</td>
-					<td>{aula?.relazioneEdificio.orarioChiusura}</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-</details>
-
-<details class="collapse bg-base-300 text-base-content collapse-plus mb-4">
-	<summary class="collapse-title card-title text-xl font-bold"> Classroom details </summary>
-
-	<div class="collapse-content overflow-x-auto">
-		<table class="table table-zebra rounded-box table-sm">
-			<tbody>
-				<tr>
-					<td class="font-bold text-end">Capienza:</td>
-					<td>{aula?.capienza}</td>
-				</tr>
-				<tr>
-					<td class="font-bold text-end">Capienza effettiva:</td>
-					<td>{aula?.capienzaEffettiva}</td>
-				</tr>
-				<tr>
-					<td class="font-bold text-end">N. postazioni:</td>
-					<td>{aula?.numeroPostazioni}</td>
-				</tr>
-				<tr>
-					<td class="font-bold text-end">Metri quadri:</td>
-					<td>{Math.round(aula?.metriQuadri)} mq</td>
-				</tr>
-				{#if aula.piano != null}
-					<tr>
-						<td class="font-bold text-end">Piano:</td>
-						<td>{aula?.piano.descrizione} (<code>{aula?.piano.codice}</code>)</td>
-					</tr>
-				{/if}
-				<tr>
-					<td class="font-bold text-end">Record creato il:</td>
-					<td>{dayjs(aula.dataCreazione).format('lll')}</td>
-				</tr>
-				<tr>
-					<td class="font-bold text-end">Ultima modifica il:</td>
-					<td>{dayjs(aula.dataModifica).format('lll')}</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-</details>
 
 <div class="divider"></div>
 
