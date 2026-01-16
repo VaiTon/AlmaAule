@@ -185,9 +185,7 @@
 						{/each}
 					</div>
 				{:else}
-					<div class="px-4 py-6 text-center text-sm text-base-content/50">
-						Nessun evento
-					</div>
+					<div class="px-4 py-6 text-center text-sm text-base-content/50">Nessun evento</div>
 				{/if}
 			</div>
 		{/if}
