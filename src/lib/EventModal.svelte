@@ -24,7 +24,7 @@
 	}
 
 	function formatLocalDate(date: Date) {
-		return date.toLocaleString(undefined, { dateStyle: 'full', timeStyle: 'short' });
+		return date.toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' });
 	}
 
 	function getDuration(start: Date, end: Date) {
@@ -56,7 +56,7 @@
 					/>
 				</svg>
 			</button>
-			<div class="flex items-center gap-4 mb-6">
+			<div class="flex items-center gap-4 mb-6 mr-4">
 				<span class="text-4xl" style="line-height: 1;">
 					{#if event?.icona === 'attivitaDidattica'}
 						📚
@@ -71,7 +71,7 @@
 					{/if}
 				</span>
 				<div class="flex flex-col flex-1 min-w-0">
-					<h2 class="text-2xl font-bold truncate">
+					<h2 class="text-2xl font-bold wrap-break-word">
 						{event?.nome ?? event.causaleIndisponibilita ?? 'Unknown Event'}
 					</h2>
 					{#if event?.evento?.tipoAttivita?.descrizione}
@@ -96,100 +96,115 @@
 				</div>
 			{/if}
 
-			<div class="divider my-2"></div>
-			<div class="grid gap-x-2 gap-y-1 grid-cols-[max-content_1fr]">
+			<div class="divider my-3"></div>
+
+			<!-- Event Details -->
+			<div class="space-y-3">
 				{#if event?.evento?.dettagliDidattici?.[0]?.corso != null}
 					{@const course = event.evento.dettagliDidattici[0].corso}
-					<span class="font-bold text-end">Course:</span>
-					<span>
-						{course.descrizione}
-					</span>
+					<div class="flex gap-4 py-2 px-3 rounded-lg hover:bg-base-200/50 transition-colors">
+						<span class="font-semibold text-sm text-base-content/70 min-w-30">Course</span>
+						<span class="flex-1 text-sm">{course.descrizione}</span>
+					</div>
 				{/if}
 
 				{#if event?.evento?.dettagliDidattici?.[0]?.nome}
-					<span class="font-bold text-end">Activity:</span>
-					<span>
-						{event.evento.dettagliDidattici[0].nome}
-					</span>
+					<div class="flex gap-4 py-2 px-3 rounded-lg hover:bg-base-200/50 transition-colors">
+						<span class="font-semibold text-sm text-base-content/70 min-w-30">Activity</span>
+						<span class="flex-1 text-sm">{event.evento.dettagliDidattici[0].nome}</span>
+					</div>
 				{/if}
 
 				{#if event?.evento?.dettagliDidattici?.[0]?.cfu}
-					<span class="font-bold text-end">CFU:</span>
-					<span>
-						{event.evento.dettagliDidattici[0].cfu}
-					</span>
+					<div class="flex gap-4 py-2 px-3 rounded-lg hover:bg-base-200/50 transition-colors">
+						<span class="font-semibold text-sm text-base-content/70 min-w-30">CFU</span>
+						<span class="flex-1 text-sm">{event.evento.dettagliDidattici[0].cfu}</span>
+					</div>
 				{/if}
 
-				<span class="font-bold text-end">Start:</span>
-				<span> {formatLocalDate(new Date(event.dataInizio))} </span>
+				<div class="flex gap-4 py-2 px-3 rounded-lg hover:bg-base-200/50 transition-colors">
+					<span class="font-semibold text-sm text-base-content/70 min-w-30">Start</span>
+					<span class="flex-1 text-sm">{formatLocalDate(new Date(event.dataInizio))}</span>
+				</div>
 
-				<span class="font-bold text-end">End:</span>
-				<span> {formatLocalDate(new Date(event.dataFine))} </span>
+				<div class="flex gap-4 py-2 px-3 rounded-lg hover:bg-base-200/50 transition-colors">
+					<span class="font-semibold text-sm text-base-content/70 min-w-30">End</span>
+					<span class="flex-1 text-sm">{formatLocalDate(new Date(event.dataFine))}</span>
+				</div>
 
-				<span class="font-bold text-end">Duration:</span>
-				<span>
-					{getDuration(new Date(event.dataInizio), new Date(event.dataFine))}
-				</span>
+				<div class="flex gap-4 py-2 px-3 rounded-lg hover:bg-base-200/50 transition-colors">
+					<span class="font-semibold text-sm text-base-content/70 min-w-30">Duration</span>
+					<span class="flex-1 text-sm"
+						>{getDuration(new Date(event.dataInizio), new Date(event.dataFine))}</span
+					>
+				</div>
 
 				{#if (event.docenti?.length ?? 0) > 0}
-					<span class="font-bold text-end">Teachers:</span>
-					<span>
-						{#each event.docenti as docente, index (docente.id)}
-							<a
-								href={'https://www.unibo.it/uniboweb/unibosearch/rubrica.aspx?tab=FullTextPanel&lang=it&query=' +
-									encodeURIComponent(docente.nome + ' ' + docente.cognome)}
-								target="_blank"
-								rel="noopener noreferrer"
-								class="link link-primary"
-							>
-								{docente.nome}
-								{docente.cognome} ({docente.id})
-								{index < event.docenti.length - 1 ? ', ' : ''}
-							</a>
-						{/each}
-					</span>
+					<div class="flex gap-4 py-2 px-3 rounded-lg hover:bg-base-200/50 transition-colors">
+						<span class="font-semibold text-sm text-base-content/70 min-w-30">Teachers</span>
+						<div class="flex-1 flex flex-wrap gap-2">
+							{#each event.docenti as docente (docente.id)}
+								<a
+									href={'https://www.unibo.it/uniboweb/unibosearch/rubrica.aspx?tab=FullTextPanel&lang=it&query=' +
+										encodeURIComponent(docente.nome + ' ' + docente.cognome)}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="badge badge-outline badge-sm hover:badge-primary transition-colors"
+								>
+									{docente.nome}
+									{docente.cognome}
+								</a>
+							{/each}
+						</div>
+					</div>
 				{/if}
 
 				{#if event.sovrapposizioni?.length > 0}
-					<span class="font-bold text-end">Overlaps:</span>
-					<span>
-						{event.sovrapposizioni
-							.map((s) =>
-								s.docente
-									? `${s.docente.nome} ${s.docente.cognome}${s.accettata ? ' (accepted)' : ''}`
-									: s.risorsaId
-							)
-							.join(', ')}
-					</span>
+					<div class="flex gap-4 py-2 px-3 rounded-lg hover:bg-base-200/50 transition-colors">
+						<span class="font-semibold text-sm text-base-content/70 min-w-30">Overlaps</span>
+						<span class="flex-1 text-sm">
+							{event.sovrapposizioni
+								.map((s) =>
+									s.docente
+										? `${s.docente.nome} ${s.docente.cognome}${s.accettata ? ' (accepted)' : ''}`
+										: s.risorsaId
+								)
+								.join(', ')}
+						</span>
+					</div>
 				{/if}
 
 				{#if event.warning && (event.warning.senzaRisorse || (event.warning.sovrapposizione ?? 0) > 0 || (event.warning.risorsaDaConfermare ?? 0) > 0 || event.warning.sovrapposizioniSospensione)}
-					<span class="font-bold text-end">Warnings:</span>
-					<span>
-						{event.warning.senzaRisorse ? 'No resources assigned. ' : ''}
-						{event.warning.sovrapposizione > 0
-							? `Overlaps: ${event.warning.sovrapposizione}. `
-							: ''}
-						{event.warning.risorsaDaConfermare > 0
-							? `Resources to confirm: ${event.warning.risorsaDaConfermare}. `
-							: ''}
-						{event.warning.sovrapposizioniSospensione ? 'Suspension overlaps. ' : ''}
-					</span>
+					<div class="flex gap-4 py-2 px-3 rounded-lg hover:bg-base-200/50 transition-colors">
+						<span class="font-semibold text-sm text-base-content/70 min-w-30">Warnings</span>
+						<span class="flex-1 text-sm">
+							{event.warning.senzaRisorse ? 'No resources assigned. ' : ''}
+							{event.warning.sovrapposizione > 0
+								? `Overlaps: ${event.warning.sovrapposizione}. `
+								: ''}
+							{event.warning.risorsaDaConfermare > 0
+								? `Resources to confirm: ${event.warning.risorsaDaConfermare}. `
+								: ''}
+							{event.warning.sovrapposizioniSospensione ? 'Suspension overlaps. ' : ''}
+						</span>
+					</div>
 				{/if}
 
 				{#if event.oreAccademiche}
-					<span class="font-bold text-end">Academic Hours:</span>
-					<span>
-						{event.oreAccademiche}
-						{event.oreAccademicheBloccate ? ' (locked)' : ''}
-					</span>
+					<div class="flex gap-4 py-2 px-3 rounded-lg hover:bg-base-200/50 transition-colors">
+						<span class="font-semibold text-sm text-base-content/70 min-w-30">Academic Hours</span>
+						<span class="flex-1 text-sm">
+							{event.oreAccademiche}
+							{event.oreAccademicheBloccate ? ' (locked)' : ''}
+						</span>
+					</div>
 				{/if}
 
 				{#if event.evento?.annoAccademico?.descrizione}
-					<span class="font-bold text-end">Academic Year:</span>
-					<span>
-						{event.evento.annoAccademico.descrizione}
-					</span>
+					<div class="flex gap-4 py-2 px-3 rounded-lg hover:bg-base-200/50 transition-colors">
+						<span class="font-semibold text-sm text-base-content/70 min-w-30">Academic Year</span>
+						<span class="flex-1 text-sm">{event.evento.annoAccademico.descrizione}</span>
+					</div>
 				{/if}
 			</div>
 
