@@ -1,4 +1,4 @@
-export const CAL_MAP: { id: string; name: string }[] = [
+export const CAL_MAP: { id: string; name: string; show?: boolean }[] = [
 	{ id: '638f165a59ae3800e8297862', name: 'Distretto Filippo Re' },
 	{ id: '638f169a2d594f10264624ba', name: 'Distretto Imola' },
 	{ id: '638f16c7029ea90fdd1191c2', name: 'Distretto Navile' },
