@@ -20,7 +20,9 @@
 	import calendarIcon from '$lib/icons/Calendar.svg?raw';
 	import AulaWeekTimeline from '$lib/AulaWeekTimeline.svelte';
 	import EventModal from '$lib/EventModal.svelte';
-	import { tick } from 'svelte';
+	import { onMount, tick } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 	let { data }: { data: PageData } = $props();
 	let { aula } = $derived(data);
@@ -132,6 +134,43 @@
 			query: `${lat},${lng}`
 		});
 		return `https://www.google.com/maps/search/?${params.toString()}`;
+	}
+
+	onMount(() => {
+		const paramImpegnoId = page.url.searchParams.get('impegno');
+		if (paramImpegnoId != null) {
+			const impegno = events.find((e) => e.id === paramImpegnoId);
+			if (impegno != null) {
+				eventModal?.showModal(impegno);
+			}
+		}
+	});
+
+	let impegnoId = $derived(page.url.searchParams.get('impegno'));
+
+	// Open the modal when impegnoId changes
+	$effect(() => {
+		if (impegnoId == null) {
+			eventModal?.close();
+		} else {
+			const impegno = events.find((e) => e.id === impegnoId);
+			if (impegno) {
+				eventModal?.showModal(impegno);
+			}
+		}
+	});
+
+	function setImpegnoId(id: string | null) {
+		const searchParams = new SvelteURLSearchParams(page.url.searchParams);
+
+		if (id == null) {
+			searchParams.delete('impegno');
+		} else {
+			searchParams.set('impegno', id);
+		}
+
+		// eslint-disable-next-line svelte/no-navigation-without-resolve
+		goto('?' + searchParams.toString(), { noScroll: true });
 	}
 </script>
 
@@ -266,7 +305,7 @@
 		loading={loadingEvents}
 		{events}
 		onEventClick={(impegno) => {
-			eventModal?.showModal(impegno);
+			setImpegnoId(impegno.id);
 		}}
 		onCalendarChange={(start, end) => {
 			updateImpegni(start, end);
@@ -303,4 +342,9 @@
 	<div class="w-full rounded-box overflow-hidden h-64 sm:h-80" id="map"></div>
 </div>
 
-<EventModal bind:this={eventModal} />
+<EventModal
+	bind:this={eventModal}
+	onclose={() => {
+		setImpegnoId(null);
+	}}
+/>

@@ -23,6 +23,11 @@
 		setTimeout(() => dialogEl?.showModal(), 0); // Ensure the dialog is shown after the DOM update
 	}
 
+	export function close() {
+		dialogEl?.close();
+		event = null;
+	}
+
 	function formatLocalDate(date: Date) {
 		return date.toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' });
 	}
@@ -39,7 +44,7 @@
 				type="button"
 				class="btn btn-circle btn-ghost absolute right-2 top-2 text-xl"
 				aria-label="Close"
-				onclick={() => dialogEl?.close()}
+				onclick={() => close()}
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
