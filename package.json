@@ -15,7 +15,7 @@
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.2",
-		"@eslint/js": "^9.39.2",
+		"@eslint/js": "^9.39.3",
 		"@fontsource-variable/merriweather-sans": "^5.2.7",
 		"@iconify-svelte/material-symbols": "^1.0.17",
 		"@iconify-svelte/mdi": "^1.0.0",
