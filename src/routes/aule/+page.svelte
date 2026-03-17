@@ -94,7 +94,7 @@
 			</a>
 		{/each}
 	</div>
-	{#if aule.sort(sortAule).filter(filterAule).length === 0}
+	{#if showedAule.length === 0}
 		<div class="alert alert-info mt-4">No results found.</div>
 	{/if}
 {/await}
