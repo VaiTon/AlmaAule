@@ -44,6 +44,11 @@
 		return resources.toSorted((a, b) => a.title.localeCompare(b.title));
 	});
 
+	let eventsByResource = $derived.by(() => {
+		if (!events) return {};
+		return Object.groupBy(events, (e) => e.resourceId);
+	});
+
 	// Calculate the position of the current time line
 	function getCurrentTimePosition() {
 		const now = currentTime;
@@ -116,7 +121,7 @@
 				{/each}
 				<!-- Render events for this resource -->
 				{#if events}
-					{#each events.filter((e) => e.resourceId === resource.id) as event (event.start + event.title)}
+					{#each eventsByResource[resource.id] || [] as event (event.start + event.title)}
 						<button
 							class="absolute top-2 h-8 bg-primary text-primary-content rounded shadow flex items-center px-2 text-xs font-semibold overflow-hidden whitespace-nowrap truncate cursor-pointer"
 							style={getEventSpanStyle(event.start, event.end)}
@@ -141,7 +146,7 @@
 <!-- Mobile List View -->
 <div class="md:hidden space-y-4">
 	{#each sortedResources as resource (resource.id)}
-		{@const resourceEvents = events?.filter((e) => e.resourceId === resource.id) || []}
+		{@const resourceEvents = eventsByResource[resource.id] || []}
 		{#if resourceEvents.length > 0 || true}
 			<div class="bg-base-100 rounded-lg shadow border border-base-300 overflow-hidden">
 				<a
