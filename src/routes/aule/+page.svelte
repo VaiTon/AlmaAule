@@ -36,7 +36,6 @@
 			} else {
 				searchParams.delete('q');
 			}
-			// eslint-disable-next-line svelte/no-navigation-without-resolve
 			goto('?' + searchParams.toString(), { replaceState: true, keepFocus: true, noScroll: true });
 		}, 300);
 		return () => clearTimeout(timeout);
