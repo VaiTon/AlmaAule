@@ -317,26 +317,28 @@
 	<h2 class="card-title text-2xl font-bold mb-2">Map</h2>
 	<div class="flex flex-col sm:flex-row justify-center gap-2 mb-4">
 		<a
-			href={getGoogleMapsLink({
-				lat: aula?.relazioneEdificio.geo.lat,
-				lng: aula?.relazioneEdificio.geo.lng
-			})}
+			{...{
+				href: getGoogleMapsLink({
+					lat: aula?.relazioneEdificio.geo.lat,
+					lng: aula?.relazioneEdificio.geo.lng
+				})
+			}}
 			target="_blank"
-			rel="external"
+			rel="noopener"
 			class="btn btn-primary btn-md"
-			data-sveltekit-reload
 		>
 			Open in Google Maps
 		</a>
 		<a
-			href={getOSMLink({
-				lat: aula?.relazioneEdificio.geo.lat,
-				lng: aula?.relazioneEdificio.geo.lng
-			})}
+			{...{
+				href: getOSMLink({
+					lat: aula?.relazioneEdificio.geo.lat,
+					lng: aula?.relazioneEdificio.geo.lng
+				})
+			}}
 			target="_blank"
-			rel="external"
+			rel="noopener"
 			class="btn btn-primary btn-md"
-			data-sveltekit-reload
 		>
 			Open in OpenStreetMap
 		</a>
