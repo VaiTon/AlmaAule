@@ -60,7 +60,7 @@
 
 		lastInterval = { startDate, endDate }; // Save the interval
 
-		const unfilteredEvents = await getImpegni(fetch, page.params.calId, {
+		const unfilteredEvents = await getImpegni(fetch, page.params.calId as string, {
 			dataInizio: startDate,
 			dataFine: endDate,
 			idAule: [aula.id]
@@ -322,8 +322,9 @@
 				lng: aula?.relazioneEdificio.geo.lng
 			})}
 			target="_blank"
-			rel="noopener"
+			rel="external"
 			class="btn btn-primary btn-md"
+			data-sveltekit-reload
 		>
 			Open in Google Maps
 		</a>
@@ -333,8 +334,9 @@
 				lng: aula?.relazioneEdificio.geo.lng
 			})}
 			target="_blank"
-			rel="noopener"
+			rel="external"
 			class="btn btn-primary btn-md"
+			data-sveltekit-reload
 		>
 			Open in OpenStreetMap
 		</a>

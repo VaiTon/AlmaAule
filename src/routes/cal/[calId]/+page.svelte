@@ -26,7 +26,7 @@
 		pageData.aule.map((aula) => ({ id: aula.id, title: aula.descrizione }))
 	);
 
-	let timelineEvents: Promise<TimelineEvent[]> = $derived.by(() => {
+	let timelineEventsMap: Promise<Map<string, TimelineEvent[]>> = $derived.by(() => {
 		const newTimelineEvent = (resId: string, impegno: Impegno): TimelineEvent => ({
 			resId: resId,
 			title: impegno.nome,
@@ -37,7 +37,24 @@
 
 		return (async () => {
 			const impegni = await impegniPromise;
-			return impegni.flatMap((i) => i.aule.map((aula) => newTimelineEvent(aula.id, i)));
+			const events = impegni.flatMap((i) => i.aule.map((aula) => newTimelineEvent(aula.id, i)));
+
+			// eslint-disable-next-line svelte/prefer-svelte-reactivity
+			const map = new Map<string, TimelineEvent[]>();
+			for (const e of events) {
+				let arr = map.get(e.resId);
+				if (!arr) {
+					arr = [];
+					map.set(e.resId, arr);
+				}
+				arr.push(e);
+			}
+
+			for (const arr of map.values()) {
+				arr.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+			}
+
+			return map;
 		})();
 	});
 
@@ -57,28 +74,25 @@
 	});
 
 	// Get current activity for a resource
-	const getCurrentActivity = (events: TimelineEvent[], resId: string, time: Date) => {
-		const currentEvent = events.find(
-			(e) => e.resId === resId && e.startTime <= time && e.endTime >= time
-		);
+	const getCurrentActivity = (resourceEvents: TimelineEvent[], time: Date) => {
+		const currentEvent = resourceEvents.find((e) => e.startTime <= time && e.endTime >= time);
 		return currentEvent;
 	};
 
 	// Get next activity for a resource
-	const getNextActivity = (events: TimelineEvent[], resourceId: string, time: Date) => {
-		const futureEvents = events
-			.filter((e) => e.resId === resourceId && e.startTime > time)
-			.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
-		return futureEvents[0];
+	const getNextActivity = (resourceEvents: TimelineEvent[], time: Date) => {
+		const futureEvent = resourceEvents.find((e) => e.startTime > time);
+		return futureEvent;
 	};
 </script>
 
-{#snippet roomCard(events: TimelineEvent[], resource: Resource)}
-	{@const currentActivity = getCurrentActivity(events, resource.id, currentTime)}
-	{@const nextActivity = getNextActivity(events, resource.id, currentTime)}
+{#snippet roomCard(eventsMap: Map<string, TimelineEvent[]>, resource: Resource)}
+	{@const resourceEvents = eventsMap.get(resource.id) || []}
+	{@const currentActivity = getCurrentActivity(resourceEvents, currentTime)}
+	{@const nextActivity = getNextActivity(resourceEvents, currentTime)}
 	<a
 		href={resolve('/cal/[calId]/[aulaId]', {
-			calId: page.params.calId,
+			calId: page.params.calId as string,
 			aulaId: resource.id
 		})}
 		class={[
@@ -130,14 +144,14 @@
 	<h1 class="text-2xl font-bold">Availability for '{cal.name}' rooms</h1>
 </div>
 
-{#await timelineEvents}
+{#await timelineEventsMap}
 	<div class="flex justify-center items-center h-32">
 		<div class="loading loading-spinner text-primary"></div>
 	</div>
-{:then events}
+{:then eventsMap}
 	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 		{#each sortedResources as resource (resource.id)}
-			{@render roomCard(events, resource)}
+			{@render roomCard(eventsMap, resource)}
 		{/each}
 	</div>
 {/await}
