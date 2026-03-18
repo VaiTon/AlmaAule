@@ -60,7 +60,7 @@
 
 		lastInterval = { startDate, endDate }; // Save the interval
 
-		const unfilteredEvents = await getImpegni(fetch, page.params.calId, {
+		const unfilteredEvents = await getImpegni(fetch, page.params.calId!, {
 			dataInizio: startDate,
 			dataFine: endDate,
 			idAule: [aula.id]
@@ -169,7 +169,6 @@
 			searchParams.set('impegno', id);
 		}
 
-		// eslint-disable-next-line svelte/no-navigation-without-resolve
 		goto('?' + searchParams.toString(), { noScroll: true });
 	}
 </script>
@@ -324,6 +323,7 @@
 			target="_blank"
 			rel="noopener"
 			class="btn btn-primary btn-md"
+			data-sveltekit-preload-data="off"
 		>
 			Open in Google Maps
 		</a>
@@ -335,6 +335,7 @@
 			target="_blank"
 			rel="noopener"
 			class="btn btn-primary btn-md"
+			data-sveltekit-preload-data="off"
 		>
 			Open in OpenStreetMap
 		</a>
