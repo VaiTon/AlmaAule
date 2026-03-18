@@ -1,0 +1,104 @@
+--- src/routes/cal/[calId]/+page.svelte
++++ src/routes/cal/[calId]/+page.svelte
+@@ -26,11 +26,7 @@
+		pageData.aule.map((aula) => ({ id: aula.id, title: aula.descrizione }))
+	);
+
+-<<<<<<< Updated upstream
+-	let timelineEvents: Promise<Map<string, TimelineEvent[]>> = $derived.by(() => {
+-=======
+	let timelineEventsMap: Promise<Map<string, TimelineEvent[]>> = $derived.by(() => {
+->>>>>>> Stashed changes
+		const newTimelineEvent = (resId: string, impegno: Impegno): TimelineEvent => ({
+			resId: resId,
+			title: impegno.nome,
+@@ -41,21 +37,6 @@
+
+		return (async () => {
+			const impegni = await impegniPromise;
+-<<<<<<< Updated upstream
+-			const allEvents = impegni.flatMap((i) => i.aule.map((aula) => newTimelineEvent(aula.id, i)));
+-
+-			// Group events by resource ID for O(1) lookups during rendering
+-			// eslint-disable-next-line svelte/prefer-svelte-reactivity
+-			const eventsMap = new Map<string, TimelineEvent[]>();
+-			for (const event of allEvents) {
+-				const resEvents = eventsMap.get(event.resId) || [];
+-				resEvents.push(event);
+-				eventsMap.set(event.resId, resEvents);
+-			}
+-
+-			// Pre-sort events chronologically to avoid sorting on every render loop
+-			for (const resEvents of eventsMap.values()) {
+-				resEvents.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+-			}
+-
+-			return eventsMap;
+-=======
+			const events = impegni.flatMap((i) => i.aule.map((aula) => newTimelineEvent(aula.id, i)));
+
+			// eslint-disable-next-line svelte/prefer-svelte-reactivity
+@@ -74,7 +55,6 @@
+			}
+
+			return map;
+->>>>>>> Stashed changes
+		})();
+	});
+
+@@ -98,25 +78,6 @@
+	});
+
+	// Get current activity for a resource
+-<<<<<<< Updated upstream
+-	const getCurrentActivity = (
+-		eventsMap: Map<string, TimelineEvent[]>,
+-		resId: string,
+-		time: Date
+-	) => {
+-		const events = eventsMap.get(resId);
+-		if (!events) return undefined;
+-
+-		// The list is sorted, so we can just find the one that spans the current time
+-		return events.find((e) => e.startTime <= time && e.endTime >= time);
+-	};
+-
+-	// Get next activity for a resource
+-	const getNextActivity = (
+-		eventsMap: Map<string, TimelineEvent[]>,
+-		resourceId: string,
+-		time: Date
+-	) => {
+-		const events = eventsMap.get(resourceId);
+-		if (!events) return undefined;
+-
+-		// Since events are pre-sorted chronologically, the first event in the future is the next activity
+-		return events.find((e) => e.startTime > time);
+-=======
+	const getCurrentActivity = (resourceEvents: TimelineEvent[], time: Date) => {
+		const currentEvent = resourceEvents.find((e) => e.startTime <= time && e.endTime >= time);
+		return currentEvent;
+@@ -127,19 +88,11 @@
+		const futureEvent = resourceEvents.find((e) => e.startTime > time);
+		return futureEvent;
+->>>>>>> Stashed changes
+	};
+ </script>
+
+ {#snippet roomCard(eventsMap: Map<string, TimelineEvent[]>, resource: Resource)}
+-<<<<<<< Updated upstream
+-	{@const currentActivity = getCurrentActivity(eventsMap, resource.id, currentTime)}
+-	{@const nextActivity = getNextActivity(eventsMap, resource.id, currentTime)}
+-	<a
+-		href={resolve('/cal/[calId]/[aulaId]', {
+-			calId: page.params.calId!,
+-=======
+	{@const resourceEvents = eventsMap.get(resource.id) || []}
+	{@const currentActivity = getCurrentActivity(resourceEvents, currentTime)}
+	{@const nextActivity = getNextActivity(resourceEvents, currentTime)}
+	<a
+		href={resolve('/cal/[calId]/[aulaId]', {
+			calId: page.params.calId as string,
+->>>>>>> Stashed changes
+			aulaId: resource.id
+		})}
