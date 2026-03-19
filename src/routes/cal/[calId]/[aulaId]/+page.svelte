@@ -33,10 +33,11 @@
 	let eventModal: EventModal | undefined = $state(undefined);
 
 	let nowEvent = $derived.by(() => {
-		const now = dayjs();
+		// Native Date comparison is faster than creating dayjs objects
+		const now = new Date();
 
 		return events.find((e) => {
-			return now.isAfter(e.dataInizio) && now.isBefore(e.dataFine);
+			return now > new Date(e.dataInizio) && now < new Date(e.dataFine);
 		});
 	});
 
@@ -60,7 +61,7 @@
 
 		lastInterval = { startDate, endDate }; // Save the interval
 
-		const unfilteredEvents = await getImpegni(fetch, page.params.calId, {
+		const unfilteredEvents = await getImpegni(fetch, page.params.calId!, {
 			dataInizio: startDate,
 			dataFine: endDate,
 			idAule: [aula.id]
@@ -316,6 +317,7 @@
 <div class="p-4 mb-6">
 	<h2 class="card-title text-2xl font-bold mb-2">Map</h2>
 	<div class="flex flex-col sm:flex-row justify-center gap-2 mb-4">
+		<!-- eslint-disable svelte/no-navigation-without-resolve -->
 		<a
 			href={getGoogleMapsLink({
 				lat: aula?.relazioneEdificio.geo.lat,
@@ -324,6 +326,7 @@
 			target="_blank"
 			rel="noopener"
 			class="btn btn-primary btn-md"
+			data-sveltekit-reload
 		>
 			Open in Google Maps
 		</a>
@@ -335,9 +338,11 @@
 			target="_blank"
 			rel="noopener"
 			class="btn btn-primary btn-md"
+			data-sveltekit-reload
 		>
 			Open in OpenStreetMap
 		</a>
+		<!-- eslint-enable svelte/no-navigation-without-resolve -->
 	</div>
 	<div class="w-full rounded-box overflow-hidden h-64 sm:h-80" id="map"></div>
 </div>

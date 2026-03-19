@@ -13,10 +13,11 @@ export function getActualImpegniAule(
 }
 
 function getImpegnoAula(impegni: Impegno[], aula: Aula, time: dayjs.Dayjs): Impegno | undefined {
+	const timeDate = time.toDate(); // convert to native Date once
 	return impegni.find(
 		(impegno) =>
 			impegno.aule.some((a) => a.id === aula.id) &&
-			dayjs(impegno.dataInizio).isBefore(time) &&
-			dayjs(impegno.dataFine).isAfter(time)
+			new Date(impegno.dataInizio) < timeDate &&
+			new Date(impegno.dataFine) > timeDate
 	);
 }
