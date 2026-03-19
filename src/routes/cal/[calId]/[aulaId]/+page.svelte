@@ -60,7 +60,7 @@
 
 		lastInterval = { startDate, endDate }; // Save the interval
 
-		const unfilteredEvents = await getImpegni(fetch, page.params.calId!, {
+		const unfilteredEvents = await getImpegni(fetch, page.params.calId, {
 			dataInizio: startDate,
 			dataFine: endDate,
 			idAule: [aula.id]
@@ -316,7 +316,6 @@
 <div class="p-4 mb-6">
 	<h2 class="card-title text-2xl font-bold mb-2">Map</h2>
 	<div class="flex flex-col sm:flex-row justify-center gap-2 mb-4">
-		<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 		<a
 			href={getGoogleMapsLink({
 				lat: aula?.relazioneEdificio.geo.lat,
@@ -325,11 +324,9 @@
 			target="_blank"
 			rel="noopener"
 			class="btn btn-primary btn-md"
-			data-sveltekit-noscroll
 		>
 			Open in Google Maps
 		</a>
-		<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 		<a
 			href={getOSMLink({
 				lat: aula?.relazioneEdificio.geo.lat,
@@ -338,7 +335,6 @@
 			target="_blank"
 			rel="noopener"
 			class="btn btn-primary btn-md"
-			data-sveltekit-noscroll
 		>
 			Open in OpenStreetMap
 		</a>

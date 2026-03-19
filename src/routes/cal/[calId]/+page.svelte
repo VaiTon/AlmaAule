@@ -78,7 +78,7 @@
 	{@const nextActivity = getNextActivity(events, resource.id, currentTime)}
 	<a
 		href={resolve('/cal/[calId]/[aulaId]', {
-			calId: page.params.calId!,
+			calId: page.params.calId,
 			aulaId: resource.id
 		})}
 		class={[
