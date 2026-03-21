@@ -133,7 +133,8 @@
 								: event.impegno.causaleIndisponibilita
 									? `🚧 ${event.impegno.causaleIndisponibilita} 🚧`
 									: 'Unknown Event'} ({dayjs
-								.duration(dayjs(event.end).diff(dayjs(event.start)))
+								// Opt: Replaced dual dayjs calls with single native math duration calculation
+								.duration(event.end.getTime() - event.start.getTime())
 								.humanize()})
 						</button>
 					{/each}
@@ -178,7 +179,7 @@
 										<div class="text-xs text-base-content/70 mt-1">
 											{dayjs(event.start).format('HH:mm')} - {dayjs(event.end).format('HH:mm')}
 											<span class="text-base-content/50">
-												({dayjs.duration(dayjs(event.end).diff(dayjs(event.start))).humanize()})
+												({dayjs.duration(event.end.getTime() - event.start.getTime()).humanize()})
 											</span>
 										</div>
 									</div>
