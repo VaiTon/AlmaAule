@@ -85,8 +85,13 @@
 		return `${hour}:00`;
 	}
 
+	function isSameDate(d1: Date, d2: Dayjs) {
+		return (
+			d1.getDate() === d2.date() && d1.getMonth() === d2.month() && d1.getFullYear() === d2.year()
+		);
+	}
+
 	function getEventBlockStyle(event: TimelineEvent, dayIdx: number): string {
-		// Performance: Native Date getters are significantly faster than dayjs(date).hour()
 		const startHour = event.start.getHours() + event.start.getMinutes() / 60;
 		const endHour = event.end.getHours() + event.end.getMinutes() / 60;
 		const pxPerHour = 48;
@@ -198,13 +203,7 @@
 
 			<!-- Render events for this classroom -->
 			{#each weekEvents as event (event.start.valueOf() + event.title)}
-				<!-- Performance: Native Date comparisons in Svelte {@const} are ~10x faster than dayjs(date).isSame() -->
-				{@const startDayIdx = weekDaysArr.findIndex(
-					(day) =>
-						event.start.getDate() === day.date() &&
-						event.start.getMonth() === day.month() &&
-						event.start.getFullYear() === day.year()
-				)}
+				{@const startDayIdx = weekDaysArr.findIndex((day) => isSameDate(event.start, day))}
 				{#if startDayIdx >= 0}
 					<button
 						class="absolute rounded shadow px-2 text-xs font-semibold overflow-auto wrap-break-word cursor-pointer mx-1 my-1 {getEventColor(
