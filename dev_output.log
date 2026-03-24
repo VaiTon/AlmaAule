@@ -1,0 +1,13 @@
+
+> uniboaule@0.2.0 dev /app
+> vite dev
+
+3:15:38 PM [vite] (client) Forced re-optimization of dependencies
+
+  VITE v7.3.1  ready in 1841 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+/*! 🌼 daisyUI 5.5.19 */
+Killed
+ ELIFECYCLE  Command failed with exit code 137.
