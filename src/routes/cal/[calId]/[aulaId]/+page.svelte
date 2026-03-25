@@ -60,7 +60,7 @@
 
 		lastInterval = { startDate, endDate }; // Save the interval
 
-		const unfilteredEvents = await getImpegni(fetch, page.params.calId, {
+		const unfilteredEvents = await getImpegni(fetch, page.params.calId!, {
 			dataInizio: startDate,
 			dataFine: endDate,
 			idAule: [aula.id]
