@@ -11,19 +11,22 @@
 
 	let { data }: { data: PageData } = $props();
 
-	function sortingName(aula: Aula) {
-		return `${aula.relazioneEdificio.comune} - ${aula.relazioneEdificio.plesso} - ${aula.descrizione}`;
-	}
-
-	function filterAule(aula: Aula) {
-		return sortingName(aula).toLowerCase().includes(search.toLowerCase());
-	}
-
-	function sortAule(a: Aula, b: Aula) {
-		const nameA = sortingName(a);
-		const nameB = sortingName(b);
-		return nameA.toLowerCase().localeCompare(nameB.toLowerCase());
-	}
+	// Pre-compute sorting names and lowercase keys to avoid expensive string allocations
+	// and repeated `.sort()` mutations during render cycles dependent on text inputs.
+	let optimizedAulePromise = $derived(
+		data.aule.then((aule) => {
+			return aule
+				.map((aula) => {
+					const sortingName = `${aula.relazioneEdificio.comune} - ${aula.relazioneEdificio.plesso} - ${aula.descrizione}`;
+					return {
+						...aula,
+						_sortingName: sortingName,
+						_searchKey: sortingName.toLowerCase()
+					};
+				})
+				.sort((a, b) => a._searchKey.localeCompare(b._searchKey));
+		})
+	);
 
 	let search = $state(page.url.searchParams.get('q') ?? '');
 	$effect(() => {
@@ -44,13 +47,14 @@
 
 <h1 class="text-4xl font-bold mb-4">Classrooms</h1>
 
-{#await data.aule}
+{#await optimizedAulePromise}
 	<div class="text-center">
 		<p class="loading loading-spinner loading-lg"></p>
 		<p class="mt-4">Loading classrooms...</p>
 	</div>
 {:then aule}
-	{@const showedAule = aule.sort(sortAule).filter(filterAule)}
+	{@const searchLower = search.toLowerCase()}
+	{@const showedAule = aule.filter((aula) => aula._searchKey.includes(searchLower))}
 	<label for="search" class="sr-only">Search classroom</label>
 	<input
 		id="search"
