@@ -15,16 +15,6 @@
 		return `${aula.relazioneEdificio.comune} - ${aula.relazioneEdificio.plesso} - ${aula.descrizione}`;
 	}
 
-	function filterAule(aula: Aula) {
-		return sortingName(aula).toLowerCase().includes(search.toLowerCase());
-	}
-
-	function sortAule(a: Aula, b: Aula) {
-		const nameA = sortingName(a);
-		const nameB = sortingName(b);
-		return nameA.toLowerCase().localeCompare(nameB.toLowerCase());
-	}
-
 	let search = $state(page.url.searchParams.get('q') ?? '');
 	$effect(() => {
 		// Debounce search input, then update URL query parameter
@@ -50,7 +40,17 @@
 		<p class="mt-4">Loading classrooms...</p>
 	</div>
 {:then aule}
-	{@const showedAule = aule.sort(sortAule).filter(filterAule)}
+	<!-- Pre-compute search keys and sort once, avoiding expensive O(N log N) sorts and allocations on every keystroke -->
+	{@const preparedAule = aule
+		.map((aula) => {
+			const name = sortingName(aula);
+			return { aula, searchKey: name.toLowerCase() };
+		})
+		.sort((a, b) => a.searchKey.localeCompare(b.searchKey))}
+	{@const searchLower = search.toLowerCase()}
+	{@const showedAule = preparedAule
+		.filter((item) => item.searchKey.includes(searchLower))
+		.map((item) => item.aula)}
 	<label for="search" class="sr-only">Search classroom</label>
 	<input
 		id="search"
