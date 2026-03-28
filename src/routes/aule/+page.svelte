@@ -11,21 +11,27 @@
 
 	let { data }: { data: PageData } = $props();
 
-	function sortingName(aula: Aula) {
-		return `${aula.relazioneEdificio.comune} - ${aula.relazioneEdificio.plesso} - ${aula.descrizione}`;
-	}
+	// ⚡ Bolt Performance Optimization:
+	// Pre-computing search keys and sorting once inside a $derived promise
+	// instead of doing expensive string concatenation and .toLowerCase()
+	// for every item during every render cycle/keystroke.
+	// This reduces filtering from O(N log N) with heavy string allocations to O(N) simple string search.
 
-	function filterAule(aula: Aula) {
-		return sortingName(aula).toLowerCase().includes(search.toLowerCase());
-	}
-
-	function sortAule(a: Aula, b: Aula) {
-		const nameA = sortingName(a);
-		const nameB = sortingName(b);
-		return nameA.toLowerCase().localeCompare(nameB.toLowerCase());
-	}
+	type AugmentedAula = Aula & { calId: string; searchKey: string };
 
 	let search = $state(page.url.searchParams.get('q') ?? '');
+	let searchLower = $derived(search.toLowerCase());
+
+	let optimizedAule = $derived.by(async () => {
+		const aule = await data.aule;
+		return aule
+			.map((aula) => {
+				const searchKey =
+					`${aula.relazioneEdificio.comune} - ${aula.relazioneEdificio.plesso} - ${aula.descrizione}`.toLowerCase();
+				return { ...aula, searchKey } as AugmentedAula;
+			})
+			.sort((a, b) => a.searchKey.localeCompare(b.searchKey));
+	});
 	$effect(() => {
 		// Debounce search input, then update URL query parameter
 		const query = search;
@@ -44,13 +50,13 @@
 
 <h1 class="text-4xl font-bold mb-4">Classrooms</h1>
 
-{#await data.aule}
+{#await optimizedAule}
 	<div class="text-center">
 		<p class="loading loading-spinner loading-lg"></p>
 		<p class="mt-4">Loading classrooms...</p>
 	</div>
 {:then aule}
-	{@const showedAule = aule.sort(sortAule).filter(filterAule)}
+	{@const showedAule = aule.filter((aula) => aula.searchKey.includes(searchLower))}
 	<label for="search" class="sr-only">Search classroom</label>
 	<input
 		id="search"
