@@ -46,7 +46,14 @@
 
 	let eventsByResource = $derived.by(() => {
 		if (!events) return {};
-		return Object.groupBy(events, (e) => e.resourceId);
+		// Pre-compute formatted strings to avoid expensive dayjs operations in hot render loops
+		const mappedEvents = events.map((e) => ({
+			...e,
+			formattedStart: dayjs(e.start).format('HH:mm'),
+			formattedEnd: dayjs(e.end).format('HH:mm'),
+			humanizedDuration: dayjs.duration(dayjs(e.end).diff(dayjs(e.start))).humanize()
+		}));
+		return Object.groupBy(mappedEvents, (e) => e.resourceId);
 	});
 
 	// Calculate the position of the current time line
@@ -132,9 +139,7 @@
 								? event.title
 								: event.impegno.causaleIndisponibilita
 									? `🚧 ${event.impegno.causaleIndisponibilita} 🚧`
-									: 'Unknown Event'} ({dayjs
-								.duration(dayjs(event.end).diff(dayjs(event.start)))
-								.humanize()})
+									: 'Unknown Event'} ({event.humanizedDuration})
 						</button>
 					{/each}
 				{/if}
@@ -176,9 +181,9 @@
 													: 'Unknown Event'}
 										</div>
 										<div class="text-xs text-base-content/70 mt-1">
-											{dayjs(event.start).format('HH:mm')} - {dayjs(event.end).format('HH:mm')}
+											{event.formattedStart} - {event.formattedEnd}
 											<span class="text-base-content/50">
-												({dayjs.duration(dayjs(event.end).diff(dayjs(event.start))).humanize()})
+												({event.humanizedDuration})
 											</span>
 										</div>
 									</div>
