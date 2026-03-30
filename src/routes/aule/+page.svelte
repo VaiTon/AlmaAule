@@ -15,17 +15,26 @@
 		return `${aula.relazioneEdificio.comune} - ${aula.relazioneEdificio.plesso} - ${aula.descrizione}`;
 	}
 
-	function filterAule(aula: Aula) {
-		return sortingName(aula).toLowerCase().includes(search.toLowerCase());
-	}
+	// Pre-compute sorting names and lowercase search keys to avoid expensive
+	// string allocations and repeated sorts during render cycles
+	// when the user types in the search input
+	let processedAulePromise = $derived(
+		data.aule.then((aule) => {
+			const processed = aule.map((aula) => {
+				const sortName = sortingName(aula);
+				return {
+					aula,
+					searchKey: sortName.toLowerCase()
+				};
+			});
 
-	function sortAule(a: Aula, b: Aula) {
-		const nameA = sortingName(a);
-		const nameB = sortingName(b);
-		return nameA.toLowerCase().localeCompare(nameB.toLowerCase());
-	}
+			// Sort once
+			return processed.sort((a, b) => a.searchKey.localeCompare(b.searchKey));
+		})
+	);
 
 	let search = $state(page.url.searchParams.get('q') ?? '');
+	let searchLower = $derived(search.toLowerCase());
 	$effect(() => {
 		// Debounce search input, then update URL query parameter
 		const query = search;
@@ -44,13 +53,13 @@
 
 <h1 class="text-4xl font-bold mb-4">Classrooms</h1>
 
-{#await data.aule}
+{#await processedAulePromise}
 	<div class="text-center">
 		<p class="loading loading-spinner loading-lg"></p>
 		<p class="mt-4">Loading classrooms...</p>
 	</div>
-{:then aule}
-	{@const showedAule = aule.sort(sortAule).filter(filterAule)}
+{:then processedAule}
+	{@const showedAule = processedAule.filter((item) => item.searchKey.includes(searchLower))}
 	<label for="search" class="sr-only">Search classroom</label>
 	<input
 		id="search"
@@ -62,11 +71,11 @@
 	/>
 
 	<div class="mb-4 text-sm text-base-content/70">
-		Showing {showedAule.length} of {aule.length} classrooms.
+		Showing {showedAule.length} of {processedAule.length} classrooms.
 	</div>
 
 	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-		{#each showedAule as aula (aula.id)}
+		{#each showedAule as { aula } (aula.id)}
 			{@const edificio = aula.relazioneEdificio}
 			<a
 				href={resolve('/cal/[calId]/[aulaId]', { calId: aula.calId, aulaId: aula.id })}
