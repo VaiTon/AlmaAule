@@ -4,6 +4,7 @@
 	import { page } from '$app/state';
 	import type { Aula } from '$lib/api';
 	import type { PageData } from './$types';
+	import type { CalendarAula } from './+page';
 
 	import MdiBuilding from '@iconify-svelte/mdi/building';
 	import MdiMapMarker from '@iconify-svelte/mdi/map-marker';
@@ -11,18 +12,9 @@
 
 	let { data }: { data: PageData } = $props();
 
-	function sortingName(aula: Aula) {
-		return `${aula.relazioneEdificio.comune} - ${aula.relazioneEdificio.plesso} - ${aula.descrizione}`;
-	}
-
-	function filterAule(aula: Aula) {
-		return sortingName(aula).toLowerCase().includes(search.toLowerCase());
-	}
-
-	function sortAule(a: Aula, b: Aula) {
-		const nameA = sortingName(a);
-		const nameB = sortingName(b);
-		return nameA.toLowerCase().localeCompare(nameB.toLowerCase());
+	function filterAule(aula: CalendarAula) {
+		// Optimization: use pre-computed lower-case search key
+		return aula.searchKey.includes(search.toLowerCase());
 	}
 
 	let search = $state(page.url.searchParams.get('q') ?? '');
@@ -50,7 +42,7 @@
 		<p class="mt-4">Loading classrooms...</p>
 	</div>
 {:then aule}
-	{@const showedAule = aule.sort(sortAule).filter(filterAule)}
+	{@const showedAule = aule.filter(filterAule)}
 	<label for="search" class="sr-only">Search classroom</label>
 	<input
 		id="search"

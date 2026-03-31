@@ -2,7 +2,7 @@ import { getAule, type Aula } from '$lib/api';
 import { CAL_MAP } from '$lib/cals';
 import type { PageLoad } from './$types';
 
-type CalendarAula = Aula & { calId: string };
+export type CalendarAula = Aula & { calId: string; searchKey: string };
 
 function deduplicate(aule: CalendarAula[]) {
 	const auleMap = new Map<string, CalendarAula>();
@@ -10,6 +10,10 @@ function deduplicate(aule: CalendarAula[]) {
 		auleMap.set(aula.id, aula);
 	}
 	return Array.from(auleMap.values());
+}
+
+function sortingName(aula: Aula) {
+	return `${aula.relazioneEdificio.comune} - ${aula.relazioneEdificio.plesso} - ${aula.descrizione}`;
 }
 
 export const load: PageLoad = async ({ fetch }) => {
@@ -23,13 +27,19 @@ export const load: PageLoad = async ({ fetch }) => {
 			console.error(`Error fetching aule for calendar ${cal.id}:`, error);
 		}
 
-		// Add calId to each aula
-		return aule.map((a) => ({ ...a, calId: cal.id }));
+		// Add calId and pre-computed searchKey to each aula to avoid redundant allocations during render loop
+		return aule.map((a) => ({
+			...a,
+			calId: cal.id,
+			searchKey: sortingName(a).toLowerCase()
+		}));
 	});
 
 	const aule: Promise<CalendarAula[]> = Promise.all(aulePromises)
 		.then((it) => it.flat())
-		.then((it) => deduplicate(it));
+		.then((it) => deduplicate(it))
+		// Pre-sort aule chronologically to avoid sorting on every render loop
+		.then((it) => it.sort((a, b) => a.searchKey.localeCompare(b.searchKey)));
 
 	return { aule };
 };
