@@ -11,21 +11,10 @@
 
 	let { data }: { data: PageData } = $props();
 
-	function sortingName(aula: Aula) {
-		return `${aula.relazioneEdificio.comune} - ${aula.relazioneEdificio.plesso} - ${aula.descrizione}`;
-	}
-
-	function filterAule(aula: Aula) {
-		return sortingName(aula).toLowerCase().includes(search.toLowerCase());
-	}
-
-	function sortAule(a: Aula, b: Aula) {
-		const nameA = sortingName(a);
-		const nameB = sortingName(b);
-		return nameA.toLowerCase().localeCompare(nameB.toLowerCase());
-	}
-
 	let search = $state(page.url.searchParams.get('q') ?? '');
+	// Pre-compute lowercase search term to avoid allocations in loop
+	let searchLower = $derived(search.toLowerCase());
+
 	$effect(() => {
 		// Debounce search input, then update URL query parameter
 		const query = search;
@@ -50,7 +39,7 @@
 		<p class="mt-4">Loading classrooms...</p>
 	</div>
 {:then aule}
-	{@const showedAule = aule.sort(sortAule).filter(filterAule)}
+	{@const showedAule = aule.filter((a) => a.searchKey.includes(searchLower))}
 	<label for="search" class="sr-only">Search classroom</label>
 	<input
 		id="search"
