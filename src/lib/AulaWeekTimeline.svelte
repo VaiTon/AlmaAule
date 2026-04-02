@@ -7,6 +7,7 @@
 		end: Date;
 		title: string;
 		impegno: Impegno;
+		startDayIdx: number;
 	};
 
 	type Props = {
@@ -38,12 +39,17 @@
 				const end = new Date(e.dataFine);
 				return start <= endOfWeek && end >= startOfWeek;
 			})
-			.map((impegno) => ({
-				start: new Date(impegno.dataInizio),
-				end: new Date(impegno.dataFine),
-				title: impegno.nome,
-				impegno
-			}));
+			.map((impegno) => {
+				const start = new Date(impegno.dataInizio);
+				return {
+					start,
+					end: new Date(impegno.dataFine),
+					title: impegno.nome,
+					impegno,
+					// Pre-compute the day index to avoid recalculating it inside the #each template loop
+					startDayIdx: weekDaysArr.findIndex((day) => isSameDate(start, day))
+				};
+			});
 	});
 
 	function handleTimelineEventClick(impegno: Impegno) {
@@ -203,13 +209,12 @@
 
 			<!-- Render events for this classroom -->
 			{#each weekEvents as event (event.start.valueOf() + event.title)}
-				{@const startDayIdx = weekDaysArr.findIndex((day) => isSameDate(event.start, day))}
-				{#if startDayIdx >= 0}
+				{#if event.startDayIdx >= 0}
 					<button
 						class="absolute rounded shadow px-2 text-xs font-semibold overflow-auto wrap-break-word cursor-pointer mx-1 my-1 {getEventColor(
 							event.impegno
 						)}"
-						style={getEventBlockStyle(event, startDayIdx)}
+						style={getEventBlockStyle(event, event.startDayIdx)}
 						title={event.title}
 						onclick={() => handleTimelineEventClick(event.impegno)}
 					>
