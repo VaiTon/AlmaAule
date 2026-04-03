@@ -33,10 +33,14 @@
 	let eventModal: EventModal | undefined = $state(undefined);
 
 	let nowEvent = $derived.by(() => {
-		const now = dayjs();
+		// ⚡ Bolt: Use native Date instead of dayjs for performance in reactive loop
+		// Impact: Significant reduction in object allocations inside the loop during frequent re-evaluations
+		const now = new Date();
 
 		return events.find((e) => {
-			return now.isAfter(e.dataInizio) && now.isBefore(e.dataFine);
+			const start = new Date(e.dataInizio);
+			const end = new Date(e.dataFine);
+			return now >= start && now < end;
 		});
 	});
 
