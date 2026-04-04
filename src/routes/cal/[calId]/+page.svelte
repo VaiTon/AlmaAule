@@ -1,6 +1,4 @@
 <script lang="ts">
-	import dayjs from 'dayjs';
-
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import type { Impegno } from '$lib/api';
@@ -25,8 +23,14 @@
 	let showVacantOnly = $state(false);
 
 	let resources: Resource[] = $derived.by(() =>
-		pageData.aule.map((aula) => ({ id: aula.id, title: aula.descrizione }))
+		pageData.aule
+			.map((aula) => ({ id: aula.id, title: aula.descrizione }))
+			.sort((a, b) => a.title.localeCompare(b.title))
 	);
+
+	function formatTime(date: Date) {
+		return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+	}
 
 	let timelineEvents: Promise<Map<string, TimelineEvent[]>> = $derived.by(() => {
 		const newTimelineEvent = (resId: string, impegno: Impegno): TimelineEvent => ({
@@ -127,7 +131,7 @@
 							'Activity in progress'}
 					</p>
 					<p class="text-xs opacity-90 mt-1">
-						Until {dayjs(currentActivity.endTime).format('HH:mm')}
+						Until {formatTime(currentActivity.endTime)}
 					</p>
 				</div>
 			{:else}
@@ -135,7 +139,7 @@
 					<div class="badge badge-sm mb-2">VACANT</div>
 					{#if nextActivity}
 						<p class="text-xs opacity-90 mt-1">
-							Next: {dayjs(nextActivity.startTime).format('HH:mm')}
+							Next: {formatTime(nextActivity.startTime)}
 						</p>
 						<p class="text-xs opacity-75 truncate" title={nextActivity.title}>
 							{nextActivity.title}
@@ -172,9 +176,8 @@
 	{@const filteredResources = resources.filter(
 		(r) => !showVacantOnly || !getCurrentActivity(events, r.id, currentTime)
 	)}
-	{@const sortedResources = filteredResources.sort((a, b) => a.title.localeCompare(b.title))}
 	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-		{#each sortedResources as resource (resource.id)}
+		{#each filteredResources as resource (resource.id)}
 			{@render roomCard(events, resource)}
 		{/each}
 	</div>

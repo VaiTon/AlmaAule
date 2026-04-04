@@ -12,3 +12,8 @@
 
 **Learning:** Performing `O(n log n)` array sorting and `O(n)` string concatenations/lowercasing inside Svelte component render cycles (e.g. inside a `$derived` or `{@const}` block dependent on fast-changing user input) causes severe performance degradation and layout thrashing, as it reruns every keystroke.
 **Action:** Pre-compute lowercase search keys and pre-sort arrays in the `+page.ts` load function before passing data to the Svelte component. Use `$derived` for just lowercasing the search query once per keystroke, and perform a simple `O(n)` filter using `.includes()` in the template.
+
+## 2025-03-22 - [Optimize Date Formatting in Svelte Render Loops]
+
+**Learning:** Calling `dayjs(date).format('HH:mm')` inside Svelte template iterators (like `{#each}`) creates unnecessary `dayjs` objects and adds formatting overhead for every element. For simple time formatting, native `Date` functions (`getHours()` and `getMinutes()`) perform much better without memory allocation overhead.
+**Action:** Replace `dayjs(date).format('HH:mm')` with a custom native `Date` formatting function when rendering lists of dates.
