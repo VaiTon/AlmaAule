@@ -12,3 +12,7 @@
 
 **Learning:** Performing `O(n log n)` array sorting and `O(n)` string concatenations/lowercasing inside Svelte component render cycles (e.g. inside a `$derived` or `{@const}` block dependent on fast-changing user input) causes severe performance degradation and layout thrashing, as it reruns every keystroke.
 **Action:** Pre-compute lowercase search keys and pre-sort arrays in the `+page.ts` load function before passing data to the Svelte component. Use `$derived` for just lowercasing the search query once per keystroke, and perform a simple `O(n)` filter using `.includes()` in the template.
+
+## 2024-04-05 - Avoid Sorting Inside Svelte {@const} Tags Depending on Intervals
+**Learning:** In Svelte components where template logic or `{@const}` tags depend on fast-changing reactivity dependencies like interval timers (e.g., `currentTime` updating every minute), performing expensive operations like `Array.prototype.sort()` inside the template causes unneeded O(n log n) overhead on every render cycle.
+**Action:** Always hoist sorting and filtering of slow-changing data (like API responses) into `$derived` blocks, and leverage the fact that `Array.prototype.filter()` preserves array order to avoid repeated sorting.
