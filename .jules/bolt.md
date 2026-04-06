@@ -12,3 +12,8 @@
 
 **Learning:** Performing `O(n log n)` array sorting and `O(n)` string concatenations/lowercasing inside Svelte component render cycles (e.g. inside a `$derived` or `{@const}` block dependent on fast-changing user input) causes severe performance degradation and layout thrashing, as it reruns every keystroke.
 **Action:** Pre-compute lowercase search keys and pre-sort arrays in the `+page.ts` load function before passing data to the Svelte component. Use `$derived` for just lowercasing the search query once per keystroke, and perform a simple `O(n)` filter using `.includes()` in the template.
+
+## 2025-04-06 - [Optimize sorting in templates]
+
+**Learning:** Svelte `{#each}` loops or `{@const}` blocks re-evaluate whenever their dependencies change, such as via bindings or regular `setInterval` triggers (like `currentTime`). Performing expensive operations like `sort()` or string manipulations inline in templates can lead to excessive processing and layout thrashing.
+**Action:** Extract sorting, filtering, and data transformations into `$derived` blocks or static variables in the `<script>` tag. This pre-computes data so the template only renders what it needs to without recalculating on every layout update.

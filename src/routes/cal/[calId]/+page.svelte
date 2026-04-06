@@ -25,7 +25,9 @@
 	let showVacantOnly = $state(false);
 
 	let resources: Resource[] = $derived.by(() =>
-		pageData.aule.map((aula) => ({ id: aula.id, title: aula.descrizione }))
+		pageData.aule
+			.map((aula) => ({ id: aula.id, title: aula.descrizione }))
+			.sort((a, b) => a.title.localeCompare(b.title))
 	);
 
 	let timelineEvents: Promise<Map<string, TimelineEvent[]>> = $derived.by(() => {
@@ -172,9 +174,8 @@
 	{@const filteredResources = resources.filter(
 		(r) => !showVacantOnly || !getCurrentActivity(events, r.id, currentTime)
 	)}
-	{@const sortedResources = filteredResources.sort((a, b) => a.title.localeCompare(b.title))}
 	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-		{#each sortedResources as resource (resource.id)}
+		{#each filteredResources as resource (resource.id)}
 			{@render roomCard(events, resource)}
 		{/each}
 	</div>
