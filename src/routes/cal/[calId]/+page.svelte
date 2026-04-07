@@ -18,24 +18,33 @@
 		resId: string; // Resource ID
 		startTime: Date;
 		endTime: Date;
+		startTimeFormatted: string;
+		endTimeFormatted: string;
 		title: string;
 		impegno: Impegno;
 	};
 
 	let showVacantOnly = $state(false);
 
-	let resources: Resource[] = $derived.by(() =>
-		pageData.aule.map((aula) => ({ id: aula.id, title: aula.descrizione }))
-	);
+	let resources: Resource[] = $derived.by(() => {
+		const mapped = pageData.aule.map((aula) => ({ id: aula.id, title: aula.descrizione }));
+		return mapped.sort((a, b) => a.title.localeCompare(b.title));
+	});
 
 	let timelineEvents: Promise<Map<string, TimelineEvent[]>> = $derived.by(() => {
-		const newTimelineEvent = (resId: string, impegno: Impegno): TimelineEvent => ({
-			resId: resId,
-			title: impegno.nome,
-			impegno: impegno,
-			startTime: new Date(impegno.dataInizio),
-			endTime: new Date(impegno.dataFine)
-		});
+		const newTimelineEvent = (resId: string, impegno: Impegno): TimelineEvent => {
+			const startTime = new Date(impegno.dataInizio);
+			const endTime = new Date(impegno.dataFine);
+			return {
+				resId: resId,
+				title: impegno.nome,
+				impegno: impegno,
+				startTime,
+				endTime,
+				startTimeFormatted: dayjs(startTime).format('HH:mm'),
+				endTimeFormatted: dayjs(endTime).format('HH:mm')
+			};
+		};
 
 		return (async () => {
 			const impegni = await impegniPromise;
@@ -127,7 +136,7 @@
 							'Activity in progress'}
 					</p>
 					<p class="text-xs opacity-90 mt-1">
-						Until {dayjs(currentActivity.endTime).format('HH:mm')}
+						Until {currentActivity.endTimeFormatted}
 					</p>
 				</div>
 			{:else}
@@ -135,7 +144,7 @@
 					<div class="badge badge-sm mb-2">VACANT</div>
 					{#if nextActivity}
 						<p class="text-xs opacity-90 mt-1">
-							Next: {dayjs(nextActivity.startTime).format('HH:mm')}
+							Next: {nextActivity.startTimeFormatted}
 						</p>
 						<p class="text-xs opacity-75 truncate" title={nextActivity.title}>
 							{nextActivity.title}
@@ -172,9 +181,8 @@
 	{@const filteredResources = resources.filter(
 		(r) => !showVacantOnly || !getCurrentActivity(events, r.id, currentTime)
 	)}
-	{@const sortedResources = filteredResources.sort((a, b) => a.title.localeCompare(b.title))}
 	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-		{#each sortedResources as resource (resource.id)}
+		{#each filteredResources as resource (resource.id)}
 			{@render roomCard(events, resource)}
 		{/each}
 	</div>
