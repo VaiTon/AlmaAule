@@ -12,6 +12,12 @@
 
 **Learning:** Performing `O(n log n)` array sorting and `O(n)` string concatenations/lowercasing inside Svelte component render cycles (e.g. inside a `$derived` or `{@const}` block dependent on fast-changing user input) causes severe performance degradation and layout thrashing, as it reruns every keystroke.
 **Action:** Pre-compute lowercase search keys and pre-sort arrays in the `+page.ts` load function before passing data to the Svelte component. Use `$derived` for just lowercasing the search query once per keystroke, and perform a simple `O(n)` filter using `.includes()` in the template.
+
 ## 2025-04-07 - Pre-compute properties to avoid expensive ops in reactivity blocks
+
 **Learning:** In Svelte 5, variables updated by `setInterval` (like `currentTime`) trigger reactivity blocks (like `{@const}`) and re-renders very frequently. Running O(n log n) sorts or creating instances of libraries like `dayjs` within these reactive templates creates significant CPU overhead, especially with large lists like classrooms.
 **Action:** Always pre-compute formats (e.g., `dayjs` strings) and pre-sort lists once inside `$derived` or initial data loading. Filter operations are cheap, but sorts and object allocations should be moved out of the hot path.
+
+## 2024-04-08 - Avoid inline reactive sorting and dayjs format overhead in Svelte loops
+**Learning:** Svelte's reactive model will re-evaluate template variables and inline expressions like `#each array.sort()` or `dayjs(date).format()` whenever reactive state it depends on changes (like a 60-second `setInterval` triggering `currentTime`). Doing string allocations or `O(n log n)` sort operations repeatedly per-tick per-item leads to unnecessary performance overhead.
+**Action:** When working in performance-critical rendering paths (like long timelines or lists), always pre-compute formatted strings (like humanized duration or formatted times) and pre-sort lists once inside a `$derived` block before it hits the template rendering loop. Use native `Date` math instead of heavy `dayjs` instantiations where precise simple times are sufficient.
