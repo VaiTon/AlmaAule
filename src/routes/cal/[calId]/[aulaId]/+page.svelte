@@ -69,6 +69,13 @@
 			idAule: [aula.id]
 		});
 
+		if ('error' in unfilteredEvents) {
+			console.error('Error fetching events:', unfilteredEvents.error);
+			events = [];
+			loadingEvents = false;
+			return;
+		}
+
 		const filteredEvents = unfilteredEvents.filter((impegno) =>
 			impegno.risorse.some((risorsa) => 'aulaId' in risorsa && risorsa.aulaId === aula.id)
 		);
