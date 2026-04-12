@@ -46,7 +46,15 @@
 
 	let eventsByResource = $derived.by(() => {
 		if (!events) return {};
-		return Object.groupBy(events, (e) => e.resourceId);
+		const grouped = Object.groupBy(events, (e) => e.resourceId);
+		// Pre-sort events chronologically to avoid sorting on every render loop
+		for (const key in grouped) {
+			const eventsList = grouped[key];
+			if (eventsList) {
+				eventsList.sort((a, b) => a.start.getTime() - b.start.getTime());
+			}
+		}
+		return grouped;
 	});
 
 	// Calculate the position of the current time line
@@ -157,7 +165,7 @@
 				</a>
 				{#if resourceEvents.length > 0}
 					<div class="divide-y divide-base-300">
-						{#each resourceEvents.sort((a, b) => a.start.getTime() - b.start.getTime()) as event (event.start + event.title)}
+						{#each resourceEvents as event (event.start + event.title)}
 							{@const isNow = currentTime >= event.start && currentTime <= event.end}
 							<button
 								class="w-full text-left px-4 py-3 hover:bg-base-200 transition"

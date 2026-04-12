@@ -1,6 +1,4 @@
 <script lang="ts">
-	import dayjs from 'dayjs';
-
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import type { Impegno } from '$lib/api';
@@ -41,14 +39,19 @@
 		const newTimelineEvent = (resId: string, impegno: Impegno): TimelineEvent => {
 			const startTime = new Date(impegno.dataInizio);
 			const endTime = new Date(impegno.dataFine);
+
+			// Use native formatting to avoid expensive dayjs instantiations in this hot loop
+			const formatTime = (d: Date) =>
+				`${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+
 			return {
 				resId: resId,
 				title: impegno.nome,
 				impegno: impegno,
 				startTime,
 				endTime,
-				startTimeFormatted: dayjs(startTime).format('HH:mm'),
-				endTimeFormatted: dayjs(endTime).format('HH:mm')
+				startTimeFormatted: formatTime(startTime),
+				endTimeFormatted: formatTime(endTime)
 			};
 		};
 
