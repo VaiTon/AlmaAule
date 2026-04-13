@@ -44,9 +44,33 @@
 		return resources.toSorted((a, b) => a.title.localeCompare(b.title));
 	});
 
+	let processedEvents = $derived.by(() => {
+		if (!events) return [];
+		return events.map((event) => {
+			const startFormat =
+				event.start.getHours().toString().padStart(2, '0') +
+				':' +
+				event.start.getMinutes().toString().padStart(2, '0');
+			const endFormat =
+				event.end.getHours().toString().padStart(2, '0') +
+				':' +
+				event.end.getMinutes().toString().padStart(2, '0');
+			return {
+				...event,
+				humanizedDuration: dayjs.duration(dayjs(event.end).diff(dayjs(event.start))).humanize(),
+				formattedTimeRange: `${startFormat} - ${endFormat}`
+			};
+		});
+	});
+
 	let eventsByResource = $derived.by(() => {
-		if (!events) return {};
-		return Object.groupBy(events, (e) => e.resourceId);
+		if (!processedEvents) return {};
+		const grouped = Object.groupBy(processedEvents, (e) => e.resourceId);
+		// Pre-sort the array for each resource to avoid sorting in the template
+		for (const key in grouped) {
+			grouped[key]?.sort((a, b) => a.start.getTime() - b.start.getTime());
+		}
+		return grouped;
 	});
 
 	// Calculate the position of the current time line
@@ -132,9 +156,7 @@
 								? event.title
 								: event.impegno.causaleIndisponibilita
 									? `🚧 ${event.impegno.causaleIndisponibilita} 🚧`
-									: 'Unknown Event'} ({dayjs
-								.duration(dayjs(event.end).diff(dayjs(event.start)))
-								.humanize()})
+									: 'Unknown Event'} ({event.humanizedDuration})
 						</button>
 					{/each}
 				{/if}
@@ -157,7 +179,7 @@
 				</a>
 				{#if resourceEvents.length > 0}
 					<div class="divide-y divide-base-300">
-						{#each resourceEvents.sort((a, b) => a.start.getTime() - b.start.getTime()) as event (event.start + event.title)}
+						{#each resourceEvents as event (event.start + event.title)}
 							{@const isNow = currentTime >= event.start && currentTime <= event.end}
 							<button
 								class="w-full text-left px-4 py-3 hover:bg-base-200 transition"
@@ -176,9 +198,9 @@
 													: 'Unknown Event'}
 										</div>
 										<div class="text-xs text-base-content/70 mt-1">
-											{dayjs(event.start).format('HH:mm')} - {dayjs(event.end).format('HH:mm')}
+											{event.formattedTimeRange}
 											<span class="text-base-content/50">
-												({dayjs.duration(dayjs(event.end).diff(dayjs(event.start))).humanize()})
+												({event.humanizedDuration})
 											</span>
 										</div>
 									</div>
