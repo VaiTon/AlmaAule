@@ -12,6 +12,13 @@
 
 **Learning:** Performing `O(n log n)` array sorting and `O(n)` string concatenations/lowercasing inside Svelte component render cycles (e.g. inside a `$derived` or `{@const}` block dependent on fast-changing user input) causes severe performance degradation and layout thrashing, as it reruns every keystroke.
 **Action:** Pre-compute lowercase search keys and pre-sort arrays in the `+page.ts` load function before passing data to the Svelte component. Use `$derived` for just lowercasing the search query once per keystroke, and perform a simple `O(n)` filter using `.includes()` in the template.
+
 ## 2025-04-07 - Pre-compute properties to avoid expensive ops in reactivity blocks
+
 **Learning:** In Svelte 5, variables updated by `setInterval` (like `currentTime`) trigger reactivity blocks (like `{@const}`) and re-renders very frequently. Running O(n log n) sorts or creating instances of libraries like `dayjs` within these reactive templates creates significant CPU overhead, especially with large lists like classrooms.
 **Action:** Always pre-compute formats (e.g., `dayjs` strings) and pre-sort lists once inside `$derived` or initial data loading. Filter operations are cheap, but sorts and object allocations should be moved out of the hot path.
+
+## 2025-04-15 - Pre-sort elements outside {#each} blocks dependent on fast-changing timers
+
+**Learning:** Found a performance bottleneck where `.sort()` was being called directly inside an `{#each}` loop block. The `{#each}` loop was dependent on an array `resourceEvents` that wasn't itself changing rapidly, however the inner block also included logic dependent on a fast-changing timer (`currentTime`), or the loop was being re-evaluated during other state changes causing `O(n log n)` recalculation on every render cycle.
+**Action:** Pre-compute and sort arrays in `<script>` constant blocks or `$derived` / `$derived.by` blocks rather than calling array mutation/sorting methods directly in the markup `{#each}` loops.
