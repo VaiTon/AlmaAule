@@ -46,7 +46,15 @@
 
 	let eventsByResource = $derived.by(() => {
 		if (!events) return {};
-		return Object.groupBy(events, (e) => e.resourceId);
+		const enhancedEvents = events
+			.map((e) => ({
+				...e,
+				formattedStart: dayjs(e.start).format('HH:mm'),
+				formattedEnd: dayjs(e.end).format('HH:mm'),
+				humanDuration: dayjs.duration(dayjs(e.end).diff(dayjs(e.start))).humanize()
+			}))
+			.sort((a, b) => a.start.getTime() - b.start.getTime());
+		return Object.groupBy(enhancedEvents, (e) => e.resourceId);
 	});
 
 	// Calculate the position of the current time line
@@ -132,9 +140,7 @@
 								? event.title
 								: event.impegno.causaleIndisponibilita
 									? `🚧 ${event.impegno.causaleIndisponibilita} 🚧`
-									: 'Unknown Event'} ({dayjs
-								.duration(dayjs(event.end).diff(dayjs(event.start)))
-								.humanize()})
+									: 'Unknown Event'} ({event.humanDuration})
 						</button>
 					{/each}
 				{/if}
@@ -157,7 +163,7 @@
 				</a>
 				{#if resourceEvents.length > 0}
 					<div class="divide-y divide-base-300">
-						{#each resourceEvents.sort((a, b) => a.start.getTime() - b.start.getTime()) as event (event.start + event.title)}
+						{#each resourceEvents as event (event.start + event.title)}
 							{@const isNow = currentTime >= event.start && currentTime <= event.end}
 							<button
 								class="w-full text-left px-4 py-3 hover:bg-base-200 transition"
@@ -176,9 +182,9 @@
 													: 'Unknown Event'}
 										</div>
 										<div class="text-xs text-base-content/70 mt-1">
-											{dayjs(event.start).format('HH:mm')} - {dayjs(event.end).format('HH:mm')}
+											{event.formattedStart} - {event.formattedEnd}
 											<span class="text-base-content/50">
-												({dayjs.duration(dayjs(event.end).diff(dayjs(event.start))).humanize()})
+												({event.humanDuration})
 											</span>
 										</div>
 									</div>
