@@ -12,6 +12,13 @@
 
 **Learning:** Performing `O(n log n)` array sorting and `O(n)` string concatenations/lowercasing inside Svelte component render cycles (e.g. inside a `$derived` or `{@const}` block dependent on fast-changing user input) causes severe performance degradation and layout thrashing, as it reruns every keystroke.
 **Action:** Pre-compute lowercase search keys and pre-sort arrays in the `+page.ts` load function before passing data to the Svelte component. Use `$derived` for just lowercasing the search query once per keystroke, and perform a simple `O(n)` filter using `.includes()` in the template.
+
 ## 2025-04-07 - Pre-compute properties to avoid expensive ops in reactivity blocks
+
 **Learning:** In Svelte 5, variables updated by `setInterval` (like `currentTime`) trigger reactivity blocks (like `{@const}`) and re-renders very frequently. Running O(n log n) sorts or creating instances of libraries like `dayjs` within these reactive templates creates significant CPU overhead, especially with large lists like classrooms.
 **Action:** Always pre-compute formats (e.g., `dayjs` strings) and pre-sort lists once inside `$derived` or initial data loading. Filter operations are cheap, but sorts and object allocations should be moved out of the hot path.
+
+## 2025-04-21 - Avoid inline array mutation (sorting) and expensive library instantiation in Svelte `{#each}` loops
+
+**Learning:** Using `array.sort()` directly inside Svelte 5 `{#each}` loop expressions mutates the array in-place. When this loop references a fast-changing reactive variable (such as `currentTime` updated by `setInterval`), the array is sorted on every single tick, leading to CPU overhead and rendering inefficiencies. Also, calling `dayjs()` inside these loops repeatedly creates expensive date instances.
+**Action:** Pre-compute derived strings using mapping within `$derived` blocks. Pre-sort data chronologically using `.toSorted()` or in a `$derived` block outside of template rendering, so the loop simply iterates over pre-sorted, pre-formatted data.
