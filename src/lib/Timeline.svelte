@@ -46,7 +46,30 @@
 
 	let eventsByResource = $derived.by(() => {
 		if (!events) return {};
-		return Object.groupBy(events, (e) => e.resourceId);
+		// Pre-compute formatted strings to avoid calling dayjs repeatedly during template render,
+		// especially since currentTime updates frequently.
+		const optimizedEvents = events.map((e) => {
+			const dStart = dayjs(e.start);
+			const dEnd = dayjs(e.end);
+			return {
+				...e,
+				formattedStart: dStart.format('HH:mm'),
+				formattedEnd: dEnd.format('HH:mm'),
+				humanDuration: dayjs.duration(dEnd.diff(dStart)).humanize()
+			};
+		});
+
+		const grouped = Object.groupBy(optimizedEvents, (e) => e.resourceId);
+
+		// Pre-sort arrays chronologically to remove the inline .sort() in the mobile template
+		for (const key in grouped) {
+			const resEvents = grouped[key];
+			if (resEvents) {
+				resEvents.sort((a, b) => a.start.getTime() - b.start.getTime());
+			}
+		}
+
+		return grouped;
 	});
 
 	// Calculate the position of the current time line
@@ -120,24 +143,20 @@
 					<div class="flex-1 h-12 border-l border-base-300"></div>
 				{/each}
 				<!-- Render events for this resource -->
-				{#if events}
-					{#each eventsByResource[resource.id] || [] as event (event.start + event.title)}
-						<button
-							class="absolute top-2 h-8 bg-primary text-primary-content rounded shadow flex items-center px-2 text-xs font-semibold overflow-hidden whitespace-nowrap truncate cursor-pointer"
-							style={getEventSpanStyle(event.start, event.end)}
-							title={event.title}
-							onclick={() => onEventClick?.(event.impegno)}
-						>
-							{event.title
-								? event.title
-								: event.impegno.causaleIndisponibilita
-									? `🚧 ${event.impegno.causaleIndisponibilita} 🚧`
-									: 'Unknown Event'} ({dayjs
-								.duration(dayjs(event.end).diff(dayjs(event.start)))
-								.humanize()})
-						</button>
-					{/each}
-				{/if}
+				{#each eventsByResource[resource.id] || [] as event (String(event.start.getTime()) + (event.title || ''))}
+					<button
+						class="absolute top-2 h-8 bg-primary text-primary-content rounded shadow flex items-center px-2 text-xs font-semibold overflow-hidden whitespace-nowrap truncate cursor-pointer"
+						style={getEventSpanStyle(event.start, event.end)}
+						title={event.title}
+						onclick={() => onEventClick?.(event.impegno)}
+					>
+						{event.title
+							? event.title
+							: event.impegno.causaleIndisponibilita
+								? `🚧 ${event.impegno.causaleIndisponibilita} 🚧`
+								: 'Unknown Event'} ({event.humanDuration})
+					</button>
+				{/each}
 			</div>
 		{/each}
 	</div>
@@ -157,7 +176,7 @@
 				</a>
 				{#if resourceEvents.length > 0}
 					<div class="divide-y divide-base-300">
-						{#each resourceEvents.sort((a, b) => a.start.getTime() - b.start.getTime()) as event (event.start + event.title)}
+						{#each resourceEvents as event (String(event.start.getTime()) + (event.title || ''))}
 							{@const isNow = currentTime >= event.start && currentTime <= event.end}
 							<button
 								class="w-full text-left px-4 py-3 hover:bg-base-200 transition"
@@ -176,9 +195,9 @@
 													: 'Unknown Event'}
 										</div>
 										<div class="text-xs text-base-content/70 mt-1">
-											{dayjs(event.start).format('HH:mm')} - {dayjs(event.end).format('HH:mm')}
+											{event.formattedStart} - {event.formattedEnd}
 											<span class="text-base-content/50">
-												({dayjs.duration(dayjs(event.end).diff(dayjs(event.start))).humanize()})
+												({event.humanDuration})
 											</span>
 										</div>
 									</div>
