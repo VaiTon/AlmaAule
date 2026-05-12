@@ -193,7 +193,7 @@
 			</div>
 
 			<!-- Grid columns for days -->
-			{#each weekDaysArr as day, dayIdx (day.toDate())}
+			{#each weekDaysArr as day, dayIdx (day.unix())}
 				<div class="absolute top-0" style={getGridColumnStyle(dayIdx)}>
 					{#each hours as hour (hour)}
 						<div class="h-12 border-l border-base-300 border-b"></div>
