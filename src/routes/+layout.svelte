@@ -30,6 +30,7 @@
 	import { injectAnalytics } from '@vercel/analytics/sveltekit';
 	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 	import { onMount, type Snippet } from 'svelte';
+	import MdiMap from '@iconify-svelte/mdi/map';
 
 	let { children }: { children: Snippet } = $props();
 
@@ -84,6 +85,17 @@
 						{@html calendarIcon}
 					</span>
 					<span class="hidden sm:inline">Classrooms</span>
+				</a>
+				<a
+					href={resolve('/map')}
+					class="btn btn-secondary rounded-full font-semibold flex items-center justify-center gap-2 shadow-md transition-all px-3 sm:px-5 py-2 text-base sm:text-lg"
+					class:btn-active={page.url.pathname === '/map'}
+					aria-label="Map"
+				>
+					<span class="w-5 h-5 sm:w-6 sm:h-6 text-inherit flex items-center justify-center">
+						<MdiMap class="w-full h-full" />
+					</span>
+					<span class="hidden sm:inline">Map</span>
 				</a>
 			</div>
 		</nav>

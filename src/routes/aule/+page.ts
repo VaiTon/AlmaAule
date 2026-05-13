@@ -28,7 +28,7 @@ export const load: PageLoad = async ({ fetch }) => {
 
 		// Add calId and pre-computed searchKey to each aula
 		return aule.map((a) => {
-			const sortingName = `${a.relazioneEdificio.comune} - ${a.relazioneEdificio.plesso} - ${a.descrizione}`;
+			const sortingName = `${a.relazioneEdificio.comune} - ${a.relazioneEdificio.via} - ${a.relazioneEdificio.plesso} - ${a.descrizione}`;
 			return {
 				...a,
 				calId: cal.id,
