@@ -1,9 +1,9 @@
 <script lang="ts">
-	import L from 'leaflet';
 	import 'leaflet/dist/leaflet.css';
-	import 'leaflet.markercluster';
 	import 'leaflet.markercluster/dist/MarkerCluster.css';
 	import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+	import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css';
+	import 'leaflet-gesture-handling/dist/leaflet-gesture-handling.css';
 
 	import markerIcon from 'leaflet/dist/images/marker-icon.png';
 	import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
@@ -17,19 +17,51 @@
 	let { data }: { data: PageData } = $props();
 
 	let mapContainer: HTMLElement | undefined = $state();
-	let map: L.Map | undefined = $state();
-
 	const BOLOGNA_COORDS: [number, number] = [44.4949, 11.3426];
 
-	function initMap(edifici: Edificio[]) {
-		if (!mapContainer || map) return;
+	async function initMap(edifici: Edificio[]) {
+		if (!mapContainer) return;
 
-		map = L.map(mapContainer, {
-			attributionControl: false
+		// 1. Import Leaflet base
+		const L = (await import('leaflet')).default;
+
+		// 2. Import Plugins
+		await import('leaflet.markercluster');
+		const { GestureHandling } = await import('leaflet-gesture-handling');
+		const { LocateControl } = await import('leaflet.locatecontrol');
+
+		// 3. Register Handlers
+		// @ts-expect-error - register plugin
+		if (!L.Map.prototype.addHandler.gestureHandling) {
+			L.Map.addInitHook('addHandler', 'gestureHandling', GestureHandling);
+		}
+
+		// 4. Initialize Map
+		const map = L.map(mapContainer, {
+			attributionControl: false,
+			// @ts-expect-error - plugin option
+			gestureHandling: true
 		}).setView(BOLOGNA_COORDS, 13);
 
 		L.control.attribution({ prefix: false }).addTo(map);
 
+		// 5. Add Locate Control (using the class constructor as recommended)
+		new LocateControl({
+			position: 'topleft',
+			strings: {
+				title: 'Show my location'
+			},
+			locateOptions: {
+				enableHighAccuracy: true,
+				maxZoom: 16
+			},
+			flyTo: true,
+			showPopup: false,
+			drawCircle: true,
+			drawMarker: true
+		}).addTo(map);
+
+		// 6. Setup Layers & Icons
 		const osmCopyright =
 			'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
@@ -48,6 +80,7 @@
 			shadowSize: [41, 41]
 		});
 
+		// 7. Add Marker Clustering
 		const markerCluster = L.markerClusterGroup();
 
 		for (const edificio of edifici) {
@@ -60,7 +93,7 @@
 							<h3 class="font-bold text-lg leading-tight">${edificio.descrizione}</h3>
 							<p class="text-xs opacity-60 mb-2">${edificio.via}, ${edificio.comune}</p>
 							<div class="divider my-0 opacity-20"></div>
-							<a href="${resolve('/aule')}?q=${encodeURIComponent(edificio.descrizione)}" 
+							<a href="${resolve('/aule')}?q=${encodeURIComponent(edificio.descrizione)}"
 							   class="btn btn-primary btn-sm mt-2 text-white no-underline shadow-sm">
 								View Classrooms
 							</a>
@@ -73,7 +106,7 @@
 
 		map.addLayer(markerCluster);
 
-		// Adjust view if markers exist
+		// 8. Final View Adjustment
 		if (edifici.length > 0) {
 			map.fitBounds(markerCluster.getBounds().pad(0.1));
 		}
@@ -82,7 +115,7 @@
 	onMount(async () => {
 		const edifici = await data.edifici;
 		await tick();
-		initMap(edifici);
+		await initMap(edifici);
 	});
 </script>
 
