@@ -26,6 +26,8 @@
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 	import MdiShareVariant from '@iconify-svelte/mdi/share-variant';
+	import MdiStar from '@iconify-svelte/mdi/star';
+	import MdiStarOutline from '@iconify-svelte/mdi/star-outline';
 	import MdiWifi from '@iconify-svelte/mdi/wifi';
 	import MdiComputer from '@iconify-svelte/mdi/computer';
 	import MdiProjector from '@iconify-svelte/mdi/projector';
@@ -37,6 +39,7 @@
 	import MdiFlask from '@iconify-svelte/mdi/flask';
 	import MdiBookOpenVariant from '@iconify-svelte/mdi/book-open-variant';
 	import MdiInformationOutline from '@iconify-svelte/mdi/information-outline';
+	import { favorites } from '$lib/states/favorites.svelte';
 
 	let { data }: { data: PageData } = $props();
 	let { aula } = $derived(data);
@@ -265,14 +268,33 @@
 				</span>
 			{/if}
 		</div>
-		<button
-			class="btn btn-outline btn-sm gap-2"
-			onclick={shareClassroom}
-			aria-label="Share classroom"
-		>
-			<MdiShareVariant class="w-4 h-4" />
-			{shareCopied ? 'Copied!' : 'Share'}
-		</button>
+		<div class="flex items-center gap-2">
+			<button
+				class="btn btn-ghost btn-sm btn-circle"
+				onclick={() =>
+					favorites.toggle({
+						id: aula.id,
+						calId: page.params.calId!,
+						name: aula.descrizione,
+						buildingName: aula.relazioneEdificio.descrizione
+					})}
+				aria-label={favorites.isFavorite(aula.id) ? 'Remove from favorites' : 'Add to favorites'}
+			>
+				{#if favorites.isFavorite(aula.id)}
+					<MdiStar class="w-6 h-6 text-warning" />
+				{:else}
+					<MdiStarOutline class="w-6 h-6" />
+				{/if}
+			</button>
+			<button
+				class="btn btn-outline btn-sm gap-2"
+				onclick={shareClassroom}
+				aria-label="Share classroom"
+			>
+				<MdiShareVariant class="w-4 h-4" />
+				{shareCopied ? 'Copied!' : 'Share'}
+			</button>
+		</div>
 	</div>
 
 	{#if (aula.serviziAula?.length ?? 0) > 0}
