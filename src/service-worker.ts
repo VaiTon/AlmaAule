@@ -103,7 +103,9 @@ sw.addEventListener('fetch', (event: FetchEvent) => {
 		event.request.method === 'GET' &&
 		(build.includes(url.pathname) || files.includes(url.pathname))
 	) {
-		event.respondWith(caches.match(event.request).then((response) => response || fetch(event.request)));
+		event.respondWith(
+			caches.match(event.request).then((response) => response || fetch(event.request))
+		);
 	}
 });
 
