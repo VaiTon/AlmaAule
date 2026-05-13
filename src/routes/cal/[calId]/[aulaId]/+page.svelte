@@ -25,8 +25,37 @@
 	import { goto } from '$app/navigation';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 
+	import MdiShareVariant from '@iconify-svelte/mdi/share-variant';
+	import MdiWifi from '@iconify-svelte/mdi/wifi';
+	import MdiComputer from '@iconify-svelte/mdi/computer';
+	import MdiProjector from '@iconify-svelte/mdi/projector';
+	import MdiMicrophone from '@iconify-svelte/mdi/microphone';
+	import MdiPresentation from '@iconify-svelte/mdi/presentation';
+	import MdiAirConditioner from '@iconify-svelte/mdi/air-conditioner';
+	import MdiPowerSocketEu from '@iconify-svelte/mdi/power-socket-eu';
+	import MdiWheelchairAccessibility from '@iconify-svelte/mdi/wheelchair-accessibility';
+	import MdiFlask from '@iconify-svelte/mdi/flask';
+	import MdiBookOpenVariant from '@iconify-svelte/mdi/book-open-variant';
+	import MdiInformationOutline from '@iconify-svelte/mdi/information-outline';
+
 	let { data }: { data: PageData } = $props();
 	let { aula } = $derived(data);
+
+	const iconMap: Record<string, typeof MdiInformationOutline> = {
+		wifi: MdiWifi,
+		pc: MdiComputer,
+		computer: MdiComputer,
+		proiettore: MdiProjector,
+		microfono: MdiMicrophone,
+		lavagna: MdiPresentation,
+		lim: MdiPresentation,
+		climatizzazione: MdiAirConditioner,
+		aria_condizionata: MdiAirConditioner,
+		presa: MdiPowerSocketEu,
+		accessibile: MdiWheelchairAccessibility,
+		laboratorio: MdiFlask,
+		studio: MdiBookOpenVariant
+	};
 
 	let events: Impegno[] = $state([]);
 	let loadingEvents = $state(false);
@@ -40,6 +69,40 @@
 			return now.isAfter(e.dataInizio) && now.isBefore(e.dataFine);
 		});
 	});
+
+	let nextEvent = $derived.by(() => {
+		const now = dayjs();
+		return events
+			.filter((e) => dayjs(e.dataInizio).isAfter(now))
+			.sort((a, b) => dayjs(a.dataInizio).diff(dayjs(b.dataInizio)))[0];
+	});
+
+	let shareCopied = $state(false);
+	async function shareClassroom() {
+		const shareData = {
+			title: `${aula.descrizione} - AlmaAule`,
+			text: `Controlla lo stato dell'aula ${aula.descrizione} su AlmaAule`,
+			url: window.location.href
+		};
+
+		if (navigator.share && navigator.canShare?.(shareData)) {
+			try {
+				await navigator.share(shareData);
+			} catch (err) {
+				if ((err as Error).name !== 'AbortError') {
+					console.error('Error sharing:', err);
+				}
+			}
+		} else {
+			try {
+				await navigator.clipboard.writeText(window.location.href);
+				shareCopied = true;
+				setTimeout(() => (shareCopied = false), 2000);
+			} catch (err) {
+				console.error('Error copying to clipboard:', err);
+			}
+		}
+	}
 
 	let lastInterval: { startDate: Dayjs; endDate: Dayjs } | undefined = undefined;
 	async function updateImpegni(
@@ -69,7 +132,13 @@
 			idAule: [aula.id]
 		});
 
-		const filteredEvents = unfilteredEvents.filter((impegno) =>
+		if ('error' in unfilteredEvents) {
+			console.error('Error fetching events:', unfilteredEvents.error);
+			loadingEvents = false;
+			return;
+		}
+
+		const filteredEvents = unfilteredEvents.filter((impegno: Impegno) =>
 			impegno.risorse.some((risorsa) => 'aulaId' in risorsa && risorsa.aulaId === aula.id)
 		);
 
@@ -187,24 +256,60 @@
 </svelte:head>
 
 <div class="px-4 mt-4">
-	<h1 class="text-3xl sm:text-4xl font-bold mb-4">{aula?.descrizione}</h1>
+	<div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+		<div class="flex flex-col gap-1">
+			<h1 class="text-3xl sm:text-4xl font-bold">{aula?.descrizione}</h1>
+			{#if aula?.tipoAula?.descrizione}
+				<span class="badge badge-secondary badge-sm sm:badge-md">
+					{aula.tipoAula.descrizione.replace(/_/g, ' ')}
+				</span>
+			{/if}
+		</div>
+		<button
+			class="btn btn-outline btn-sm gap-2"
+			onclick={shareClassroom}
+			aria-label="Share classroom"
+		>
+			<MdiShareVariant class="w-4 h-4" />
+			{shareCopied ? 'Copied!' : 'Share'}
+		</button>
+	</div>
+
+	{#if (aula.serviziAula?.length ?? 0) > 0}
+		<div class="flex flex-wrap gap-2 my-4">
+			{#each aula.serviziAula! as servizio, i (`${servizio._id}-${servizio.codice}-${i}`)}
+				{@const Icon = iconMap[servizio.codice.toLowerCase()] || MdiInformationOutline}
+				<div class="badge badge-outline badge-info gap-1 p-3">
+					<Icon class="w-4 h-4" />
+					{servizio.descrizione}
+				</div>
+			{/each}
+		</div>
+	{/if}
 
 	<div
 		class={[
 			'flex items-center gap-2 my-4 border  rounded-lg px-4 py-2',
-			nowEvent != null ? 'border-error' : 'border-success'
+			nowEvent != null ? 'border-error bg-error/10' : 'border-success bg-success/10'
 		]}
 		role="alert"
 	>
 		{#if nowEvent != null}
 			<span class="font-bold text-error">Occupied</span>
-			<span>
+			<span class="text-sm sm:text-base">
 				<strong>{nowEvent.nome}</strong>
-				({dayjs(nowEvent.dataInizio).format('LT')} - {dayjs(nowEvent.dataFine).format('LT')})
+				until {dayjs(nowEvent.dataFine).format('LT')}
 			</span>
 		{:else}
 			<span class="font-bold text-success">Vacant</span>
-			<span>The classroom is currently free.</span>
+			<span class="text-sm sm:text-base">
+				{#if nextEvent}
+					Free until <strong>{dayjs(nextEvent.dataInizio).format('LT')}</strong>
+					({nextEvent.nome})
+				{:else}
+					The classroom is currently free.
+				{/if}
+			</span>
 		{/if}
 	</div>
 
@@ -240,6 +345,18 @@
 						<td class="font-bold text-end">Orario chiusura:</td>
 						<td>{aula?.relazioneEdificio.orarioChiusura}</td>
 					</tr>
+					{#if aula?.relazioneEdificio.orarioAperturaWeekend}
+						<tr>
+							<td class="font-bold text-end">Apertura weekend:</td>
+							<td>{aula.relazioneEdificio.orarioAperturaWeekend}</td>
+						</tr>
+					{/if}
+					{#if aula?.relazioneEdificio.orarioChiusuraWeekend}
+						<tr>
+							<td class="font-bold text-end">Chiusura weekend:</td>
+							<td>{aula.relazioneEdificio.orarioChiusuraWeekend}</td>
+						</tr>
+					{/if}
 				</tbody>
 			</table>
 		</div>
@@ -251,6 +368,16 @@
 		<div class="collapse-content overflow-x-auto">
 			<table class="table table-zebra rounded-box table-sm">
 				<tbody>
+					<tr>
+						<td class="font-bold text-end">Codice:</td>
+						<td><code>{aula?.codice}</code></td>
+					</tr>
+					{#if aula?.unitaOrganizzativa?.descrizione}
+						<tr>
+							<td class="font-bold text-end">Struttura:</td>
+							<td>{aula.unitaOrganizzativa.descrizione}</td>
+						</tr>
+					{/if}
 					<tr>
 						<td class="font-bold text-end">Capienza:</td>
 						<td>{aula?.capienza}</td>
@@ -279,10 +406,42 @@
 							<td>{aula.note || aula.altreInformazioni}</td>
 						</tr>
 					{/if}
+					<tr>
+						<td class="font-bold text-end">Ultimo aggiornamento:</td>
+						<td>{dayjs(aula?.dataModifica).format('LLL')}</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>
 	</details>
+
+	{#if aula.fotoUrl || aula.mappaUrl || aula.planimetriaUrl}
+		<div class="flex flex-col md:flex-row gap-4 mb-4">
+			{#if aula.fotoUrl}
+				<div class="flex-1">
+					<img
+						src={aula.fotoUrl}
+						alt="Foto dell'aula {aula.descrizione}"
+						class="rounded-box shadow-md w-full h-auto object-cover max-h-64"
+					/>
+				</div>
+			{/if}
+			{#if aula.mappaUrl || aula.planimetriaUrl}
+				<div
+					class="flex-1 flex items-center justify-center bg-base-200 rounded-box p-4 border border-base-300"
+				>
+					<a
+						href={aula.mappaUrl || aula.planimetriaUrl}
+						target="_blank"
+						rel="noopener"
+						class="btn btn-outline btn-primary"
+					>
+						Visualizza planimetria interna
+					</a>
+				</div>
+			{/if}
+		</div>
+	{/if}
 
 	{#if aula.note || aula.altreInformazioni}
 		<div class="alert alert-info my-4">
@@ -315,34 +474,36 @@
 	/>
 </div>
 
-<div class="p-4 mb-6">
-	<h2 class="card-title text-2xl font-bold mb-2">Map</h2>
-	<div class="flex flex-col sm:flex-row justify-center gap-2 mb-4">
-		<a
-			href={getGoogleMapsLink({
-				lat: aula?.relazioneEdificio.geo.lat,
-				lng: aula?.relazioneEdificio.geo.lng
-			})}
-			target="_blank"
-			rel="noopener"
-			class="btn btn-primary btn-md"
-		>
-			Open in Google Maps
-		</a>
-		<a
-			href={getOSMLink({
-				lat: aula?.relazioneEdificio.geo.lat,
-				lng: aula?.relazioneEdificio.geo.lng
-			})}
-			target="_blank"
-			rel="noopener"
-			class="btn btn-primary btn-md"
-		>
-			Open in OpenStreetMap
-		</a>
+{#if aula?.relazioneEdificio?.geo}
+	<div class="p-4 mb-6">
+		<h2 class="card-title text-2xl font-bold mb-2">Map</h2>
+		<div class="flex flex-col sm:flex-row justify-center gap-2 mb-4">
+			<a
+				href={getGoogleMapsLink({
+					lat: aula.relazioneEdificio.geo.lat,
+					lng: aula.relazioneEdificio.geo.lng
+				})}
+				target="_blank"
+				rel="noopener"
+				class="btn btn-primary btn-md"
+			>
+				Open in Google Maps
+			</a>
+			<a
+				href={getOSMLink({
+					lat: aula.relazioneEdificio.geo.lat,
+					lng: aula.relazioneEdificio.geo.lng
+				})}
+				target="_blank"
+				rel="noopener"
+				class="btn btn-primary btn-md"
+			>
+				Open in OpenStreetMap
+			</a>
+		</div>
+		<div class="w-full rounded-box overflow-hidden h-64 sm:h-80" id="map"></div>
 	</div>
-	<div class="w-full rounded-box overflow-hidden h-64 sm:h-80" id="map"></div>
-</div>
+{/if}
 
 <EventModal
 	bind:this={eventModal}

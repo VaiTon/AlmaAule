@@ -12,6 +12,11 @@ export type Aula = {
 	dataModifica: string;
 	piano: Piano | null;
 
+	tipoAula?: {
+		codice: string;
+		descrizione: string;
+	};
+
 	edificio: Pick<
 		Edificio,
 		| 'orarioChiusura'
@@ -31,9 +36,12 @@ export type Aula = {
 	id: string;
 
 	mappaUrl: string | null;
+	planimetriaUrl?: string | null;
 	metriQuadri: number;
 
 	unitaOrganizzativa: UnitaOrganizzativa;
+
+	serviziAula?: ServizioAula[];
 
 	note?: string;
 	altreInformazioni?: string;

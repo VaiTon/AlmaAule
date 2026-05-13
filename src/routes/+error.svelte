@@ -31,7 +31,7 @@
 		hint: 'An unexpected error occurred. Please try again.'
 	};
 
-	$: info = labels[page.status] ?? (page.status >= 500 ? labels[500] : fallback);
+	let info = $derived(labels[page.status] ?? (page.status >= 500 ? labels[500] : fallback));
 </script>
 
 <svelte:head>
