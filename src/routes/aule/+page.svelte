@@ -33,9 +33,18 @@
 <h1 class="text-4xl font-bold mb-4">Classrooms</h1>
 
 {#await data.aule}
-	<div class="text-center">
-		<p class="loading loading-spinner loading-lg"></p>
-		<p class="mt-4">Loading classrooms...</p>
+	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+		{#each Array.from({ length: 12 }).map((_, i) => i) as i (i)}
+			<div class="card bg-base-100 shadow-md border border-base-300">
+				<div class="card-body p-4">
+					<div class="skeleton h-6 w-3/4 mb-2"></div>
+					<div class="flex flex-col gap-2 mt-1">
+						<div class="skeleton h-4 w-full"></div>
+						<div class="skeleton h-4 w-1/2"></div>
+					</div>
+				</div>
+			</div>
+		{/each}
 	</div>
 {:then aule}
 	{@const showedAule = aule.filter((a) => a.searchKey.includes(searchLower))}
