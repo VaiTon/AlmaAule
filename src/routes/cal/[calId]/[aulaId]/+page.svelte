@@ -1,16 +1,8 @@
 <script lang="ts">
-	import L from 'leaflet';
-
-	import markerIcon from 'leaflet/dist/images/marker-icon.png';
-	import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
-	import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
-
 	import { type Impegno } from '$lib/api/universityplanner';
 	import { createUPClient } from '$lib/api';
 
 	import type { PageData } from './$types';
-
-	import 'leaflet/dist/leaflet.css';
 
 	import dayjs, { Dayjs } from 'dayjs';
 	import 'dayjs/locale/it';
@@ -149,7 +141,15 @@
 		loadingEvents = false;
 	}
 
-	function setupMap() {
+	async function setupMap() {
+		const [L, markerIcon, markerIcon2x, shadowUrl] = await Promise.all([
+			import('leaflet').then((m) => m.default),
+			import('leaflet/dist/images/marker-icon.png').then((m) => m.default),
+			import('leaflet/dist/images/marker-icon-2x.png').then((m) => m.default),
+			import('leaflet/dist/images/marker-shadow.png').then((m) => m.default),
+			import('leaflet/dist/leaflet.css')
+		]);
+
 		const map = L.map('map', {
 			attributionControl: false,
 			scrollWheelZoom: false
