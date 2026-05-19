@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/state';
+	import { navigating, page } from '$app/state';
 
 	import '@fontsource-variable/merriweather-sans';
 	import '../app.css';
@@ -29,7 +29,10 @@
 
 	import { injectAnalytics } from '@vercel/analytics/sveltekit';
 	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
-	import { onMount } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
+	import MdiMap from '@iconify-svelte/mdi/map';
+
+	let { children }: { children: Snippet } = $props();
 
 	onMount(() => {
 		injectAnalytics();
@@ -40,6 +43,13 @@
 <svelte:head>
 	<title>AlmaAule</title>
 </svelte:head>
+
+{#if navigating.to}
+	<progress
+		class="progress progress-primary w-full fixed top-0 left-0 z-100 rounded-none h-1"
+		aria-label="Loading page..."
+	></progress>
+{/if}
 
 <div class="bg-base-200 min-h-screen transition-colors">
 	<div class="mx-auto max-w-6xl px-2 sm:px-4 md:px-8 pt-2">
@@ -76,12 +86,23 @@
 					</span>
 					<span class="hidden sm:inline">Classrooms</span>
 				</a>
+				<a
+					href={resolve('/map')}
+					class="btn btn-secondary rounded-full font-semibold flex items-center justify-center gap-2 shadow-md transition-all px-3 sm:px-5 py-2 text-base sm:text-lg"
+					class:btn-active={page.url.pathname === '/map'}
+					aria-label="Map"
+				>
+					<span class="w-5 h-5 sm:w-6 sm:h-6 text-inherit flex items-center justify-center">
+						<MdiMap class="w-full h-full" />
+					</span>
+					<span class="hidden sm:inline">Map</span>
+				</a>
 			</div>
 		</nav>
 		<main
 			class="bg-base-100 rounded-xl shadow p-3 sm:p-6 md:p-10 mt-2 sm:mt-4 mb-8 transition-colors"
 		>
-			<slot />
+			{@render children()}
 		</main>
 		<footer
 			class="mt-4 mb-2 rounded-xl bg-primary text-primary-content shadow flex flex-col sm:flex-row items-center justify-between gap-2 px-4 py-3 text-sm"

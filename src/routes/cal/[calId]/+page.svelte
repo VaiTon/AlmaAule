@@ -8,6 +8,7 @@
 	import { onMount } from 'svelte';
 	import { SvelteURL } from 'svelte/reactivity';
 	import { replaceState } from '$app/navigation';
+	import MdiClockCheckOutline from '@iconify-svelte/mdi/clock-check-outline';
 
 	let { data: pageData } = $props();
 	let { cal, impegni: impegniPromise } = $derived(pageData);
@@ -113,11 +114,10 @@
 		return events.find((e) => e.startTime > time);
 	};
 
-	const changedVacantOnly = (event: Event) => {
-		//set the url anchor to the current value of the checkbox, so that it can be shared
-		const target = event.target as HTMLInputElement;
+	const changedVacantOnly = () => {
 		const url = new SvelteURL(window.location.href);
-		if (target.checked) {
+    showVacantOnly = !showVacantOnly
+		if (showVacantOnly) {
 			url.hash = 'vacant';
 		} else {
 			url.hash = '';
@@ -182,16 +182,22 @@
 	<a class="btn btn-primary" href={resolve('/')} aria-label="Back to home page"> ← Back </a>
 	<h1 class="text-2xl font-bold">Availability for '{cal.name}' rooms</h1>
 </div>
-<div class="mb-4 flex items-center gap-4">
-	<input
-		type="checkbox"
-		id="showVacantOnly"
-		class="toggle"
-		bind:checked={showVacantOnly}
-		onchange={changedVacantOnly}
-		aria-label="Show only vacant rooms"
-	/>
-	<label for="showVacantOnly" class="text-sm">Show only vacant rooms</label>
+
+<div class="mb-6">
+	<button
+		class={[
+			'btn btn-md gap-2 rounded-xl transition-all',
+			showVacantOnly ? 'btn-success shadow-lg' : 'btn-outline btn-success'
+		]}
+		onclick={changedVacantOnly}
+		aria-pressed={showVacantOnly}
+	>
+		<MdiClockCheckOutline class="w-5 h-5" />
+		<span class="font-bold uppercase tracking-wide">Free Right Now</span>
+		{#if showVacantOnly}
+			<div class="badge badge-sm badge-ghost ml-1">Active</div>
+		{/if}
+	</button>
 </div>
 
 {#await timelineEvents}

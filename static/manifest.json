@@ -1,0 +1,31 @@
+{
+	"name": "AlmaAule",
+	"short_name": "AlmaAule",
+	"description": "Find and view classroom availability at the University of Bologna",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#ffffff",
+	"theme_color": "#b5151b",
+	"icons": [
+		{
+			"src": "/logo_128.png",
+			"sizes": "128x128",
+			"type": "image/png"
+		},
+		{
+			"src": "/logo_256.png",
+			"sizes": "256x256",
+			"type": "image/png"
+		},
+		{
+			"src": "/logo_512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		},
+		{
+			"src": "/logo_1024.png",
+			"sizes": "1024x1024",
+			"type": "image/png"
+		}
+	]
+}

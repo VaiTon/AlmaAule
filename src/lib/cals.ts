@@ -31,7 +31,6 @@ export const CAL_MAP: { id: string; name: string; show?: boolean }[] = [
 	{ id: '5e6f3daa15108d00192bb024', name: 'Beverara Labs' },
 	{ id: '5e6f403e2e6b88001ba842e6', name: 'Aule Irnerio 42 - Orto Botanico ' },
 	{ id: '5e6f3eef9f045c00181a09fe', name: 'Aule Belmeloro - 1' },
-	{ id: '651e7c907e15ad003a034cd7', name: 'Aule Belmeloro - 2' },
 	{ id: '5e6f5eb04ad7a80017fd4185', name: 'Aule Belmeloro - 3' },
 	{ id: '5e6f538e15108d00192bb374', name: 'Aule ex Ist. Igiene S. Giacomo 12' },
 	{ id: '5e6f53f04ad7a80017fd3c4c', name: 'Complesso UNIONE' },

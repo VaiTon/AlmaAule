@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { CAL_MAP } from '$lib/cals';
+	import { favorites } from '$lib/states/favorites.svelte';
 </script>
 
 <div class="prose md:mx-auto mx-4">
@@ -57,6 +58,23 @@
 	</p>
 	<hr />
 </div>
+
+{#if favorites.classrooms.length > 0}
+	<h2 class="text-2xl text-center font-bold mt-16 mb-4">Quick Access</h2>
+	<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+		{#each favorites.classrooms as { id, calId, name, buildingName } (id)}
+			<a
+				href={resolve('/cal/[calId]/[aulaId]', { calId, aulaId: id })}
+				class="card bg-base-100 transition rounded-xl border border-base-300 flex flex-col items-center justify-center p-6 text-base-content no-underline hover:bg-primary/10"
+				style="min-height: 110px;"
+			>
+				<span class="text-3xl mb-2" aria-hidden="true">⭐</span>
+				<span class="font-semibold text-lg text-center line-clamp-1">{name}</span>
+				<span class="text-xs text-center opacity-70 line-clamp-1">{buildingName}</span>
+			</a>
+		{/each}
+	</div>
+{/if}
 
 <h2 class="text-2xl text-center font-bold mt-16 mb-4" id="calendars">Select a calendar</h2>
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
