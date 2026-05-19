@@ -13,6 +13,9 @@
 	let { data: pageData } = $props();
 	let { cal, impegni: impegniPromise } = $derived(pageData);
 
+	// svelte-ignore state_referenced_locally
+	let customTime = pageData.customTime;
+
 	// Representation of a resource (classroom)
 	type Resource = { id: string; title: string };
 
@@ -77,10 +80,11 @@
 		})();
 	});
 
-	let currentTime = $state(new Date());
+	let currentTime = $state(customTime || new Date());
 
 	// Update current time every minute
 	onMount(() => {
+		if (customTime) return;
 		const interval = setInterval(() => {
 			currentTime = new Date();
 		}, 60000); // Update every minute
@@ -116,7 +120,7 @@
 
 	const changedVacantOnly = () => {
 		const url = new SvelteURL(window.location.href);
-    showVacantOnly = !showVacantOnly
+		showVacantOnly = !showVacantOnly;
 		if (showVacantOnly) {
 			url.hash = 'vacant';
 		} else {

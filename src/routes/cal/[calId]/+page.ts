@@ -17,6 +17,9 @@ export const load: PageLoad = async ({ fetch, params, url }) => {
 	const startOfDay = dayjs(day).startOf('day');
 	const endOfDay = dayjs(day).endOf('day');
 
+	const timeParam = url.searchParams.get('time');
+	const customTime = timeParam ? dayjs(`${day}T${timeParam}`).toDate() : null;
+
 	const client = createUPClient(fetch);
 
 	const aulePromise = client.getAule(params.calId);
@@ -40,5 +43,5 @@ export const load: PageLoad = async ({ fetch, params, url }) => {
 		);
 	}
 
-	return { aule: aule, impegni: impegni, cal };
+	return { aule: aule, impegni: impegni, cal, customTime };
 };
