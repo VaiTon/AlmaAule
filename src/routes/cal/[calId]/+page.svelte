@@ -6,6 +6,8 @@
 	import type { Impegno } from '$lib/api';
 
 	import { onMount } from 'svelte';
+	import { SvelteURL } from 'svelte/reactivity';
+	import { goto } from '$app/navigation';
 	import MdiClockCheckOutline from '@iconify-svelte/mdi/clock-check-outline';
 
 	let { data: pageData } = $props();
@@ -25,7 +27,17 @@
 		impegno: Impegno;
 	};
 
-	let showVacantOnly = $state(false);
+	let showVacantOnly = $state(page.url.searchParams.get('vacant') === 'true');
+
+	$effect(() => {
+		const url = new SvelteURL(page.url);
+		if (showVacantOnly) {
+			url.searchParams.set('vacant', 'true');
+		} else {
+			url.searchParams.delete('vacant');
+		}
+		goto('?' + url.searchParams.toString(), { replaceState: true, noScroll: true });
+	});
 
 	let resources: Resource[] = $derived.by(() => {
 		const aule = pageData.aule;
@@ -75,10 +87,19 @@
 		})();
 	});
 
-	let currentTime = $state(new Date());
+	function parseCustomTimeFromUrl(url: URL): Date | null {
+		const timeParam = url.searchParams.get('time');
+		if (!timeParam) return null;
+
+		const parsed = dayjs(timeParam);
+		return parsed.isValid() ? parsed.toDate() : null;
+	}
+
+	let currentTime = $state(parseCustomTimeFromUrl(page.url) || new Date());
 
 	// Update current time every minute
 	onMount(() => {
+		if (customTime) return;
 		const interval = setInterval(() => {
 			currentTime = new Date();
 		}, 60000); // Update every minute
