@@ -7,7 +7,7 @@
 
 	import { onMount } from 'svelte';
 	import { SvelteURL } from 'svelte/reactivity';
-	import { replaceState } from '$app/navigation';
+	import { goto, replaceState } from '$app/navigation';
 	import MdiClockCheckOutline from '@iconify-svelte/mdi/clock-check-outline';
 
 	let { data: pageData } = $props();
@@ -30,7 +30,17 @@
 		impegno: Impegno;
 	};
 
-	let showVacantOnly = $state(window.location.hash === '#vacant');
+	let showVacantOnly = $state(page.url.searchParams.get('vacant') === 'true');
+
+	$effect(() => {
+		const url = new SvelteURL(window.location.href);
+		if (showVacantOnly) {
+			url.searchParams.set('vacant', 'true');
+		} else {
+			url.searchParams.delete('vacant');
+		}
+		goto('?' + url.searchParams.toString(), { replaceState: true, noScroll: true });
+	});
 
 	let resources: Resource[] = $derived.by(() => {
 		const aule = pageData.aule;
@@ -117,17 +127,6 @@
 		// Since events are pre-sorted chronologically, the first event in the future is the next activity
 		return events.find((e) => e.startTime > time);
 	};
-
-	const changedVacantOnly = () => {
-		const url = new SvelteURL(window.location.href);
-		showVacantOnly = !showVacantOnly;
-		if (showVacantOnly) {
-			url.hash = 'vacant';
-		} else {
-			url.hash = '';
-		}
-		replaceState(url, {});
-	};
 </script>
 
 {#snippet roomCard(eventsMap: Map<string, TimelineEvent[]>, resource: Resource)}
@@ -193,7 +192,7 @@
 			'btn btn-md gap-2 rounded-xl transition-all',
 			showVacantOnly ? 'btn-success shadow-lg' : 'btn-outline btn-success'
 		]}
-		onclick={changedVacantOnly}
+		onclick={() => (showVacantOnly = !showVacantOnly)}
 		aria-pressed={showVacantOnly}
 	>
 		<MdiClockCheckOutline class="w-5 h-5" />
