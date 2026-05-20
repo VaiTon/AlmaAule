@@ -7,14 +7,11 @@
 
 	import { onMount } from 'svelte';
 	import { SvelteURL } from 'svelte/reactivity';
-	import { goto, replaceState } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import MdiClockCheckOutline from '@iconify-svelte/mdi/clock-check-outline';
 
 	let { data: pageData } = $props();
 	let { cal, impegni: impegniPromise } = $derived(pageData);
-
-	// svelte-ignore state_referenced_locally
-	let customTime = pageData.customTime;
 
 	// Representation of a resource (classroom)
 	type Resource = { id: string; title: string };
@@ -33,7 +30,7 @@
 	let showVacantOnly = $state(page.url.searchParams.get('vacant') === 'true');
 
 	$effect(() => {
-		const url = new SvelteURL(window.location.href);
+		const url = new SvelteURL(page.url);
 		if (showVacantOnly) {
 			url.searchParams.set('vacant', 'true');
 		} else {
@@ -90,7 +87,15 @@
 		})();
 	});
 
-	let currentTime = $state(customTime || new Date());
+	function parseCustomTimeFromUrl(url: URL): Date | null {
+		const timeParam = url.searchParams.get('time');
+		if (!timeParam) return null;
+
+		const parsed = dayjs(timeParam);
+		return parsed.isValid() ? parsed.toDate() : null;
+	}
+
+	let currentTime = $state(parseCustomTimeFromUrl(page.url) || new Date());
 
 	// Update current time every minute
 	onMount(() => {
