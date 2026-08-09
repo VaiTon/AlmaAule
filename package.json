@@ -37,7 +37,7 @@
 		"globals": "^17.7.0",
 		"leaflet": "^1.9.4",
 		"monaco-editor": "^0.55.1",
-		"postcss": "^8.5.19",
+		"postcss": "^8.5.23",
 		"prettier": "^3.9.5",
 		"prettier-plugin-svelte": "^4.1.1",
 		"sass": "^1.101.0",
