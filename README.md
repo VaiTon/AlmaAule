@@ -1,13 +1,13 @@
-# AlmaAule - Open Source Web App for Unibo Room Schedules
+# AlmaAule - Open-Source Web App for Unibo Room Schedules
 
-AlmaAule is a free and open source web application that helps users check classroom availability at the University of Bologna.
+AlmaAule is a free, open-source web application that helps users check classroom availability at the University of Bologna.
 
 With AlmaAule, you can search for rooms, view their schedules, and see their current occupancy status.
 
 ## Disclaimer
 
 > [!WARNING]
-> In no way is this project affiliated with or endorsed by the University of Bologna (Unibo).
+> This project is in no way affiliated with or endorsed by the University of Bologna (Unibo).
 >
 > It is an independent project created by students and developers to provide a useful tool for the Unibo community.
 
@@ -40,7 +40,7 @@ AlmaAule interacts directly with public APIs provided by Unibo. All data fetchin
 
 The project is a [SvelteKit](https://kit.svelte.dev/) application that uses [Tailwind CSS](https://tailwindcss.com/) with the [DaisyUI](https://daisyui.com/) component library for styling.
 
-It uses PNPM as the package manager.
+It uses pnpm as the package manager.
 
 ## Development
 
