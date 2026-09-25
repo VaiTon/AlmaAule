@@ -7,32 +7,32 @@
 <div class="prose md:mx-auto mx-4">
 	<h1 class="text-3xl text-center font-bold">AlmaAule</h1>
 	<p class="text-center font-semibold text-base text-warning">
-		<strong>Unofficial tool made by the Computer Science community of Unibo</strong>
+		<strong>An unofficial tool created by the Unibo computer science community</strong>
 	</p>
 	<p>
 		Welcome to <strong>AlmaAule</strong>, your tool for checking classroom availability and
 		schedules.
 	</p>
 	<p>
-		This website helps students and staff find <strong>vacant classrooms</strong> for studying, teaching,
-		or events.
+		This website helps students and staff find <strong>vacant classrooms</strong> for studying,
+		teaching, or events.
 	</p>
 	<p>
 		We <strong>don't scrape</strong> websites. AlmaAule relies entirely on public APIs.
 	</p>
 	<p class="text-sm italic">
-		Technically, your browser fetches the data directly via HTTP requests. We don't touch the data,
-		we just provide the nice interface. 😼
+		Your browser fetches the data directly through HTTP requests. We don't handle the data; we just
+		provide the interface. 😼
 	</p>
 
 	<hr />
 
 	<div class="md:flex not-prose gap-4">
 		<a href="#calendars" class="not-prose btn btn-primary grow max-md:w-full max-md:mb-4">
-			Go to calendars 📅
+			Browse calendars 📅
 		</a>
 		<a href={resolve('/aule')} class="not-prose btn btn-secondary mx-auto grow max-md:w-full">
-			Go to classroom list 📚
+			Browse classrooms 📚
 		</a>
 	</div>
 
@@ -46,8 +46,7 @@
 			</div>
 			<div>
 				This service depends on public APIs and may become unavailable if those APIs change or are
-				removed. We're not responsible for any inconvenience caused by the unavailability of the
-				service.
+				removed. We're not responsible for any inconvenience caused by service interruptions.
 			</div>
 		</div>
 	</div>
@@ -60,7 +59,7 @@
 </div>
 
 {#if favorites.classrooms.length > 0}
-	<h2 class="text-2xl text-center font-bold mt-16 mb-4">Quick Access</h2>
+	<h2 class="text-2xl text-center font-bold mt-16 mb-4">Quick access</h2>
 	<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
 		{#each favorites.classrooms as { id, calId, name, buildingName } (id)}
 			<a
@@ -76,7 +75,7 @@
 	</div>
 {/if}
 
-<h2 class="text-2xl text-center font-bold mt-16 mb-4" id="calendars">Select a calendar</h2>
+<h2 class="text-2xl text-center font-bold mt-16 mb-4" id="calendars">Choose a calendar</h2>
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
 	{#each CAL_MAP.filter((it) => it.show ?? true).sort( (a, b) => a.name.localeCompare(b.name) ) as { id, name } (id)}
 		<a

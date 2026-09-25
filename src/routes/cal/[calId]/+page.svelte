@@ -188,7 +188,7 @@
 
 <div class="mb-4 flex items-center gap-4">
 	<a class="btn btn-primary" href={resolve('/')} aria-label="Back to home page"> ← Back </a>
-	<h1 class="text-2xl font-bold">Availability for '{cal.name}' rooms</h1>
+	<h1 class="text-2xl font-bold">Room availability for {cal.name}</h1>
 </div>
 
 <div class="mb-6">
