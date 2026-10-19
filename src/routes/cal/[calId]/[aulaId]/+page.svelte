@@ -8,8 +8,8 @@
 
 	import { page } from '$app/state';
 	import calendarIcon from '#lib/icons/Calendar.svg?raw';
-	import AulaWeekTimeline from '#lib/AulaWeekTimeline.svelte';
-	import EventModal from '#lib/EventModal.svelte';
+	import AulaWeekTimeline from '#lib/components/AulaWeekTimeline.svelte';
+	import EventModal from '#lib/components/EventModal.svelte';
 	import { onMount, tick } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';

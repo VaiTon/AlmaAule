@@ -12,7 +12,7 @@
 
 	import { type Snippet } from 'svelte';
 	import MdiMap from '@iconify-svelte/mdi/map';
-	import VercelAnalytics from '#lib/VercelAnalytics.svelte';
+	import VercelAnalytics from '#lib/components/VercelAnalytics.svelte';
 
 	let { children }: { children: Snippet } = $props();
 </script>
