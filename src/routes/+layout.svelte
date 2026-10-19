@@ -8,37 +8,16 @@
 	import logoIcon from '#lib/icons/Logo.svg?raw';
 	import gitIcon from '#lib/icons/Git.svg?raw';
 
-	import dayjs from 'dayjs';
-
-	import utc from 'dayjs/plugin/utc';
-	dayjs.extend(utc);
-
-	import timezone from 'dayjs/plugin/timezone';
-	dayjs.extend(timezone);
-
-	import relativeTime from 'dayjs/plugin/relativeTime';
-	dayjs.extend(relativeTime);
-
-	import duration from 'dayjs/plugin/duration';
-	dayjs.extend(duration);
-
-	import 'dayjs/locale/it';
 	import { resolve } from '$app/paths';
-	dayjs.tz.setDefault('Europe/Rome');
-	dayjs.locale('it');
 
-	import { injectAnalytics } from '@vercel/analytics/sveltekit';
-	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
-	import { onMount, type Snippet } from 'svelte';
+	import { type Snippet } from 'svelte';
 	import MdiMap from '@iconify-svelte/mdi/map';
+	import VercelAnalytics from '#lib/VercelAnalytics.svelte';
 
 	let { children }: { children: Snippet } = $props();
-
-	onMount(() => {
-		injectAnalytics();
-		injectSpeedInsights();
-	});
 </script>
+
+<VercelAnalytics />
 
 <svelte:head>
 	<title>AlmaAule</title>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import dayjs from 'dayjs';
+	import dayjs from '#lib/dayjs.ts';
 	import type { Impegno } from './api';
 	import { resolve } from '$app/paths';
 	import { onMount } from 'svelte';

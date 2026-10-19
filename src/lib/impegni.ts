@@ -1,5 +1,5 @@
 import type { Aula, Impegno } from './api';
-import dayjs from 'dayjs';
+import dayjs from '#lib/dayjs.ts';
 
 export function getActualImpegniAule(
 	aule: Aula[],

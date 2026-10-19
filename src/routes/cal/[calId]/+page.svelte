@@ -1,5 +1,5 @@
 <script lang="ts">
-	import dayjs from 'dayjs';
+	import dayjs from '#lib/dayjs.ts';
 
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
@@ -31,12 +31,15 @@
 
 	$effect(() => {
 		const url = new SvelteURL(page.url.href);
+		const currentSearch = page.url.search;
 		if (showVacantOnly) {
 			url.searchParams.set('vacant', 'true');
 		} else {
 			url.searchParams.delete('vacant');
 		}
-		goto('?' + url.searchParams.toString(), { replace: true, reset: false });
+		if (url.search !== currentSearch) {
+			void goto(url.href, { replace: true, reset: false });
+		}
 	});
 
 	let resources: Resource[] = $derived.by(() => {

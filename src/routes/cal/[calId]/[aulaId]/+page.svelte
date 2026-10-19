@@ -4,10 +4,7 @@
 
 	import type { PageData } from './$types';
 
-	import dayjs, { Dayjs } from 'dayjs';
-	import 'dayjs/locale/it';
-	import localizedFormat from 'dayjs/plugin/localizedFormat';
-	dayjs.extend(localizedFormat);
+	import dayjs, { type Dayjs } from '#lib/dayjs.ts';
 
 	import { page } from '$app/state';
 	import calendarIcon from '#lib/icons/Calendar.svg?raw';

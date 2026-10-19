@@ -2,12 +2,7 @@
 	import type { Impegno } from '#lib/api/index.ts';
 	import type { EventHandler } from 'svelte/elements';
 
-	import dayjs from 'dayjs';
-	import duration from 'dayjs/plugin/duration';
-	import relativeTime from 'dayjs/plugin/relativeTime';
-
-	dayjs.extend(relativeTime);
-	dayjs.extend(duration);
+	import dayjs from '#lib/dayjs.ts';
 
 	let dialogEl: HTMLDialogElement | null = $state(null);
 	let event: Impegno | null = $state(null);

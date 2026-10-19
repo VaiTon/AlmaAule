@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import dayjs from 'dayjs';
+import dayjs from '#lib/dayjs.ts';
 
 import { CAL_MAP } from '#lib/cals.ts';
 

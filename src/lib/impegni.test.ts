@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import dayjs from 'dayjs';
+import dayjs from '#lib/dayjs.ts';
 import { getActualImpegniAule } from './impegni';
 import type { Aula, Impegno } from './api';
 
