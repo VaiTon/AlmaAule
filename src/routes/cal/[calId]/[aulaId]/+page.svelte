@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { type Impegno } from '$lib/api/universityplanner';
-	import { createUPClient } from '$lib/api';
+	import { type Impegno } from '#lib/api/universityplanner/index.ts';
+	import { createUPClient } from '#lib/api/index.ts';
 
 	import type { PageData } from './$types';
 
@@ -10,9 +10,9 @@
 	dayjs.extend(localizedFormat);
 
 	import { page } from '$app/state';
-	import calendarIcon from '$lib/icons/Calendar.svg?raw';
-	import AulaWeekTimeline from '$lib/AulaWeekTimeline.svelte';
-	import EventModal from '$lib/EventModal.svelte';
+	import calendarIcon from '#lib/icons/Calendar.svg?raw';
+	import AulaWeekTimeline from '#lib/AulaWeekTimeline.svelte';
+	import EventModal from '#lib/EventModal.svelte';
 	import { onMount, tick } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
@@ -31,7 +31,7 @@
 	import MdiFlask from '@iconify-svelte/mdi/flask';
 	import MdiBookOpenVariant from '@iconify-svelte/mdi/book-open-variant';
 	import MdiInformationOutline from '@iconify-svelte/mdi/information-outline';
-	import { favorites } from '$lib/states/favorites.svelte';
+	import { favorites } from '#lib/states/favorites.svelte.ts';
 
 	let { data }: { data: PageData } = $props();
 	let { aula } = $derived(data);
@@ -236,7 +236,7 @@
 	});
 
 	function setImpegnoId(id: string | null) {
-		const searchParams = new SvelteURLSearchParams(page.url.searchParams);
+		const searchParams = new SvelteURLSearchParams(page.url.searchParams.toString());
 
 		if (id == null) {
 			searchParams.delete('impegno');
@@ -244,7 +244,7 @@
 			searchParams.set('impegno', id);
 		}
 
-		goto('?' + searchParams.toString(), { noScroll: true });
+		goto('?' + searchParams.toString(), { reset: false });
 	}
 </script>
 

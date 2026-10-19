@@ -1,7 +1,5 @@
-/// <reference types="@sveltejs/kit" />
-/// <reference lib="webworker" />
-
-import { build, files, version } from '$service-worker';
+import { version } from '$app/env';
+import { assets, immutable, prerendered } from '$app/manifest';
 
 const sw = self as unknown as ServiceWorkerGlobalScope;
 
@@ -9,6 +7,7 @@ const DB_NAME = 'api-cache-db';
 const STORE_NAME = 'responses';
 const CACHE_VERSION = 1;
 const CACHE_EXPIRATION_MS = 60 * 1000; // 1 minute
+const precachedFiles = [...assets, ...immutable, ...prerendered];
 
 interface CacheRecord {
 	body: string;
@@ -73,7 +72,7 @@ const API_BASE_URL = 'https://apache.prod.up.cineca.it/api';
 
 sw.addEventListener('install', (event: ExtendableEvent) => {
 	event.waitUntil(
-		caches.open(`app-cache-${version}`).then((cache) => cache.addAll([...build, ...files]))
+		caches.open(`app-cache-${version}`).then((cache) => cache.addAll(precachedFiles))
 	);
 	sw.skipWaiting();
 });
@@ -99,10 +98,7 @@ sw.addEventListener('fetch', (event: FetchEvent) => {
 	}
 
 	// Serve static assets from Cache API
-	if (
-		event.request.method === 'GET' &&
-		(build.includes(url.pathname) || files.includes(url.pathname))
-	) {
+	if (event.request.method === 'GET' && precachedFiles.includes(url.pathname)) {
 		event.respondWith(
 			caches.match(event.request).then((response) => response || fetch(event.request))
 		);

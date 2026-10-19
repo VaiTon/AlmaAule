@@ -3,7 +3,7 @@
 
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import type { Impegno } from '$lib/api';
+	import type { Impegno } from '#lib/api/index.ts';
 
 	import { onMount } from 'svelte';
 	import { SvelteURL } from 'svelte/reactivity';
@@ -30,13 +30,13 @@
 	let showVacantOnly = $state(page.url.searchParams.get('vacant') === 'true');
 
 	$effect(() => {
-		const url = new SvelteURL(page.url);
+		const url = new SvelteURL(page.url.href);
 		if (showVacantOnly) {
 			url.searchParams.set('vacant', 'true');
 		} else {
 			url.searchParams.delete('vacant');
 		}
-		goto('?' + url.searchParams.toString(), { replaceState: true, noScroll: true });
+		goto('?' + url.searchParams.toString(), { replace: true, reset: false });
 	});
 
 	let resources: Resource[] = $derived.by(() => {
@@ -95,7 +95,8 @@
 		return parsed.isValid() ? parsed.toDate() : null;
 	}
 
-	let currentTime = $state(parseCustomTimeFromUrl(page.url) || new Date());
+	const customTime = parseCustomTimeFromUrl(new URL(page.url.href));
+	let currentTime = $state(customTime || new Date());
 
 	// Update current time every minute
 	onMount(() => {

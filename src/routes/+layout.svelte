@@ -4,9 +4,9 @@
 	import '@fontsource-variable/merriweather-sans';
 	import '../app.css';
 
-	import calendarIcon from '$lib/icons/Calendar.svg?raw';
-	import logoIcon from '$lib/icons/Logo.svg?raw';
-	import gitIcon from '$lib/icons/Git.svg?raw';
+	import calendarIcon from '#lib/icons/Calendar.svg?raw';
+	import logoIcon from '#lib/icons/Logo.svg?raw';
+	import gitIcon from '#lib/icons/Git.svg?raw';
 
 	import dayjs from 'dayjs';
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Impegno } from '$lib/api';
+	import type { Impegno } from '#lib/api/index.ts';
 	import type { EventHandler } from 'svelte/elements';
 
 	import dayjs from 'dayjs';

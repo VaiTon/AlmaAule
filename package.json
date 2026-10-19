@@ -2,6 +2,10 @@
 	"name": "uniboaule",
 	"version": "0.2.0",
 	"type": "module",
+	"imports": {
+		"#lib": "./src/lib/index.js",
+		"#lib/*": "./src/lib/*"
+	},
 	"packageManager": "pnpm@12.5.1+sha512.e3f305bc784a2bc89f5ad3b6138889470fae8d2af5f36b61216ec91c2c3d64089775f9de38aac331044ea40f245cb0d5666392dfdf65824e1907ef6a2c62de5f",
 	"private": true,
 	"scripts": {
@@ -21,12 +25,13 @@
 		"@iconify-svelte/material-symbols": "^1.0.49",
 		"@iconify-svelte/mdi": "^1.0.2",
 		"@sveltejs/adapter-auto": "^7.0.1",
-		"@sveltejs/kit": "^2.70.3",
+		"@sveltejs/kit": "^3.0.0",
 		"@sveltejs/vite-plugin-svelte": "^7.3.1",
 		"@tailwindcss/typography": "^0.5.20",
 		"@tailwindcss/vite": "^4.3.3",
 		"@types/leaflet": "^1.9.22",
 		"@types/leaflet.markercluster": "^1.5.6",
+		"@types/node": "^26.6.5",
 		"@typescript-eslint/eslint-plugin": "^8.71.2",
 		"@typescript-eslint/parser": "^8.71.2",
 		"daisyui": "^5.7.50",

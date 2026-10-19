@@ -1,6 +1,6 @@
 <script lang="ts">
 	import dayjs, { Dayjs } from 'dayjs';
-	import type { Impegno } from '$lib/api';
+	import type { Impegno } from '#lib/api/index.ts';
 
 	type TimelineEvent = {
 		start: Date;

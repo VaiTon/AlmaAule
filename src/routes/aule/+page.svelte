@@ -125,7 +125,7 @@
 		} else {
 			searchParams.delete('q');
 		}
-		goto('?' + searchParams.toString(), { replaceState: true, keepFocus: true, noScroll: true });
+		goto('?' + searchParams.toString(), { replace: true, reset: false });
 	}
 
 	let debouncedQuery: string = $state('');

@@ -1,5 +1,5 @@
-import { createUPClient, type Aula } from '$lib/api';
-import { CAL_MAP } from '$lib/cals';
+import { createUPClient, type Aula } from '#lib/api/index.ts';
+import { CAL_MAP } from '#lib/cals.ts';
 import type { PageLoad } from './$types';
 
 export type CalendarAula = Aula & { calId: string; searchKey: string };

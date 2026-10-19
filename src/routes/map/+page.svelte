@@ -12,7 +12,7 @@
 	import { onMount, tick } from 'svelte';
 	import { resolve } from '$app/paths';
 	import type { PageData } from './$types';
-	import type { Edificio } from '$lib/api';
+	import type { Edificio } from '#lib/api/index.ts';
 
 	let { data }: { data: PageData } = $props();
 

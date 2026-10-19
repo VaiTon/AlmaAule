@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { CAL_MAP } from '$lib/cals';
-	import { favorites } from '$lib/states/favorites.svelte';
+	import { CAL_MAP } from '#lib/cals.ts';
+	import { favorites } from '#lib/states/favorites.svelte.ts';
 </script>
 
 <div class="prose md:mx-auto mx-4">
@@ -14,8 +14,8 @@
 		schedules.
 	</p>
 	<p>
-		This website helps students and staff find <strong>vacant classrooms</strong> for studying,
-		teaching, or events.
+		This website helps students and staff find <strong>vacant classrooms</strong> for studying, teaching,
+		or events.
 	</p>
 	<p>
 		We <strong>don't scrape</strong> websites. AlmaAule relies entirely on public APIs.

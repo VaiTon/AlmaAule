@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
-import { createUPClient } from '$lib/api';
+import { createUPClient } from '#lib/api/index.ts';
 
 export const load: PageLoad = async ({ fetch, params }) => {
 	const client = createUPClient(fetch);
