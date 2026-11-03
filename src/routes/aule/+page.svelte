@@ -174,7 +174,7 @@
 	</div>
 
 	{#snippet highlighted(text: string, key: string, matches: readonly FuseResultMatch[] | undefined)}
-		{#each getHighlightParts(text, matches, key) as part (part.text + part.highlight)}
+		{#each getHighlightParts(text, matches, key) as part}
 			{#if part.highlight}
 				<mark class="bg-primary/30 text-inherit rounded-xs">{part.text}</mark>
 			{:else}
