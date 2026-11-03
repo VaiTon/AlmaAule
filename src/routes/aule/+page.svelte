@@ -144,7 +144,7 @@
 {#await data.aule}
 	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 		{#each Array.from({ length: 12 }).map((_, i) => i) as i (i)}
-			<div class="card bg-base-100 shadow-md border border-base-300">
+			<div class="card bg-base-100 border border-base-300">
 				<div class="card-body p-4">
 					<div class="skeleton h-6 w-3/4 mb-2"></div>
 					<div class="flex flex-col gap-2 mt-1">
@@ -188,7 +188,7 @@
 			{@const edificio = aula.relazioneEdificio}
 			<a
 				href={resolve('/cal/[calId]/[aulaId]', { calId: aula.calId, aulaId: aula.id })}
-				class="card bg-base-100 shadow-md hover:shadow-xl transition-shadow duration-200 cursor-pointer border border-base-300"
+				class="card bg-base-100 cursor-pointer border border-base-300 transition-colors duration-200 hover:border-base-content/20 hover:bg-base-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
 				aria-label={`Go to details for ${edificio.plesso} - ${aula.descrizione}`}
 			>
 				<div class="card-body p-4">
